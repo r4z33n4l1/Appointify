@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     
     # If new app is created, add it here
+    'calendars',
 ]
 
 # Raz - adding jwt config
