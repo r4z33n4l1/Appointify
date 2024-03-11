@@ -1,13 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Invitation
-from calendars.models import Calendars
 from .serializers import InvitationSerializer
+from calendars.models import Calendars
+from .calendars.serializers import NonBusyTimeSerializer
 
 
 # Create your views here.
@@ -70,6 +69,7 @@ class NotifyFinalizedScheduleView(APIView):
 
         if calendar.finalized:
             for invitation in calendar.invitations.all():
+                # TODO
                 # send_email(invitation, , 'confirm')
                 pass
 
@@ -106,6 +106,14 @@ class InvitedUserLandingView(APIView):
         return super().dispatch(*args, **kwargs)
 
     @staticmethod
+    def get(self, request, *args, **kwargs):
+        calendar_id = request.GET.get('calendar_id')
+        calendar = get_object_or_404(Calendars, pk=calendar_id)
+        owner_preferences = NonBusyTimeSerializer(calendar.nonbusytime_set.all(), many=True).data
+
+        return JsonResponse({'owner_preferences': owner_preferences})
+
+    @staticmethod
     def post(request, *args, **kwargs):
         calendar_id = request.POST.get('calendar_id')
 
@@ -125,7 +133,8 @@ def send_email(invitation, inviter, email_type):
     if email_type == 'invitation':
         unique_link = f'link/notify/invitation_detail/{invitation.unique_token}/'
         subject = f'Invitation to Calendar {calendar_name} from {from_name}'
-        message = f'You have been invited to a calendar from {from_name}. Click the link below to view the details:\n\n{unique_link}'
+        message = (f'You have been invited to a calendar from {from_name}. '
+                   f'Click the link below to view the details:\n\n{unique_link}')
 
     if email_type == 'reminder':
         unique_link = f'link/notify/invitation_detail/{invitation.unique_token}/'
