@@ -2,18 +2,22 @@
 from rest_framework import serializers
 from .models import Calendars, UserCalendars, NonBusyDate, NonBusyTime
 
+
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendars
         fields = '__all__'
+
 
 class NonBusyTimeSerializer(serializers.ModelSerializer):
     class Meta:
         model = NonBusyTime
         fields = '__all__'
 
+
 class NonBusyDateSerializer(serializers.ModelSerializer):
     non_busy_times = NonBusyTimeSerializer(many=True)
+
     class Meta:
         model = NonBusyDate
         fields = '__all__'
@@ -27,7 +31,7 @@ class NonBusyDateSerializer(serializers.ModelSerializer):
             non_busy_date.non_busy_times.add(non_busy_time)
 
         return non_busy_date
-    
+
     def update(self, instance, validated_data):
         instance.date = validated_data.get('date', instance.date)
         instance.save()
@@ -43,6 +47,7 @@ class NonBusyDateSerializer(serializers.ModelSerializer):
             instance.non_busy_times.add(non_busy_time_serializer.instance)
 
         return instance
+
 
 class UserCalendarSerializer(serializers.ModelSerializer):
     non_busy_dates = NonBusyDateSerializer(many=True, required=False)
@@ -63,7 +68,7 @@ class UserCalendarSerializer(serializers.ModelSerializer):
             user_calendar.non_busy_dates.add(non_busy_date_serializer.instance)
 
         return user_calendar
-    
+
     def update(self, instance, validated_data):
         instance.calendar = validated_data.get('calendar', instance.calendar)
         instance.save()

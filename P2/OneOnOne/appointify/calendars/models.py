@@ -25,9 +25,6 @@ class UserCalendars(models.Model):
     class Meta:
         unique_together = ('user', 'calendar')
 
-    class Meta:
-        unique_together = ('user', 'calendar')
-
 
 class NonBusyDate(models.Model):
     date = models.DateField(),
