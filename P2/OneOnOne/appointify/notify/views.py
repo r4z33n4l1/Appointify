@@ -1,16 +1,13 @@
 from django.shortcuts import render
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.views import View
-from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .models import Invitation
-from calendars.models import Calendars
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from .models import Invitation
+from calendars.models import Calendars
+from .serializers import InvitationSerializer
 
 
 # Create your views here.
@@ -23,7 +20,7 @@ class InviteToCalendarSendEmailView(APIView):
     @staticmethod
     def post(request, *args, **kwargs):
         primary_user = request.user
-        calendar_id = kwargs.get('calendar_id')
+        calendar_id = request.POST.get('calendar_id')
         invited_user_id = request.POST.get('contact_id')
         invited_user = get_object_or_404(User, pk=invited_user_id)
         calendar = get_object_or_404(Calendars, pk=calendar_id)
@@ -33,9 +30,14 @@ class InviteToCalendarSendEmailView(APIView):
             send_email(invitation, primary_user, 'invitation')
             invitation.status = 'pending'
             invitation.save()
-            return JsonResponse({'detail': f'Invitation email sent successfully to {invited_user_id}'})
+
+            serializer = InvitationSerializer(invitation)
+            return JsonResponse(
+                {'detail': f'Invitation email sent successfully to {invited_user_id}', 'invitation': serializer.data})
         else:
-            return JsonResponse({'detail': f'Invitation already sent to {invited_user_id} for this calendar'})
+            serializer = InvitationSerializer(existing_invitation)
+            return JsonResponse({'detail': f'Invitation already sent to {invited_user_id} for this calendar',
+                                 'invitation': serializer.data})
 
 
 class ReminderView(APIView):
@@ -53,7 +55,10 @@ class ReminderView(APIView):
         invitation = get_object_or_404(Invitation, calendar_id=calendar_id, invited_user=contact.user, status='pending')
         if invitation:
             send_email(invitation, primary_user, 'reminder')
-            return JsonResponse({'detail': f'Reminder email sent successfully for {contact.user.username}'})
+
+            serializer = InvitationSerializer(invitation)
+            return JsonResponse({'detail': f'Reminder email sent successfully for {contact.user.username}',
+                                 'invitation': serializer.data})
         else:
             return JsonResponse({'detail': f'Contact {contact.user.username} not found or invitation not pending'})
 
@@ -65,9 +70,12 @@ class NotifyFinalizedScheduleView(APIView):
 
         if calendar.finalized:
             for invitation in calendar.invitations.all():
-                pass  # send_email(invitation, , 'confirm')
+                # send_email(invitation, , 'confirm')
+                pass
 
-            return JsonResponse({'message': 'Actions after schedule finalization completed'})
+            serialized_invitations = InvitationSerializer(calendar.invitations, many=True).data
+            return JsonResponse(
+                {'message': 'Actions after schedule finalization completed', 'invitations': serialized_invitations})
         else:
             return JsonResponse({'message': 'Schedule is not finalized yet'})
 
