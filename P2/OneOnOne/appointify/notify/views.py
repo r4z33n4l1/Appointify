@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Invitation
-from ..calendars.models import Calendars
+from calendars.models import Calendars
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
