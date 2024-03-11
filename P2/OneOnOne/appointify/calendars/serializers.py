@@ -45,7 +45,7 @@ class NonBusyDateSerializer(serializers.ModelSerializer):
         return instance
 
 class UserCalendarSerializer(serializers.ModelSerializer):
-    non_busy_dates = NonBusyDateSerializer(many=True)
+    non_busy_dates = NonBusyDateSerializer(many=True, required=False)
 
     class Meta:
         model = UserCalendars

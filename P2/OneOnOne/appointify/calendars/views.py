@@ -11,13 +11,14 @@ from .serializers import CalendarSerializer, UserCalendarSerializer, NonBusyDate
 # user calendar views
 class UserCalendarListView(APIView):
     def get(self, request, *args, **kwargs):
-        queryset = UserCalendars.objects.all()
-        serializer = UserCalendarSerializer(queryset, many=True)
+        instances = UserCalendars.objects.filter(user=kwargs.get('user'))
+        serializer = UserCalendarSerializer(instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class UserCalendarCreateView(APIView):
     def post(self, request, *args, **kwargs):
-        serializer = UserCalendarSerializer(data=request.data)
+        instance = get_object_or_404(UserCalendars, user=kwargs.get('user'),calendar=kwargs.get('cid'))
+        serializer = UserCalendarSerializer(instance, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -27,7 +28,7 @@ class UserCalendarCreateView(APIView):
 
 class UserCalendarUpdateView(APIView):
     def put(self, request, *args, **kwargs):
-        instance = self.get_object(kwargs.get('pk'))
+        instance = get_object_or_404(UserCalendars, user=kwargs.get('user'),calendar=kwargs.get('cid'))
         serializer = UserCalendarSerializer(instance, data=request.data)
 
         if serializer.is_valid():
@@ -37,7 +38,7 @@ class UserCalendarUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def patch(self, request, *args, **kwargs):
-        instance = get_object_or_404(UserCalendars, pk=kwargs.get('pk'))
+        instance = get_object_or_404(UserCalendars, user=kwargs.get('user'),calendar=kwargs.get('cid'))
         serializer = UserCalendarSerializer(instance, data=request.data, partial=True)
 
         if serializer.is_valid():
@@ -48,46 +49,66 @@ class UserCalendarUpdateView(APIView):
 
 class UserCalendarDeleteView(generics.RetrieveDestroyAPIView):
     queryset = UserCalendars.objects.all()
-    serializer_class = UserCalendarSerializer 
+    serializer_class = UserCalendarSerializer
 
     def delete(self, request, *args, **kwargs):
-        user_calendar_instance = self.get_object()
-        calendar_instance = user_calendar_instance.calendar
-        calendar_instance.delete()
-        return self.destroy(request, *args, **kwargs)
-                                     
+        user_id = kwargs.get('user')
+        calendar_id = kwargs.get('pk')
 
-# calendar views
-class CalendarListView(APIView):
+        # Retrieve the UserCalendars instance based on user and calendar IDs
+        user_calendar_instance = UserCalendars.objects.get(user=user_id, calendar=calendar_id)
+
+        if user_calendar_instance:
+            calendar_instance = user_calendar_instance.calendar
+            user_calendar_instance.delete()  # Delete the UserCalendars instance
+            calendar_instance.delete()  # Delete the associated Calendar instance
+
+            return Response({'detail': 'Entry deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+class UserCalendarsView(APIView):
     def get(self, request, *args, **kwargs):
-        queryset = Calendars.objects.all()
-        serializer = CalendarSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)   
+        instances = UserCalendars.objects.filter(user=kwargs.get('user'))
+        calendars_instances = [user_calendar.calendar for user_calendar in instances]
+        serializer = CalendarSerializer(calendars_instances, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class CalendarCreateView(APIView):
     def post(self, request, *args, **kwargs):
+        user_id = kwargs.get('user')
         serializer = CalendarSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            # Create and save UserCalendars instance with user and calendar ID
+            user_calendar_serializer = UserCalendarSerializer(data={'user': user_id, 'calendar': serializer.instance.id})
+            if user_calendar_serializer.is_valid():
+                user_calendar_serializer.save()
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            # If UserCalendarSerializer is not valid, delete the created calendar
+            serializer.instance.delete()
+
+            return Response(user_calendar_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                                            
 class CalendarUpdateView(APIView):
     def put(self, request, *args, **kwargs):
-        instance = get_object_or_404(Calendars, pk=kwargs.get('pk'))
-        serializer = CalendarSerializer(instance, data=request.data)
+        instance = get_object_or_404(UserCalendars, user=kwargs.get('user'),calendar=kwargs.get('cid'))
+        serializer = CalendarSerializer(instance.calendar, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
     def patch(self, request, *args, **kwargs):
-        instance = get_object_or_404(Calendars, pk=kwargs.get('pk'))
-        serializer = CalendarSerializer(instance, data=request.data, partial=True)
+        instance = get_object_or_404(UserCalendars, user=kwargs.get('user'),calendar=kwargs.get('cid'))
+        serializer = CalendarSerializer(instance.calendar, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
@@ -95,9 +116,3 @@ class CalendarUpdateView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
 
-class CalendarDeleteView(generics.RetrieveDestroyAPIView):
-    queryset = Calendars.objects.all()
-    serializer_class = CalendarSerializer 
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)

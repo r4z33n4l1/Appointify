@@ -1,0 +1,107 @@
+### View List of Calendars 
+- Endpoint: api/<int:user>/calendars/
+- Method: GET
+- Description: Display list of calendars for a specific user.
+- URL Params: user is the user id.
+
+### Create Calendar 
+- Endpoint: <int:user>/calendars/create/
+- Method: POST
+- Description: create calendar for a specific user.
+- URL Params: user is the user id.
+
+example:
+{
+    "id": 1,
+    "name": "Sample Calendar",
+    "description": "Sample description",
+    "start_date": "2024-03-01",
+    "end_date": "2024-03-31",
+    "created_at": "2024-03-09T10:00:00Z", 
+    "updated_at": "2024-03-09T10:30:00Z"
+}
+
+### update Calendar
+- Endpoint: api/<int:user>/calendars/update/<int:pk>/
+- Method: PUT, PATCH
+- Description: update specific calendar for a specific user.
+- URL Params: user is the user id and pk is the calendar id.
+
+example:
+{
+    "id": 1,
+    "name": "Sample Birthday Calendar", #updated
+    "description": "Sample description",
+    "start_date": "2024-03-01",
+    "end_date": "2024-03-31",
+    "created_at": "2024-03-09T10:00:00Z", 
+    "updated_at": "2024-03-09T10:30:00Z"
+}
+
+
+### View All Calendars with Preferences 
+- Endpoint: <int:user>/user-calendars/
+- Method: GET
+- Description: view all calendars with preferences for a specific user.
+- URL Params: user is the user id.
+
+### Create User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
+- Endpoint: <int:user>/user-calendars/<int:cid>/create/
+- Method: POST
+- Description: create user preferences ( nonbusy date and nonbusy time) for a specific calendar for a specific user.
+- URL Params: user is the user id, cid is the calendar id.
+
+example:
+{
+  "id": 1,
+  "user": 1,
+  "calendar": 1,
+  "non_busy_dates": [
+    {
+      "id": 1,
+      "date": "2024-03-05",
+      "non_busy_times": [
+        {
+          "id": 1,
+          "time": "12:00:00",
+          "preference": "high"
+        }
+      ]
+    }
+  ]
+}
+
+
+### Update User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
+- Endpoint: <int:user>/user-calendars/<int:cid>/update/
+- Method: PUT, PATCH
+- Description: update user preferences ( nonbusy date and nonbusy time) for a specific calendar for a specific user.
+- URL Params: user is the user id, cid is the calendar id.
+
+example:
+{
+  "id": 1,
+  "user": 1,
+  "calendar": 1,
+  "non_busy_dates": [
+    {
+      "id": 1,
+      "date": "2024-03-05",
+      "non_busy_times": [
+        {
+          "id": 1,
+          "time": "12:00:00",
+          "preference": "low"  #updated
+        }
+      ]
+    }
+  ]
+}
+
+### Delete User Calendar along with preferences
+- Endpoint: <int:user>/user-calendars/<int:pk>/delete/
+- Method: DELETE
+- Description: delete specific calendar with all user preferences.
+- URL Params: user is the user id and pk is the calendar id.
+
+
