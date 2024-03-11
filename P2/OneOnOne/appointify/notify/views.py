@@ -9,16 +9,18 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Invitation
 from ..calendars.models import Calendars
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 
 # Create your views here.
-class InviteToCalendarSendEmailView(View):
-    @method_decorator(login_required)
+class InviteToCalendarSendEmailView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
     @staticmethod
-    @method_decorator(login_required)
     def post(request, *args, **kwargs):
         primary_user = request.user
         calendar_id = kwargs.get('calendar_id')
@@ -36,13 +38,14 @@ class InviteToCalendarSendEmailView(View):
             return JsonResponse({'detail': f'Invitation already sent to {invited_user_id} for this calendar'})
 
 
-class ReminderView(View):
-    @method_decorator(login_required)
+class ReminderView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-    @method_decorator(login_required)
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request, *args, **kwargs):
         primary_user = request.user
         calendar_id = kwargs.get('calendar_id')
         contact_id = kwargs.get('contact_id')
@@ -55,7 +58,7 @@ class ReminderView(View):
             return JsonResponse({'detail': f'Contact {contact.user.username} not found or invitation not pending'})
 
 
-class NotifyFinalizedScheduleView(View):
+class NotifyFinalizedScheduleView(APIView):
     def get(self, request, *args, **kwargs):
         calendar_id = self.kwargs['calendar_id']
         calendar = get_object_or_404(Calendars, pk=calendar_id)
@@ -69,13 +72,14 @@ class NotifyFinalizedScheduleView(View):
             return JsonResponse({'message': 'Schedule is not finalized yet'})
 
 
-class StatusView(View):
-    @method_decorator(login_required)
+class StatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
-    @method_decorator(login_required)
-    def get(self, request, *args, **kwargs):
+    @staticmethod
+    def get(request, *args, **kwargs):
         calendar_id = request.GET.get('calendar_id')
         calendar = get_object_or_404(Calendars, pk=calendar_id)
         pending_users = Invitation.objects.filter(calendar=calendar, status='pending')
@@ -89,18 +93,16 @@ class StatusView(View):
                              "accepted_user_ids": accepted_user_ids})
 
 
-class InvitedUserLandingView(View):
+class InvitedUserLandingView(APIView):
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
 
     @staticmethod
-    def get(self, request, *args, **kwargs):
-        return render(request, 'notify/secondary_user_landing.html')
-
-    @staticmethod
     def post(request, *args, **kwargs):
         calendar_id = request.POST.get('calendar_id')
-        availability_data = request.POST.get('availability_data')
+
+        # TODO
+        # availability_data = request.POST.get('availability_data')
 
         return JsonResponse({'detail': 'Availability data saved successfully'})
 
