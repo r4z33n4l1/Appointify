@@ -1,7 +1,12 @@
 # serializers.py
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from .models import Calendars, UserCalendars, NonBusyDate, NonBusyTime
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,6 +56,8 @@ class NonBusyDateSerializer(serializers.ModelSerializer):
 
 class UserCalendarSerializer(serializers.ModelSerializer):
     non_busy_dates = NonBusyDateSerializer(many=True, required=False)
+    user = UserSerializer(required=False)
+    calendar = CalendarSerializer(required=False)
 
     class Meta:
         model = UserCalendars
