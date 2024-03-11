@@ -1,8 +1,7 @@
 ### View List of Calendars 
-- Endpoint: api/<int:user>/calendars/
+- Endpoint: api/calendars/
 - Method: GET
-- Description: Display list of calendars for a specific user.
-- URL Params: user is the user id.
+- Description: Display list of calendars for authenticated user.
 
 Example:
 Request: GET api/1/calendars/
@@ -19,13 +18,12 @@ Response:
 
 
 ### Create Calendar 
-- Endpoint: api/<int:user>/calendars/create/
+- Endpoint: api/calendars/create/
 - Method: POST
-- Description: create calendar for a specific user.
-- URL Params: user is the user id.
+- Description: create calendar for authenticated user.
 
 Example:
-Request: POST api/1/calendars/create/
+Request: POST api/calendars/create/
 
 {
     "name": "Sample Calendar",
@@ -46,13 +44,13 @@ Response:
 }
 
 ### update Calendar
-- Endpoint: api/<int:user>/calendars/update/<int:pk>/
+- Endpoint: api/calendars/update/<int:pk>/
 - Method: PUT, PATCH
-- Description: update specific calendar for a specific user.
-- URL Params: user is the user id and pk is the calendar id.
+- Description: update specific calendar for authenticated user.
+- URL Params: pk is the calendar id.
 
 Example:
-Request: PATCH api/1/calendars/update/1/
+Request: PATCH api/calendars/update/1/
 
 {
     "name": "Birthday Calendar"
@@ -70,13 +68,12 @@ Response:
 }
 
 ### View All Calendars with Preferences 
-- Endpoint: api/<int:user>/user-calendars/
+- Endpoint: api/user-calendars/
 - Method: GET
-- Description: view all calendars with preferences for a specific user.
-- URL Params: user is the user id.
+- Description: view all calendars with preferences for authenticated user.
 
 Example:
-Request: GET api/1/user-calendars/
+Request: GET api/user-calendars/
 Response: 
 {
     {
@@ -100,13 +97,13 @@ Response:
 }
 
 ### Create User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
-- Endpoint: api/<int:user>/user-calendars/<int:cid>/create/
+- Endpoint: api/user-calendars/<int:cid>/create/
 - Method: POST
-- Description: create user preferences ( nonbusy date and nonbusy time) for a specific calendar for a specific user.
-- URL Params: user is the user id, cid is the calendar id.
+- Description: create user preferences ( nonbusy date and nonbusy time) for a specific calendar for authenticated user.
+- URL Params: cid is the calendar id.
 
 Example:
-Request: POST api/1/user-calendars/18/create/
+Request: POST api/user-calendars/18/create/
 
     {
         "non_busy_dates": [
@@ -167,14 +164,14 @@ Response:
 
 
 ### Update User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
-- Endpoint: api/<int:user>/user-calendars/<int:cid>/update/
+- Endpoint: api/user-calendars/<int:cid>/update/
 - Method: PUT, PATCH
-- Description: update user preferences ( nonbusy date and nonbusy time) for a specific calendar for a specific user.
-- URL Params: user is the user id, cid is the calendar id.
+- Description: update user preferences ( nonbusy date and nonbusy time) for a specific calendar for authenticated user.
+- URL Params: cid is the calendar id.
 
 
 Example:
-Request: POST api/1/user-calendars/18/create/
+Request: POST api/user-calendars/18/create/
 
 {
     {
@@ -236,9 +233,9 @@ Response:
 }
 
 ### Delete User Calendar along with preferences
-- Endpoint: api/<int:user>/user-calendars/<int:pk>/delete/
+- Endpoint: api/user-calendars/<int:pk>/delete/
 - Method: DELETE
 - Description: delete specific calendar with all user preferences.
-- URL Params: user is the user id and pk is the calendar id.
+- URL Params: pk is the calendar id.
 
 
