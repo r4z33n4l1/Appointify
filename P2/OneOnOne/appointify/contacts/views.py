@@ -17,13 +17,23 @@ class ContactListView(APIView):
 class ContactDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
+    def get_object(self, pk):
+        try:
+            return Contact.objects.get(pk=pk, user=self.request.user)
+        except Contact.DoesNotExist:
+            return None
+
     def get(self, request, pk, *args, **kwargs):
-        contact = Contact.objects.get(pk=pk, user=request.user)
+        contact = self.get_object(pk)
+        if contact is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ContactSerializer(contact)
         return Response(serializer.data)
 
     def put(self, request, pk, *args, **kwargs):
-        contact = Contact.objects.get(pk=pk, user=request.user)
+        contact = self.get_object(pk)
+        if contact is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = ContactSerializer(contact, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -31,6 +41,8 @@ class ContactDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, *args, **kwargs):
-        contact = Contact.objects.get(pk=pk, user=request.user)
+        contact = self.get_object(pk)
+        if contact is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         contact.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
