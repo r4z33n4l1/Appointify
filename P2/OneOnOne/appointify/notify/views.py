@@ -9,7 +9,6 @@ from .models import Invitation
 from .serializers import InvitationSerializer
 from calendars.models import Calendars, UserCalendars
 from calendars.serializers import NonBusyDateSerializer
-from calendars.views import UserCalendarCreateView
 
 
 # Create your views here.
@@ -79,7 +78,7 @@ class NotifyFinalizedScheduleView(APIView):
     @staticmethod
     def get(request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
-        calendar = get_object_or_404(UserCalendars, calendar=calendar_id)
+        calendar = get_object_or_404(Calendars, calendar=calendar_id)
 
         if calendar.finalized:
             for invitation in calendar.invitations.all():
@@ -121,10 +120,6 @@ class StatusView(APIView):
 
 
 class InvitedUserLandingView(APIView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.create_view = UserCalendarCreateView()
-
     @staticmethod
     def get(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
@@ -133,11 +128,37 @@ class InvitedUserLandingView(APIView):
 
         return JsonResponse({'owner_preferences': owner_preferences})
 
-    def post(self, request, unique_link, *args, **kwargs):
+    @staticmethod
+    def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         calendar = get_object_or_404(UserCalendars, calendar=invitation.calendar)
-        kwargs.update({'cid': calendar.id})
-        return self.create_view.post(request, *args, **kwargs)
+        non_busy_dates_data = request.data.get('non_busy_dates', [])
+
+        for non_busy_date_data in non_busy_dates_data:
+            non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)
+            non_busy_date_serializer.is_valid(raise_exception=True)
+            non_busy_date_serializer.save()
+            invitation.invited_user_non_busy_dates.add(non_busy_date_serializer.instance)
+
+        invitation.status = 'accepted'
+        invitation.save()
+        serializer = InvitationSerializer(invitation)
+        return JsonResponse({'detail': f'{invitation.invited_user.username} preferences updated for this calendar',
+                             'invitation': serializer.data})
+
+
+class DeclineInvitationView(APIView):
+    @staticmethod
+    def get(request, unique_link, *args, **kwargs):
+        invitation = get_object_or_404(Invitation, unique_token=unique_link)
+
+        if invitation:
+            invitation.status = 'declined'
+            invitation.save()
+            serializer = InvitationSerializer(invitation)
+            return JsonResponse({'detail': f'Invitation declined successfully', 'invitation': serializer.data})
+        else:
+            return JsonResponse({'detail': f'Invitation not found or already declined'}, status=400)
 
 
 def send_email(invitation, inviter, email_type):
