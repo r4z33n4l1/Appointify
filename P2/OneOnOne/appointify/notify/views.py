@@ -39,10 +39,10 @@ class InviteToCalendarSendEmailView(APIView):
         serializer = InvitationSerializer(data={'calendar': calendar_id, 'invited_contact': contact_id})
         if serializer.is_valid():
             serializer.save()
-            try:
-                send_email(serializer.instance, primary_user, 'invitation')
-            except smtplib.SMTPException as e:
-                return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
+            # try:
+            #     send_email(serializer.instance, primary_user, 'invitation')
+            # except smtplib.SMTPException as e:
+            #     return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
 
             return JsonResponse(
                 {'detail': f'Invitation email sent successfully to {invited_contact.email}',
@@ -109,14 +109,14 @@ class StatusView(APIView):
             pending_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='pending')
             declined_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='declined')
             accepted_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='accepted')
-            pending_usernames = [invitation.invited_contact.username for invitation in pending_users]
-            declined_usernames = [invitation.invited_contact.username for invitation in declined_users]
-            accepted_usernames = [invitation.invited_contact.username for invitation in accepted_users]
+            pending_fname = [invitation.invited_contact.fname for invitation in pending_users]
+            declined_fname = [invitation.invited_contact.fname for invitation in declined_users]
+            accepted_fname = [invitation.invited_contact.fname for invitation in accepted_users]
             calendar_status = {
                 "calendar_id": calendar_id,
-                "pending_usernames": pending_usernames,
-                "declined_usernames": declined_usernames,
-                "accepted_usernames": accepted_usernames
+                "pending_usernames": pending_fname,
+                "declined_usernames": declined_fname,
+                "accepted_usernames": accepted_fname
             }
             calendar_statuses.append(calendar_status)
 
@@ -135,7 +135,6 @@ class InvitedUserLandingView(APIView):
     @staticmethod
     def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
-        calendar = get_object_or_404(UserCalendars, calendar=invitation.calendar)
         non_busy_dates_data = request.data.get('non_busy_dates', [])
 
         for non_busy_date_data in non_busy_dates_data:
@@ -147,7 +146,7 @@ class InvitedUserLandingView(APIView):
         invitation.status = 'accepted'
         invitation.save()
         serializer = InvitationSerializer(invitation)
-        return JsonResponse({'detail': f'{invitation.invited_contact.username} preferences updated for this calendar',
+        return JsonResponse({'detail': f'{invitation.invited_contact.fname} preferences updated for this calendar',
                              'invitation': serializer.data})
 
 

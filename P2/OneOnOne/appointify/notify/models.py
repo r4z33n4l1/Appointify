@@ -3,6 +3,7 @@ import uuid
 from calendars.models import Calendars, NonBusyDate
 from contacts.models import Contact  # Ensure this import points to your Contact model
 
+
 class Invitation(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
