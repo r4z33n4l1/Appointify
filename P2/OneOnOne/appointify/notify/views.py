@@ -77,10 +77,10 @@ class ReminderView(APIView):
                      'invitation': serializer.data})
             try:
                 send_email(invitation, primary_user, 'reminder')
+                return JsonResponse({'detail': f'Reminder email sent successfully to {contact.email}',
+                                     'invitation': serializer.data})
             except smtplib.SMTPException as e:
                 return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
-            return JsonResponse({'detail': f'Reminder email sent successfully to {contact.email}',
-                                 'invitation': serializer.data})
         else:
             return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'})
 
@@ -173,8 +173,8 @@ class DeclineInvitationView(APIView):
 
 
 def send_email(invitation, inviter, email_type):
-    from_email = inviter.email  # Assuming inviter is still a User model object
-    to_email = invitation.invited_contact.email  # Contact's email
+    from_email = inviter.email
+    to_email = invitation.invited_contact.email
     calendar_name = invitation.calendar.name
     subject = message = ''
 

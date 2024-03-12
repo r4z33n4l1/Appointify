@@ -9,7 +9,7 @@
 }
 - Response:
 {
-    "detail": "Invitation already sent to user1 for this calendar",
+    "detail": "Invitation email sent successfully to user1@gmail.com",
     "invitation": {
         "id": 1,
         "calendar": {
@@ -38,7 +38,7 @@
 }
 - Response:
 {
-    "detail": "Reminder email sent successfully to user1",
+    "detail": "Reminder email sent successfully to user1@gmail.com",
     "invitation": {
         "id": 1,
         "calendar": {
