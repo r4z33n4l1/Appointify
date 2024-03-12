@@ -60,18 +60,21 @@ class ReminderView(APIView):
 
         # TODO: change User to a contacts table
         contact = get_object_or_404(User, id=contact_id)
-        invitation = get_object_or_404(Invitation, calendar_id=calendar_id, invited_user=contact, status='pending')
+        invitation = get_object_or_404(Invitation, calendar_id=calendar_id, invited_user=contact)
         if invitation:
+            serializer = InvitationSerializer(invitation)
+            if invitation.status != 'pending':
+                return JsonResponse(
+                    {'detail': f'Contact {contact.username} has either accepted or declined the invitation',
+                     'invitation': serializer.data})
             try:
                 send_email(invitation, primary_user, 'reminder')
             except smtplib.SMTPException as e:
                 return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
-
-            serializer = InvitationSerializer(invitation)
             return JsonResponse({'detail': f'Reminder email sent successfully to {contact.username}',
                                  'invitation': serializer.data})
         else:
-            return JsonResponse({'detail': f'Contact {contact.username} not found or invitation not pending'})
+            return JsonResponse({'detail': f'Invitation to contact {contact.username} not found'})
 
 
 class NotifyFinalizedScheduleView(APIView):
