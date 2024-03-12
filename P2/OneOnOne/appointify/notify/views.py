@@ -22,22 +22,16 @@ class InviteToCalendarSendEmailView(APIView):
         calendar_id = request.data.get('calendar_id')
         contact_id = request.data.get('contact_id')
 
-        print(f'calendar_id: {calendar_id}, contact_id: {contact_id}')
-
         invited_contact = get_object_or_404(Contact, id=contact_id)
-        print(f'invited_contact: {invited_contact}')
 
         calendar = get_object_or_404(Calendars, id=calendar_id)
-        print(f'calendar: {calendar}')
 
         if invited_contact.user != primary_user:
-            print('invited_contact is not a contact of primary_user')
             return JsonResponse({'detail': 'You can only invite your contacts to a calendar'})
 
         existing_invitation = Invitation.objects.filter(calendar=calendar, invited_contact=invited_contact).first()
 
         if existing_invitation:
-            print('Invitation already exists')
             serializer = InvitationSerializer(existing_invitation)
             return JsonResponse({'detail': f'Invitation already sent to {invited_contact.email} for this calendar',
                                  'invitation': serializer.data})
@@ -54,7 +48,6 @@ class InviteToCalendarSendEmailView(APIView):
                 {'detail': f'Invitation email sent successfully to {invited_contact.email}',
                  'invitation': serializer.data})
         else:
-            print(f'Invalid data for creating an invitation: {serializer.errors}')
             return JsonResponse({'detail': 'Invalid data for creating an invitation'}, status=400)
 
 
