@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # If new app is created, add it here
     'calendars',
     'notify',
+    'contacts',
 ]
 
 # Raz - adding jwt config
