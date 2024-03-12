@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/', include('calendars.urls')),
     path('notify/', include('notify.urls')),
     path('contacts/', include('contacts.urls')),
+    path('events/', include('events.urls')),
 ]

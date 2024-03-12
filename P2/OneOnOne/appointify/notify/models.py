@@ -1,10 +1,7 @@
 from django.db import models
 import uuid
-from django.contrib.auth.models import User
 from calendars.models import Calendars, NonBusyDate
-
-# Create your models here.
-
+from contacts.models import Contact  # Ensure this import points to your Contact model
 
 class Invitation(models.Model):
     STATUS_CHOICES = [
@@ -14,8 +11,10 @@ class Invitation(models.Model):
     ]
 
     calendar = models.ForeignKey(Calendars, on_delete=models.CASCADE)
-    invited_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    invited_contact = models.ForeignKey(Contact, on_delete=models.CASCADE)  # Updated field
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     unique_token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    invited_user_non_busy_dates = models.ManyToManyField('calendars.NonBusyDate', blank=True, null=True)
+    invited_contact_non_busy_dates = models.ManyToManyField('calendars.NonBusyDate', blank=True)  # Updated field
     objects = models.Manager()
+
+    # If you need methods or additional logic for handling the invitation, add them here

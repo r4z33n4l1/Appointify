@@ -4,7 +4,7 @@ from .models import Contact
 class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
-        fields = ['id', 'fname', 'lname', 'email', 'is_registered', 'user']
+        fields = ['id', 'fname', 'lname', 'email', 'is_registered']
 
     def create(self, validated_data):
         contact = Contact.objects.create(**validated_data)

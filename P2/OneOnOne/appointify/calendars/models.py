@@ -20,15 +20,15 @@ class Calendars(models.Model):
 class UserCalendars(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     calendar = models.ForeignKey(Calendars, on_delete=models.CASCADE)
-    non_busy_dates = models.ManyToManyField('NonBusyDate', blank=True, null=True)
+    non_busy_dates = models.ManyToManyField('NonBusyDate', blank=True)
 
     class Meta:
         unique_together = ('user', 'calendar')
 
 
 class NonBusyDate(models.Model):
-    date = models.DateField(),
-    non_busy_times = models.ManyToManyField('NonBusyTime', blank=True, null=True)
+    date = models.DateField()
+    non_busy_times = models.ManyToManyField('NonBusyTime', blank=True)
 
 
 class NonBusyTime(models.Model):

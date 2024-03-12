@@ -19,27 +19,49 @@ class UserCalendarListView(APIView):
         serializer = UserCalendarSerializer(instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class UserCalendarCreateView(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         user = request.user
-        instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
-        serializer = UserCalendarSerializer(instance, data=request.data)
+        calendar_id = kwargs.get('cid')  # Extracting 'cid' from the URL
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # Check if the UserCalendars instance already exists
+        user_calendar_instance, created = UserCalendars.objects.get_or_create(
+            user=user,
+            calendar_id=calendar_id,
+        )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # If the instance already exists, do not attempt to recreate it
+        if not created:
+            return Response({
+                'message': 'The calendar is already associated with the user.'
+            }, status=status.HTTP_409_CONFLICT)
 
+        # Serialize the non_busy_dates data if provided
+        non_busy_dates_data = request.data.get('non_busy_dates', [])
+        non_busy_dates = []
+        for non_busy_date_data in non_busy_dates_data:
+            non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)
+            non_busy_date_serializer.is_valid(raise_exception=True)
+            non_busy_date = non_busy_date_serializer.save()
+            non_busy_dates.append(non_busy_date)
 
+        # Add non_busy_dates to the user_calendar_instance
+        user_calendar_instance.non_busy_dates.set(non_busy_dates)
+
+        # Prepare the response data
+        serializer = UserCalendarSerializer(user_calendar_instance)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
 class UserCalendarUpdateView(APIView):
     permission_classes = [IsAuthenticated]
+
     def put(self, request, *args, **kwargs):
         user = request.user
-        instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
-        serializer = UserCalendarSerializer(instance, data=request.data)
+        instance = get_object_or_404(UserCalendars, user=user, calendar=kwargs.get('cid'))
+        context = {'request': request, 'view': self}
+        serializer = UserCalendarSerializer(instance, data=request.data, context=context, partial=False)
 
         if serializer.is_valid():
             serializer.save()
@@ -49,15 +71,15 @@ class UserCalendarUpdateView(APIView):
 
     def patch(self, request, *args, **kwargs):
         user = request.user
-        instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
-        serializer = UserCalendarSerializer(instance, data=request.data, partial=True)
+        instance = get_object_or_404(UserCalendars, user=user, calendar=kwargs.get('cid'))
+        context = {'request': request, 'view': self}
+        serializer = UserCalendarSerializer(instance, data=request.data, partial=True, context=context)
 
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class UserCalendarDeleteView(generics.RetrieveDestroyAPIView):
     queryset = UserCalendars.objects.all()
@@ -91,28 +113,25 @@ class UserCalendarsView(APIView):
 
 class CalendarCreateView(APIView):
     permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         user = request.user
-        serializer = CalendarSerializer(data=request.data)
+        calendar_serializer = CalendarSerializer(data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
+        if calendar_serializer.is_valid():
+            calendar = calendar_serializer.save()  # Save the calendar and get the instance
 
-            # Create and save UserCalendars instance with user and calendar ID
-            user_calendar_serializer = UserCalendarSerializer(
-                data={'user': user.id, 'calendar': serializer.instance.id})
-            if user_calendar_serializer.is_valid():
-                user_calendar_serializer.save()
+            # Create a UserCalendars instance linking the user to the newly created calendar
+            # Note: non_busy_dates are not being handled here, as they are not required initially
+            user_calendar = UserCalendars.objects.create(user=user, calendar=calendar)
 
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # Prepare a response using the CalendarSerializer to include the new calendar details
+            response_data = calendar_serializer.data
+            response_data['user_calendar_id'] = user_calendar.id  # Optionally include the UserCalendar ID
 
-            # If UserCalendarSerializer is not valid, delete the created calendar
-            serializer.instance.delete()
-
-            return Response(user_calendar_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(calendar_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CalendarUpdateView(APIView):
     permission_classes = [IsAuthenticated]

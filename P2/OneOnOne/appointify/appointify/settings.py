@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'calendars',
     'notify',
     'contacts',
+    'events'
 ]
 
 # Raz - adding jwt config

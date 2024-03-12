@@ -9,7 +9,7 @@ from .models import Invitation
 from .serializers import InvitationSerializer
 from calendars.models import Calendars, UserCalendars
 from calendars.serializers import NonBusyDateSerializer
-
+from contacts.models import Contact
 
 # Create your views here.
 class InviteToCalendarSendEmailView(APIView):
@@ -21,33 +21,40 @@ class InviteToCalendarSendEmailView(APIView):
         calendar_id = request.data.get('calendar_id')
         contact_id = request.data.get('contact_id')
 
-        # TODO: change User to a contacts table
-        invited_user = get_object_or_404(User, id=contact_id)
+        print(f'calendar_id: {calendar_id}, contact_id: {contact_id}')
+
+        invited_contact = get_object_or_404(Contact, id=contact_id)
+        print(f'invited_contact: {invited_contact}')
+
         calendar = get_object_or_404(Calendars, id=calendar_id)
-        existing_invitation = Invitation.objects.filter(calendar=calendar, invited_user=invited_user).first()
+        print(f'calendar: {calendar}')
 
-        if primary_user == invited_user:
-            return JsonResponse({'detail': 'You cannot invite yourself to a calendar'})
+        if invited_contact.user != primary_user:
+            print('invited_contact is not a contact of primary_user')
+            return JsonResponse({'detail': 'You can only invite your contacts to a calendar'})
 
-        if not existing_invitation:
-            serializer = InvitationSerializer(data={'calendar': calendar_id, 'invited_user': contact_id})
-            if serializer.is_valid():
-                serializer.save()
-                try:
-                    send_email(serializer.instance, primary_user, 'invitation')
-                except smtplib.SMTPException as e:
-                    return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
+        existing_invitation = Invitation.objects.filter(calendar=calendar, invited_contact=invited_contact).first()
 
-                return JsonResponse(
-                    {'detail': f'Invitation email sent successfully to {invited_user.username}',
-                     'invitation': serializer.data})
-            else:
-                return JsonResponse({'detail': 'Invalid data for creating an invitation'}, status=400)
-        else:
+        if existing_invitation:
+            print('Invitation already exists')
             serializer = InvitationSerializer(existing_invitation)
-            return JsonResponse({'detail': f'Invitation already sent to {invited_user.username} for this calendar',
-                                 'invitation': serializer.data})
+            return JsonResponse({'detail': f'Invitation already sent to {invited_contact.email} for this calendar',
+                                'invitation': serializer.data})
 
+        serializer = InvitationSerializer(data={'calendar': calendar_id, 'invited_contact': contact_id})
+        if serializer.is_valid():
+            serializer.save()
+            try:
+                send_email(serializer.instance, primary_user, 'invitation')
+            except smtplib.SMTPException as e:
+                return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
+
+            return JsonResponse(
+                {'detail': f'Invitation email sent successfully to {invited_contact.email}',
+                'invitation': serializer.data})
+        else:
+            print(f'Invalid data for creating an invitation: {serializer.errors}')
+            return JsonResponse({'detail': 'Invalid data for creating an invitation'}, status=400)
 
 class ReminderView(APIView):
     permission_classes = [IsAuthenticated]
@@ -58,23 +65,22 @@ class ReminderView(APIView):
         calendar_id = request.data.get('calendar_id')
         contact_id = request.data.get('contact_id')
 
-        # TODO: change User to a contacts table
-        contact = get_object_or_404(User, id=contact_id)
-        invitation = get_object_or_404(Invitation, calendar_id=calendar_id, invited_user=contact)
+        contact = get_object_or_404(Contact, id=contact_id)
+        invitation = get_object_or_404(Invitation, calendar_id=calendar_id, invited_contact=contact)
         if invitation:
             serializer = InvitationSerializer(invitation)
             if invitation.status != 'pending':
                 return JsonResponse(
-                    {'detail': f'Contact {contact.username} has either accepted or declined the invitation',
+                    {'detail': f'Contact {contact.email} has either accepted or declined the invitation',
                      'invitation': serializer.data})
             try:
                 send_email(invitation, primary_user, 'reminder')
             except smtplib.SMTPException as e:
                 return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
-            return JsonResponse({'detail': f'Reminder email sent successfully to {contact.username}',
+            return JsonResponse({'detail': f'Reminder email sent successfully to {contact.email}',
                                  'invitation': serializer.data})
         else:
-            return JsonResponse({'detail': f'Invitation to contact {contact.username} not found'})
+            return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'})
 
 
 class NotifyFinalizedScheduleView(APIView):
@@ -108,9 +114,9 @@ class StatusView(APIView):
             pending_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='pending')
             declined_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='declined')
             accepted_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='accepted')
-            pending_usernames = [invitation.invited_user.username for invitation in pending_users]
-            declined_usernames = [invitation.invited_user.username for invitation in declined_users]
-            accepted_usernames = [invitation.invited_user.username for invitation in accepted_users]
+            pending_usernames = [invitation.invited_contact.username for invitation in pending_users]
+            declined_usernames = [invitation.invited_contact.username for invitation in declined_users]
+            accepted_usernames = [invitation.invited_contact.username for invitation in accepted_users]
             calendar_status = {
                 "calendar_id": calendar_id,
                 "pending_usernames": pending_usernames,
@@ -141,12 +147,12 @@ class InvitedUserLandingView(APIView):
             non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)
             non_busy_date_serializer.is_valid(raise_exception=True)
             non_busy_date_serializer.save()
-            invitation.invited_user_non_busy_dates.add(non_busy_date_serializer.instance)
+            invitation.invited_contact_non_busy_dates.add(non_busy_date_serializer.instance)
 
         invitation.status = 'accepted'
         invitation.save()
         serializer = InvitationSerializer(invitation)
-        return JsonResponse({'detail': f'{invitation.invited_user.username} preferences updated for this calendar',
+        return JsonResponse({'detail': f'{invitation.invited_contact.username} preferences updated for this calendar',
                              'invitation': serializer.data})
 
 
@@ -165,29 +171,28 @@ class DeclineInvitationView(APIView):
 
 
 def send_email(invitation, inviter, email_type):
-    from_name = inviter.username
-    from_email = inviter.email
-    to_email = invitation.invited_user.email
+    from_email = inviter.email  # Assuming inviter is still a User model object
+    to_email = invitation.invited_contact.email  # Contact's email
     calendar_name = invitation.calendar.name
     subject = message = ''
 
+    unique_link_base = 'http://127.0.0.1:8000/notify/invited_user_landing/'
+
     if email_type == 'invitation':
-        unique_link = f'http://127.0.0.1:8000/notify/invited_user_landing/{invitation.unique_token}/'
-        subject = f'Invitation to Calendar {calendar_name} from {from_name}'
-        message = (f'You have been invited to a calendar from {from_name}. '
-                   f'Click the link below to view the details:\n\n{unique_link}')
+        unique_link = f'{unique_link_base}{invitation.unique_token}/'
+        subject = f'Invitation to Calendar {calendar_name}'
+        message = f'You have been invited to join the calendar "{calendar_name}" by {inviter.username}. Please click the link below to respond:\n\n{unique_link}'
 
-    if email_type == 'reminder':
-        unique_link = f'http://127.0.0.1:8000/notify/invited_user_landing/{invitation.unique_token}/'
-        subject = f'Reminder to Calendar {calendar_name} from {from_name}'
-        message = (f'You have been reminded of a calendar from {from_name}. '
-                   f'Click the link below to view the details:\n\n{unique_link}')
+    elif email_type == 'reminder':
+        unique_link = f'{unique_link_base}{invitation.unique_token}/'
+        subject = f'Reminder: Invitation to Calendar {calendar_name}'
+        message = f'This is a reminder that you\'ve been invited to join the calendar "{calendar_name}" by {inviter.username}. Please click the link below to respond:\n\n{unique_link}'
 
-    if email_type == 'confirm':
-        unique_link = f'http://127.0.0.1:8000/notify/finalized/{invitation.unique_token}/'
+    elif email_type == 'confirm':
+        # Assuming we have a finalized link for confirmation
+        unique_link = f'{unique_link_base}finalized/{invitation.unique_token}/'
         subject = 'Meeting Finalized'
-        message = (f'Your meeting with {from_name} has been finalized. '
-                   f'Click the link below to view the details:\n\n{unique_link}')
+        message = f'Your meeting "{calendar_name}" has been finalized. Click the link below for more details:\n\n{unique_link}'
 
     send_mail(
         subject,
