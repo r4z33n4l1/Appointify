@@ -1,0 +1,202 @@
+### Invite User to Calendar
+- Endpoint: notify/calendars/invite/
+- Method: POST
+- Description: Invite a user to a specific calendar.
+- Payload:
+{
+  "calendar_id": 1,
+  "contact_id": 2
+}
+- Response:
+{
+    "detail": "Invitation already sent to user1 for this calendar",
+    "invitation": {
+        "id": 1,
+        "calendar": {
+            "id": 1,
+            "name": "Sample Calendar",
+            "description": "Sample description",
+            "start_date": "2024-03-01",
+            "end_date": "2024-03-31",
+            "created_at": "2024-03-11T20:28:13.604064Z",
+            "updated_at": "2024-03-11T20:28:13.604064Z"
+        },
+        "invited_user": 2,
+        "status": "pending",
+        "unique_token": "c1b074bb-805d-4d89-af5b-87c7ae1094a7"
+    }
+}
+
+### Send Reminder
+- Endpoint: notify/calendars/reminder/
+- Method: POST
+- Description: Send a reminder email for a pending invitation.
+- Payload:
+{
+  "calendar_id": 1,
+  "contact_id": 2
+}
+- Response:
+{
+    "detail": "Reminder email sent successfully to user1",
+    "invitation": {
+        "id": 1,
+        "calendar": {
+            "id": 1,
+            "name": "Sample Calendar",
+            "description": "Sample description",
+            "start_date": "2024-03-01",
+            "end_date": "2024-03-31",
+            "created_at": "2024-03-11T20:28:13.604064Z",
+            "updated_at": "2024-03-11T20:28:13.604064Z"
+        },
+        "invited_user": 2,
+        "status": "pending",
+        "unique_token": "c1b074bb-805d-4d89-af5b-87c7ae1094a7"
+    }
+}
+
+### Notify Finalized Schedule
+- Endpoint: notify/calendars/notify_finalized/
+- Method: GET
+- Description: Notify all users of a finalized schedule/event.
+- Payload:
+{
+  "calendar_id": 1
+}
+- Response:
+{
+  "message": "Actions after schedule finalization completed",
+  "invitations": [
+    {
+      "id": 1,
+      "calendar": 1,
+      "invited_user": 2,
+      "status": "pending",
+      "unique_token": "abcd-1234",
+      "created_at": "2024-03-09T10:00:00Z",
+      "updated_at": "2024-03-09T10:30:00Z"
+    }
+  ]
+}
+
+### View Status
+- Endpoint: notify/calendars/status/
+- Method: GET
+- Description: View the status of invitations for all calendars.
+- Response:
+{
+    "calendar_statuses": [
+        {
+            "calendar_id": 1,
+            "pending_usernames": [
+                "user1"
+            ],
+            "declined_usernames": [],
+            "accepted_usernames": []
+        }
+    ]
+}
+
+### Invited User Landing
+- Endpoint: notify/invited_user_landing/<uuid:unique_link>/
+- Method: GET, POST
+- Description: Get owner's preferences on GET, save availability data on POST.
+- Response (GET):
+{
+    "owner_preferences": [
+        {
+            "id": 1,
+            "non_busy_times": [
+                {
+                    "id": 1,
+                    "time": "12:00:00",
+                    "preference": "high"
+                }
+            ]
+        }
+    ]
+}
+- Payload (POST):
+{
+  "non_busy_dates": [
+    {
+      "id": 1,
+      "date": "2024-03-05",
+      "non_busy_times": [
+        {
+          "id": 1,
+          "time": "12:00:00",
+          "preference": "high"
+        }
+      ]
+    }
+  ]
+}
+- Response (POST):
+{
+    "detail": "user1 preferences updated for this calendar",
+    "invitation": {
+        "id": 1,
+        "calendar": {
+            "id": 1,
+            "name": "Sample Calendar",
+            "description": "Sample description",
+            "start_date": "2024-03-01",
+            "end_date": "2024-03-31",
+            "created_at": "2024-03-11T20:28:13.604064Z",
+            "updated_at": "2024-03-11T20:28:13.604064Z"
+        },
+        "invited_user": 2,
+        "status": "accepted",
+        "invited_user_non_busy_dates": [
+            {
+                "id": 2,
+                "non_busy_times": [
+                    {
+                        "id": 2,
+                        "time": "12:00:00",
+                        "preference": "high"
+                    }
+                ]
+            }
+        ],
+        "unique_token": "c1b074bb-805d-4d89-af5b-87c7ae1094a7"
+    }
+}
+
+### Invited User Decline
+- Endpoint: notify/invited_user_landing/<uuid:unique_link>/decline
+- Method: GET
+- Description: Declines a users availability for a calendar on GET.
+- Response (GET):
+{
+    "detail": "Invitation declined successfully",
+    "invitation": {
+        "id": 1,
+        "calendar": {
+            "id": 1,
+            "name": "Sample Calendar",
+            "description": "Sample description",
+            "start_date": "2024-03-01",
+            "end_date": "2024-03-31",
+            "created_at": "2024-03-11T20:28:13.604064Z",
+            "updated_at": "2024-03-11T20:28:13.604064Z"
+        },
+        "invited_user": 2,
+        "status": "declined",
+        "invited_user_non_busy_dates": [
+            {
+                "id": 2,
+                "non_busy_times": [
+                    {
+                        "id": 2,
+                        "time": "12:00:00",
+                        "preference": "high"
+                    }
+                ]
+            }
+        ],
+        "unique_token": "c1b074bb-805d-4d89-af5b-87c7ae1094a7"
+    }
+}
