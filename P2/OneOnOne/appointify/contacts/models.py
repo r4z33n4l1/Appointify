@@ -4,6 +4,7 @@ from django.conf import settings
 # import Django's built-in User model
 from django.contrib.auth.models import User
 
+
 class Contact(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='contacts')
     fname = models.CharField(max_length=50, verbose_name='First Name')

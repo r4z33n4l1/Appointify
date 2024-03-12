@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'email')
 
+
 class CalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendars
@@ -81,7 +82,7 @@ class UserCalendarSerializer(serializers.ModelSerializer):
                 time = non_busy_time_data.get('time')
                 preference = non_busy_time_data.get('preference')
                 non_busy_time, time_created = NonBusyTime.objects.get_or_create(
-                    time=time, 
+                    time=time,
                     defaults={'preference': preference}
                 )
                 # Only add the non_busy_time if it was created to avoid duplicates
@@ -93,7 +94,7 @@ class UserCalendarSerializer(serializers.ModelSerializer):
                 user_calendar.non_busy_dates.add(non_busy_date)
 
         return user_calendar
-    
+
     def update(self, instance, validated_data):
         instance.non_busy_dates.clear()
         non_busy_dates_data = validated_data.pop('non_busy_dates', [])

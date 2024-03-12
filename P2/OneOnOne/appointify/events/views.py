@@ -11,6 +11,7 @@ from notify.models import Invitation
 
 User = get_user_model()
 
+
 class EventSchedulerView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -50,7 +51,7 @@ class EventSchedulerView(APIView):
                 # Handle the unregistered contacts by their ID or another method
                 invitations = Invitation.objects.filter(calendar__usercalendars__user=contact.user, invited_user=None)
                 non_busy_dates = NonBusyDate.objects.filter(invitation__in=invitations)
-            
+
             non_busy_dates_data = NonBusyDateSerializer(non_busy_dates, many=True).data
             calendar_data['guests'].append({
                 'contact_id': contact.id if not contact.is_registered else None,

@@ -6,6 +6,7 @@ from .models import Contact
 from .serializers import ContactSerializer
 from rest_framework.permissions import IsAuthenticated
 
+
 class ContactListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -13,7 +14,6 @@ class ContactListView(APIView):
         contacts = Contact.objects.filter(user=request.user)
         serializer = ContactSerializer(contacts, many=True)
         return Response(serializer.data)
-    
 
 
 class ContactCreateView(APIView):
@@ -25,7 +25,8 @@ class ContactCreateView(APIView):
             serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class ContactDetailView(APIView):
     permission_classes = [IsAuthenticated]
 

@@ -11,6 +11,7 @@ from calendars.models import Calendars, UserCalendars
 from calendars.serializers import NonBusyDateSerializer
 from contacts.models import Contact
 
+
 # Create your views here.
 class InviteToCalendarSendEmailView(APIView):
     permission_classes = [IsAuthenticated]
@@ -39,7 +40,7 @@ class InviteToCalendarSendEmailView(APIView):
             print('Invitation already exists')
             serializer = InvitationSerializer(existing_invitation)
             return JsonResponse({'detail': f'Invitation already sent to {invited_contact.email} for this calendar',
-                                'invitation': serializer.data})
+                                 'invitation': serializer.data})
 
         serializer = InvitationSerializer(data={'calendar': calendar_id, 'invited_contact': contact_id})
         if serializer.is_valid():
@@ -51,10 +52,11 @@ class InviteToCalendarSendEmailView(APIView):
 
             return JsonResponse(
                 {'detail': f'Invitation email sent successfully to {invited_contact.email}',
-                'invitation': serializer.data})
+                 'invitation': serializer.data})
         else:
             print(f'Invalid data for creating an invitation: {serializer.errors}')
             return JsonResponse({'detail': 'Invalid data for creating an invitation'}, status=400)
+
 
 class ReminderView(APIView):
     permission_classes = [IsAuthenticated]

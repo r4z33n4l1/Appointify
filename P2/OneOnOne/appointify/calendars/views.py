@@ -13,11 +13,13 @@ from rest_framework.permissions import IsAuthenticated
 # user calendar views
 class UserCalendarListView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         user = request.user
         instances = UserCalendars.objects.filter(user=user.id)
         serializer = UserCalendarSerializer(instances, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class UserCalendarCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -53,7 +55,8 @@ class UserCalendarCreateView(APIView):
         # Prepare the response data
         serializer = UserCalendarSerializer(user_calendar_instance)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
+
 class UserCalendarUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -81,6 +84,7 @@ class UserCalendarUpdateView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class UserCalendarDeleteView(generics.RetrieveDestroyAPIView):
     queryset = UserCalendars.objects.all()
     serializer_class = UserCalendarSerializer
@@ -103,6 +107,7 @@ class UserCalendarDeleteView(generics.RetrieveDestroyAPIView):
 
 class UserCalendarsView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         user = request.user
         instances = UserCalendars.objects.filter(user=user.id)
@@ -133,8 +138,10 @@ class CalendarCreateView(APIView):
         else:
             return Response(calendar_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class CalendarUpdateView(APIView):
     permission_classes = [IsAuthenticated]
+
     def put(self, request, *args, **kwargs):
         user = request.user
         instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
