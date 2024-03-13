@@ -89,10 +89,12 @@ Documentation For Appointify (P2)
 
 Example:
 Request: auth/login
+```json
 {
     "username": "razeen",
     "password": "razeenali"
 }
+```
 Response: 
 	200 OK
 
@@ -108,6 +110,7 @@ Response:
 
 Example: 
 Request: auth/signup
+```json
 {
     "username": "razeen",
     "password": "razeenali",
@@ -115,9 +118,13 @@ Request: auth/signup
     "last_name": "Ali",
     "email": "work@razeenali.com"
 }
+```
 Response:
+```json
 {
-    "username": "razeen1"}
+    "username": "razeen1"
+}
+```
 Calendars - API Endpoints
 ### View List of Calendars 
 - Endpoint: calendars/all
@@ -127,6 +134,7 @@ Calendars - API Endpoints
 Example:
 Request: GET calendars/all
 Response: 
+```json
 {
     "id": 1,
     "name": "Sample Calendar",
@@ -136,8 +144,7 @@ Response:
     "created_at": "2024-03-09T10:00:00Z", 
     "updated_at": "2024-03-09T10:30:00Z"
 }
-
-
+```
 ### Create Calendar 
 - Endpoint: calendars/create/
 - Method: POST
@@ -146,15 +153,16 @@ Response:
 Example:
 
 Request: POST calendars/create/
-
+```json
 {
     "name": "Sample Calendar",
     "description": "Sample description",
     "start_date": "2024-03-01",
     "end_date": "2024-03-31"
 }
-
+```
 Response: 
+```json
 {
     "id": 1,
     "name": "Sample Calendar",
@@ -164,7 +172,7 @@ Response:
     "created_at": "2024-03-09T10:00:00Z", 
     "updated_at": "2024-03-09T10:30:00Z"
 }
-
+```
 ### Update Calendar
 - Endpoint: calendars/update/<int:pk>/
 - Method: PUT
@@ -174,15 +182,16 @@ Response:
 Example:
 
 Request: PUT calendars/update/1/
-
+```json
 {
     "name": "Birthday Calendar",
     "description": "Sample description",
     "start_date": "2024-03-01",
     "end_date": "2024-03-31",
 }
-
+```
 Response: 
+```json
 {
     "id": 1,
     "name": "Birthday Calendar",
@@ -192,7 +201,7 @@ Response:
     "created_at": "2024-03-09T10:00:00Z", 
     "updated_at": "2024-03-09T10:30:00Z"
 }
-
+```
 ### View All Calendars with Preferences 
 - Endpoint: calendars/user-calendars/
 - Method: GET
