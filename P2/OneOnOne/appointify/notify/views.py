@@ -167,7 +167,6 @@ class InvitedUserLandingView(APIView):
         non_busy_dates_data = request.data.get('non_busy_dates', [])
         if invitation.calendar.isfinalized:
             return JsonResponse({'detail': f'Calendar {invitation.calendar.name} is already finalized'}, status=400)
-        # Clear all associated non_busy dates from before
         invitation.invited_contact_non_busy_dates.clear()
 
         for non_busy_date_data in non_busy_dates_data:

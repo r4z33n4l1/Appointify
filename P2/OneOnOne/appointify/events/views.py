@@ -98,7 +98,6 @@ class EventSchedulerView(APIView):
         if 'error' in schedule_result:
             return Response(schedule_result, status=status.HTTP_400_BAD_REQUEST)
 
-        # If schedules were successfully generated, include the schedule group ID and details in the response
         return Response(schedule_result, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
@@ -131,8 +130,6 @@ class EventSchedulerView(APIView):
             calendar.isfinalized = True
             calendar.save()
 
-            # Optionally, you may want to return some information about the created events
-            # or simply confirm the operation's success
             return Response({"detail": "Events created and calendar finalized successfully.", "events": created_events})
 
         # If we get here, something went wrong
