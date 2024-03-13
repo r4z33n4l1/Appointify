@@ -10,5 +10,6 @@ class EventsSerializer(serializers.ModelSerializer):
         model = Event
         fields = ['id', 'calendar', 'start_time', 'end_time', 'contact_email', 'contact_full_name']
 
-    def get_contact_full_name(self, obj):
+    @staticmethod
+    def get_contact_full_name(obj):
         return f"{obj.contact.fname} {obj.contact.lname}"

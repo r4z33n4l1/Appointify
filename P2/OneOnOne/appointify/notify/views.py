@@ -81,52 +81,12 @@ class ReminderView(APIView):
         else:
             return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'})
 
-
-# class NotifyFinalizedScheduleView(APIView):
-#     @staticmethod
-#     def get(request, *args, **kwargs):
-#         calendar_id = request.data.get('calendar_id')
-#         calendar = get_object_or_404(Calendars, calendar=calendar_id)
-
-#         if calendar.finalized:
-#             for invitation in calendar.invitations.all():
-#                 # TODO: send email to all invited users
-#                 # send_email(invitation, , 'confirm')
-#                 pass
-
-#             serialized_invitations = InvitationSerializer(calendar.invitations, many=True).data
-#             return JsonResponse(
-#                 {'message': 'Actions after schedule finalization completed', 'invitations': serialized_invitations})
-#         else:
-#             return JsonResponse({'message': 'Schedule is not finalized yet'})
-
-# class NotifyFinalizedScheduleView(APIView):
-#     def post(self, request, *args, **kwargs):
-#         calendar_id = request.data.get('calendar_id')
-#         calendar = get_object_or_404(Calendars, id=calendar_id)
-
-#         if calendar.isfinalized:
-#             events = Event.objects.filter(calendar=calendar)
-#             events_serialized = EventsSerializer(events, many=True).data
-
-#             for event in events_serialized:
-#                 contact_email = event['contact_email']
-#                 print("sedning email to: ", contact_email)
-#                 send_mail(
-#                     'Finalized Event',
-#                     event,
-#                     request.user.email,
-#                     [contact_email]
-#                 )
-
-#             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
-#         else:
-#             return Response({'message': 'Schedule is not finalized yet'}, status=400)
         
 class NotifyFinalizedScheduleView(APIView):
     
     permission_classes = [IsAuthenticated]
-    
+
+    @staticmethod
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
         calendar = get_object_or_404(Calendars, id=calendar_id)
