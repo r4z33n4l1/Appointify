@@ -41,6 +41,12 @@ def generate_meeting_schedules(user_availability, guests_availability, calendar_
     calendar = get_object_or_404(Calendars, pk=calendar_id)
     owner = get_object_or_404(User, username=user_availability['user_id'])
 
+    # Delete previous schedule groups and associated schedules
+    previous_schedule_groups = ScheduleGroup.objects.filter(calendar=calendar, owner=owner)
+    for schedule_group in previous_schedule_groups:
+        schedule_group.schedules.all().delete()  # Delete schedules inside the group
+        schedule_group.delete()
+
     # Prepare availability data
     user_availability_data = {
         date_info['date']: [

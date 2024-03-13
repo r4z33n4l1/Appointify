@@ -108,8 +108,7 @@ class EventSchedulerView(APIView):
         # Validate calendar and schedule group
         calendar = get_object_or_404(Calendars, id=calendar_id, usercalendars__user=request.user)
         if calendar.isfinalized:
-            pass
-            # return Response({'detail': 'Calendar is already finalized.'}, status=400)
+            return Response({'detail': 'Calendar is already finalized.'}, status=400)
         schedule_group = get_object_or_404(ScheduleGroup, id=schedule_group_id, owner=request.user, calendar=calendar)
         created_events = []
         with transaction.atomic():
