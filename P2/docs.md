@@ -761,9 +761,10 @@ Events
 }
 ```
 ### View Status
-- Endpoint: notify/calendars/status/?status=accepted&calendar_id=pk
+- Endpoint: notify/calendars/status/?status=<status>&calendar_id=<pk>
 - Method: GET
 - Description: View the status of invitations for calendars.
+- Query Parameters: `status` is the status of the invitation, `calendar_id` is the calendar ID.
 - Response:
 ```json
 {
