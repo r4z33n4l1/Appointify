@@ -81,12 +81,10 @@ class ReminderView(APIView):
         else:
             return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'}, status=400)
 
-        
+
 class NotifyFinalizedScheduleView(APIView):
-    
     permission_classes = [IsAuthenticated]
 
-    @staticmethod
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
         calendar = get_object_or_404(Calendars, id=calendar_id)
@@ -144,8 +142,8 @@ class InvitedUserLandingView(APIView):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         calendar = get_object_or_404(UserCalendars, calendar=invitation.calendar)
         owner_preferences = NonBusyDateSerializer(calendar.non_busy_dates.all(), many=True).data
-
-        return JsonResponse({'owner_preferences': owner_preferences})
+        serializer = InvitationSerializer(invitation)
+        return JsonResponse({'owner_preferences': owner_preferences, 'invitation': serializer.data})
 
     @staticmethod
     def post(request, unique_link, *args, **kwargs):
