@@ -1,4 +1,4 @@
-Documentation For Appointify (P2)
+# Documentation For Appointify (P2)
 
 
 ## Design of Models
@@ -212,6 +212,7 @@ Example:
 Request: GET calendars/user-calendars/
 
 Response: 
+```json
 {
     {
         "id": 1,
@@ -232,7 +233,7 @@ Response:
         ]
     }
 }
-
+```
 ### Update User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
 - Endpoint: calendars/user-calendars/<int:cid>/update/
 - Method: PUT, PATCH
@@ -243,7 +244,7 @@ Response:
 Example:
 
 Request: POST calendars/user-calendars/18/update/
-
+```json
 {
     {
         "non_busy_dates": [
@@ -261,8 +262,9 @@ Request: POST calendars/user-calendars/18/update/
         ]
     }
 }
-
+```
 Response: 
+```json
 {
     {
         "id": 1,
@@ -283,7 +285,7 @@ Response:
         ]
     }
 }
-
+```
 
 ### Delete User Calendar along with preferences
 - Endpoint: calendars/user-calendars/<int:pk>/delete/
@@ -679,5 +681,307 @@ Events
             "contact": "Raz"
         }
     ]
+}
+```
+
+### Invite User to Calendar
+- Endpoint: notify/calendars/invite/
+- Method: POST
+- Description: Invite a user to a specific calendar.
+- Payload:
+```json
+{
+    "calendar_id": 1,
+    "contact_id": 4
+}
+```
+- Response:
+```json
+{
+    "detail": "Invitation email sent successfully to user@mail.com",
+    "invitation": {
+        "id": 4,
+        "calendar": 1,
+        "invited_contact": 4,
+        "status": "pending",
+        "invited_contact_non_busy_dates": [],
+        "unique_token": "22ac6b7d-98f8-46e3-b372-5cb85d78a305"
+    }
+}
+```
+### Send Reminder
+- Endpoint: notify/calendars/reminder/
+- Method: POST
+- Description: Send a reminder email for a pending invitation.
+- Payload:
+```json
+{
+    "calendar_id": 1,
+    "contact_id": 4
+}
+```
+- Response:
+```json
+{
+    "detail": "Reminder email sent successfully to user@mail.com",
+    "invitation": {
+        "id": 4,
+        "calendar": 1,
+        "invited_contact": 4,
+        "status": "pending",
+        "invited_contact_non_busy_dates": [],
+        "unique_token": "22ac6b7d-98f8-46e3-b372-5cb85d78a305"
+    }
+}
+```
+### Notify Finalized Schedule
+- Endpoint: notify/calendars/notify_finalized/
+- Method: GET
+- Description: Notify all users of a finalized schedule/event.
+- Payload:
+```json
+{
+    "calendar_id": 1
+}
+```
+- Response:
+```json
+{
+    "message": "Notifications sent to all contacts",
+    "events": [
+        {
+            "id": 6,
+            "calendar": 1,
+            "start_time": "2025-05-05T16:00:00Z",
+            "end_time": "2025-05-05T17:00:00Z",
+            "contact_email": "user@mail.com",
+            "contact_full_name": "User S"
+        }
+    ]
+}
+```
+### View Status
+- Endpoint: notify/calendars/status/?status=accepted&calendar_id=pk
+- Method: GET
+- Description: View the status of invitations for calendars.
+- Response:
+```json
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "calendar_id": 1,
+            "status": "accepted",
+            "usernames": [
+                "user1",
+                "user2"
+            ]
+        }
+    ]
+}
+```
+
+### Invited User Landing
+- Endpoint: notify/invited_user_landing/<uuid:unique_link>/
+- Method: GET, POST
+- Description: Get owner's preferences on GET, save availability data on POST.
+- Response (GET):
+```json
+{
+    "owner_preferences": [
+        {
+            "id": 1,
+            "non_busy_times": [
+                {
+                    "id": 4,
+                    "time": "16:00:00",
+                    "preference": "low"
+                },
+                {
+                    "id": 34,
+                    "time": "18:00:00",
+                    "preference": "high"
+                }
+            ],
+            "date": "2025-05-05"
+        },
+        {
+            "id": 14,
+            "non_busy_times": [
+                {
+                    "id": 36,
+                    "time": "16:00:00",
+                    "preference": "high"
+                },
+                {
+                    "id": 37,
+                    "time": "18:00:00",
+                    "preference": "low"
+                }
+            ],
+            "date": "2024-05-05"
+        }
+    ],
+    "invitation": {
+        "id": 2,
+        "calendar": 1,
+        "invited_contact": 2,
+        "status": "accepted",
+        "invited_contact_non_busy_dates": [],
+        "unique_token": "72817e4c-1450-4ef9-b78c-ee3d1120015c"
+    }
+}
+```
+- Payload (POST):
+```json
+{
+    "non_busy_dates": [
+        {
+            "date": "2025-05-05",
+            "non_busy_times": [
+                {
+                    "time": "16:00:00",
+                    "preference": "low"
+                },
+                {
+                    "time": "18:00:00",
+                    "preference": "high"
+                }
+            ]
+        },
+        {
+            "date": "2025-05-04",
+            "non_busy_times": [
+                {
+                    "time": "10:00:00",
+                    "preference": "low"
+                },
+                {
+                    "time": "16:00:00",
+                    "preference": "high"
+                }
+            ]
+        }
+    ]
+}
+```
+- Response (POST):
+```json
+{
+    "detail": "user1 preferences updated for this calendar",
+    "invitation": {
+        "id": 2,
+        "calendar": 1,
+        "invited_contact": 2,
+        "status": "accepted",
+        "invited_contact_non_busy_dates": [
+            {
+                "id": 18,
+                "non_busy_times": [
+                    {
+                        "id": 33,
+                        "time": "16:00:00",
+                        "preference": "low"
+                    },
+                    {
+                        "id": 34,
+                        "time": "18:00:00",
+                        "preference": "high"
+                    },
+                    {
+                        "id": 36,
+                        "time": "16:00:00",
+                        "preference": "high"
+                    },
+                    {
+                        "id": 37,
+                        "time": "18:00:00",
+                        "preference": "low"
+                    }
+                ],
+                "date": "2025-05-05"
+            },
+            {
+                "id": 19,
+                "non_busy_times": [
+                    {
+                        "id": 35,
+                        "time": "10:00:00",
+                        "preference": "low"
+                    },
+                    {
+                        "id": 36,
+                        "time": "16:00:00",
+                        "preference": "high"
+                    }
+                ],
+                "date": "2025-05-04"
+            }
+        ],
+        "unique_token": "72817e4c-1450-4ef9-b78c-ee3d1120015c"
+    }
+}
+```
+### Invited User Decline
+- Endpoint: notify/invited_user_landing/<uuid:unique_link>/decline
+- Method: GET
+- Description: Declines a users availability for a calendar on GET.
+- Response (GET):
+```json
+{
+    "detail": "Invitation declined successfully",
+    "invitation": {
+        "id": 2,
+        "calendar": 1,
+        "invited_contact": 2,
+        "status": "declined",
+        "invited_contact_non_busy_dates": [
+            {
+                "id": 18,
+                "non_busy_times": [
+                    {
+                        "id": 33,
+                        "time": "16:00:00",
+                        "preference": "low"
+                    },
+                    {
+                        "id": 34,
+                        "time": "18:00:00",
+                        "preference": "high"
+                    },
+                    {
+                        "id": 36,
+                        "time": "16:00:00",
+                        "preference": "high"
+                    },
+                    {
+                        "id": 37,
+                        "time": "18:00:00",
+                        "preference": "low"
+                    }
+                ],
+                "date": "2025-05-05"
+            },
+            {
+                "id": 19,
+                "non_busy_times": [
+                    {
+                        "id": 35,
+                        "time": "10:00:00",
+                        "preference": "low"
+                    },
+                    {
+                        "id": 36,
+                        "time": "16:00:00",
+                        "preference": "high"
+                    }
+                ],
+                "date": "2025-05-04"
+            }
+        ],
+        "unique_token": "72817e4c-1450-4ef9-b78c-ee3d1120015c"
+    }
 }
 ```
