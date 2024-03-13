@@ -8,17 +8,21 @@ from django.shortcuts import get_object_or_404
 from calendars.models import Calendars, UserCalendars, NonBusyDate
 from .serializers import CalendarSerializer, UserCalendarSerializer, NonBusyDateSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
-
+import datetime
 # user calendar views
 class UserCalendarListView(APIView):
     permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
 
     def get(self, request, *args, **kwargs):
         user = request.user
         instances = UserCalendars.objects.filter(user=user.id)
-        serializer = UserCalendarSerializer(instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        paginator = self.pagination_class()
+        paginated_instances = paginator.paginate_queryset(instances, request)
+        serializer = UserCalendarSerializer(paginated_instances, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class UserCalendarCreateView(APIView):
@@ -66,6 +70,18 @@ class UserCalendarUpdateView(APIView):
         context = {'request': request, 'view': self}
         serializer = UserCalendarSerializer(instance, data=request.data, context=context, partial=False)
 
+        # if calendar is finalized, return error
+        if instance.calendar.isfinalized:
+            return Response({'message': 'Calendar finalized.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # check if dates are within the calendar's date range
+        non_busy_dates = request.data.get('non_busy_dates', [])
+        for non_busy_date in non_busy_dates:
+            date = datetime.datetime.strptime(non_busy_date.get('date'), '%Y-%m-%d').date()
+            if date < instance.calendar.start_date or date > instance.calendar.end_date:
+                return Response({'message': f'{non_busy_date.get("date")} is not within the calendar date range.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -107,13 +123,16 @@ class UserCalendarDeleteView(generics.RetrieveDestroyAPIView):
 
 class UserCalendarsView(APIView):
     permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
 
     def get(self, request, *args, **kwargs):
         user = request.user
         instances = UserCalendars.objects.filter(user=user.id)
-        calendars_instances = [user_calendar.calendar for user_calendar in instances]
+        paginator = self.pagination_class()
+        paginated_instances = paginator.paginate_queryset(instances, request)
+        calendars_instances = [user_calendar.calendar for user_calendar in paginated_instances]
         serializer = CalendarSerializer(calendars_instances, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class CalendarCreateView(APIView):
@@ -145,7 +164,12 @@ class CalendarUpdateView(APIView):
     def put(self, request, *args, **kwargs):
         user = request.user
         instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
-        serializer = CalendarSerializer(instance.calendar, data=request.data)
+        calendar = instance.calendar
+    
+        if calendar.isfinalized:
+            return Response({'message': 'Calendar finalized.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = CalendarSerializer(calendar, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -153,13 +177,13 @@ class CalendarUpdateView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def patch(self, request, *args, **kwargs):
-        user = request.user
-        instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
-        serializer = CalendarSerializer(instance.calendar, data=request.data, partial=True)
+    # def patch(self, request, *args, **kwargs):
+    #     user = request.user
+    #     instance = get_object_or_404(UserCalendars, user=user.id, calendar=kwargs.get('cid'))
+    #     serializer = CalendarSerializer(instance.calendar, data=request.data, partial=True)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
