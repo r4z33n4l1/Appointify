@@ -761,7 +761,7 @@ Events
 }
 ```
 ### View Status
-- Endpoint: notify/calendars/status/?status=<status>&calendar_id=<pk>
+- Endpoint: notify/calendars/status/?status=<str:status>&calendar_id=<int:pk>
 - Method: GET
 - Description: View the status of invitations for calendars.
 - Query Parameters: `status` is the status of the invitation, `calendar_id` is the calendar ID.
