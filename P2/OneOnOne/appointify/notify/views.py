@@ -79,7 +79,7 @@ class ReminderView(APIView):
             except smtplib.SMTPException as e:
                 return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
         else:
-            return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'})
+            return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'}, status=400)
 
         
 class NotifyFinalizedScheduleView(APIView):
@@ -151,7 +151,8 @@ class InvitedUserLandingView(APIView):
     def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         non_busy_dates_data = request.data.get('non_busy_dates', [])
-
+        if invitation.calendar.isfinalized:
+            return JsonResponse({'detail': f'Calendar {invitation.calendar.name} is already finalized'}, status=400)
         # Clear all associated non_busy dates from before
         invitation.invited_contact_non_busy_dates.clear()
 
