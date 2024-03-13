@@ -136,13 +136,21 @@ Request: GET calendars/all
 Response: 
 ```json
 {
-    "id": 1,
-    "name": "Sample Calendar",
-    "description": "Sample description",
-    "start_date": "2024-03-01",
-    "end_date": "2024-03-31",
-    "created_at": "2024-03-09T10:00:00Z", 
-    "updated_at": "2024-03-09T10:30:00Z"
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "TEST Calendar",
+            "description": "THIS IS IT",
+            "start_date": "2024-03-01",
+            "end_date": "2024-03-31",
+            "created_at": "2024-03-13T20:26:57.628330Z",
+            "updated_at": "2024-03-13T20:26:57.628330Z",
+            "isfinalized": false
+        }
+    ]
 }
 ```
 ### Create Calendar 
@@ -155,8 +163,8 @@ Example:
 Request: POST calendars/create/
 ```json
 {
-    "name": "Sample Calendar",
-    "description": "Sample description",
+    "name": "TEST Calendar",
+    "description": "THIS IS IT",
     "start_date": "2024-03-01",
     "end_date": "2024-03-31"
 }
@@ -165,12 +173,14 @@ Response:
 ```json
 {
     "id": 1,
-    "name": "Sample Calendar",
-    "description": "Sample description",
+    "name": "TEST Calendar",
+    "description": "THIS IS IT",
     "start_date": "2024-03-01",
     "end_date": "2024-03-31",
-    "created_at": "2024-03-09T10:00:00Z", 
-    "updated_at": "2024-03-09T10:30:00Z"
+    "created_at": "2024-03-13T20:26:57.628330Z",
+    "updated_at": "2024-03-13T20:26:57.628330Z",
+    "isfinalized": false,
+    "user_calendar_id": 1
 }
 ```
 ### Update Calendar
@@ -185,9 +195,9 @@ Request: PUT calendars/update/1/
 ```json
 {
     "name": "Birthday Calendar",
-    "description": "Sample description",
+    "description": "THIS IS IT",
     "start_date": "2024-03-01",
-    "end_date": "2024-03-31",
+    "end_date": "2024-03-31"
 }
 ```
 Response: 
@@ -195,11 +205,13 @@ Response:
 {
     "id": 1,
     "name": "Birthday Calendar",
-    "description": "Sample description",
+    "description": "THIS IS IT",
     "start_date": "2024-03-01",
     "end_date": "2024-03-31",
-    "created_at": "2024-03-09T10:00:00Z", 
-    "updated_at": "2024-03-09T10:30:00Z"
+    "created_at": "2024-03-13T20:26:57.628330Z",
+    "updated_at": "2024-03-13T20:26:57.628330Z",
+    "isfinalized": false,
+    "user_calendar_id": 1
 }
 ```
 ### View All Calendars with Preferences 
@@ -236,14 +248,14 @@ Response:
 ```
 ### Update User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
 - Endpoint: calendars/user-calendars/<int:cid>/update/
-- Method: PUT, PATCH
+- Method: PUT
 - Description: update user preferences ( nonbusy date and nonbusy time) for a specific calendar for authenticated user.
 - URL Params: cid is the calendar id.
 
 
 Example:
 
-Request: POST calendars/user-calendars/18/update/
+Request: PUT calendars/user-calendars/18/update/
 ```json
 {
     {
