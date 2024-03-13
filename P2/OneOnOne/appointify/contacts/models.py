@@ -10,7 +10,6 @@ class Contact(models.Model):
     fname = models.CharField(max_length=50, verbose_name='First Name')
     lname = models.CharField(max_length=50, verbose_name='Last Name')
     email = models.EmailField(unique=True, verbose_name='Email')
-    is_registered = models.BooleanField(default=False, verbose_name='Is Registered')
 
     def __str__(self):
         return f"{self.fname} {self.lname}"

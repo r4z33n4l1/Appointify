@@ -8,7 +8,7 @@ class EventsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = ['id', 'calendar', 'start_time', 'end_time', 'contact_email', 'contact_full_name', 'status']
+        fields = ['id', 'calendar', 'start_time', 'end_time', 'contact_email', 'contact_full_name']
 
     def get_contact_full_name(self, obj):
         return f"{obj.contact.fname} {obj.contact.lname}"
