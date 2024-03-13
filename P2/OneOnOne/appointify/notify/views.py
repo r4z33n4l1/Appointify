@@ -13,6 +13,7 @@ from contacts.models import Contact
 from events.models import Event
 from events.serializers import EventsSerializer
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 
 # Create your views here.
@@ -112,29 +113,43 @@ class NotifyFinalizedScheduleView(APIView):
 
 class StatusView(APIView):
     permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
 
-    @staticmethod
-    def get(request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         user_calendars = UserCalendars.objects.filter(user=request.user)
         calendar_statuses = []
+        calendar_id = request.query_params.get('calendar_id')
+        status = request.query_params.get('status')
+
         for user_calendar in user_calendars:
-            calendar_id = user_calendar.calendar.id
+            if calendar_id and str(user_calendar.calendar.id) != calendar_id:
+                continue
+
             pending_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='pending')
             declined_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='declined')
             accepted_users = Invitation.objects.filter(calendar=user_calendar.calendar, status='accepted')
-            pending_fname = [invitation.invited_contact.fname for invitation in pending_users]
-            declined_fname = [invitation.invited_contact.fname for invitation in declined_users]
-            accepted_fname = [invitation.invited_contact.fname for invitation in accepted_users]
+
+            if status == 'pending':
+                users = pending_users
+            elif status == 'declined':
+                users = declined_users
+            elif status == 'accepted':
+                users = accepted_users
+            else:
+                users = pending_users | declined_users | accepted_users
+
+            usernames = [invitation.invited_contact.fname for invitation in users]
+
             calendar_status = {
-                "calendar_id": calendar_id,
-                "pending_usernames": pending_fname,
-                "declined_usernames": declined_fname,
-                "accepted_usernames": accepted_fname
+                "calendar_id": user_calendar.calendar.id,
+                "status": status or "all",
+                "usernames": usernames,
             }
             calendar_statuses.append(calendar_status)
 
-        return JsonResponse({"calendar_statuses": calendar_statuses})
-
+        paginator = self.pagination_class()
+        result_page = paginator.paginate_queryset(calendar_statuses, request)
+        return paginator.get_paginated_response(result_page)
 
 class InvitedUserLandingView(APIView):
     @staticmethod
