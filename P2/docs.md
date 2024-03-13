@@ -319,13 +319,13 @@ Response:
 Contacts - API Endpoints
 
 ### View List of Contacts
-- Endpoint: `/api/contacts/`
+- Endpoint: `/contacts/`
 - Method: GET
 - Description: Display list of contacts for the authenticated user.
 
 Example:
 
-Request: `GET /api/contacts/`
+Request: `GET /contacts/`
 
 Response:
 ```json
@@ -358,13 +358,13 @@ Response:
 ```
 
 ### Create Contact
-- Endpoint: `/api/contacts/create/`
+- Endpoint: `/contacts/create/`
 - Method: POST
 - Description: Create a new contact for the authenticated user.
 
 Example:
 
-Request: `POST /api/contacts/create/`
+Request: `POST /contacts/create/`
 
 ```json
 {
@@ -385,14 +385,14 @@ Response:
 ```
 
 ### Update Contact
-- Endpoint: `/api/contacts/update/<int:pk>/`
+- Endpoint: `/contacts/update/<int:pk>/`
 - Method: PUT, PATCH
 - Description: Update specific contact details for the authenticated user.
 - URL Params: `pk` is the contact ID.
 
 Example:
 
-Request: `PATCH /api/contacts/update/5/`
+Request: `PATCH /contacts/update/5/`
 
 ```json
 {
@@ -411,14 +411,14 @@ Response:
 ```
 
 ### View Single Contact
-- Endpoint: `/api/contacts/<int:pk>/`
+- Endpoint: `/contacts/<int:pk>/`
 - Method: GET
 - Description: View details of a single contact for the authenticated user.
 - URL Params: `pk` is the contact ID.
 
 Example:
 
-Request: `GET /api/contacts/5/`
+Request: `GET /contacts/5/`
 
 Response:
 ```json
@@ -431,14 +431,14 @@ Response:
 ```
 
 ### Delete Contact
-- Endpoint: `/api/contacts/<int:pk>/delete/`
+- Endpoint: `/contacts/<int:pk>/delete/`
 - Method: DELETE
 - Description: Delete a specific contact.
 - URL Params: `pk` is the contact ID.
 
 Example:
 
-Request: `DELETE /api/contacts/5/delete/`
+Request: `DELETE /contacts/5/delete/`
 
 Response:
 ```json
