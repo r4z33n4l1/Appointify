@@ -1,1 +1,0 @@
-- for createPref -> fix error when calendar id doesnt exist
