@@ -79,7 +79,7 @@ class EventSchedulerView(APIView):
     def get(self, request, *args, **kwargs):
         calendar_id = request.query_params.get('calendar_id')
         if not calendar_id:
-            return Response({"error": "Calendar ID is required."}, status=400)
+            return Response({'error': 'Calendar ID is required.'}, status=400)
 
         # Ensure the calendar belongs to the requesting user
         calendar = get_object_or_404(Calendars, id=calendar_id, usercalendars__user=request.user)
@@ -89,13 +89,13 @@ class EventSchedulerView(APIView):
         # Check for pending guests
         if guests_info['pending']:
             pending_guest_names = [guest['fname'] for guest in guests_info['pending']]
-            return Response({"error": "Pending invitations exist for: {}".format(", ".join(pending_guest_names))},
+            return Response({'error': 'Pending invitations exist for: {}'.format(', '.join(pending_guest_names))},
                             status=400)
 
         # Generate schedules, ensuring the function now returns detailed schedule information
         schedule_result = generate_meeting_schedules(user_info, guests_info, calendar_id)
 
-        if "error" in schedule_result:
+        if 'error' in schedule_result:
             return Response(schedule_result, status=status.HTTP_400_BAD_REQUEST)
 
         # If schedules were successfully generated, include the schedule group ID and details in the response
@@ -106,33 +106,37 @@ class EventSchedulerView(APIView):
         schedule_group_id = request.data.get('schedule_group_id')
 
         # Validate calendar and schedule group
-        calendar = get_object_or_404(Calendars, id=calendar_id, usercalendars__user=request.user, isfinalized=False)
+        calendar = get_object_or_404(Calendars, id=calendar_id, usercalendars__user=request.user)
+        if calendar.isfinalized:
+            return Response({'detail': 'Calendar is already finalized.'}, status=400)
         schedule_group = get_object_or_404(ScheduleGroup, id=schedule_group_id, owner=request.user, calendar=calendar)
-
+        created_events = []
         with transaction.atomic():
             # Create an event object for each schedule in the schedule group
-            print(len(schedule_group.schedules.all()))
             for schedule in schedule_group.schedules.all():
-                Event.objects.create(
+                event = Event.objects.create(
                     calendar=calendar,
                     owner=request.user,
                     contact=schedule.contact,
                     start_time=schedule.start_time,
                     end_time=schedule.end_time,
-                    status='pending'  # Default status
                 )
+                created_events.append({
+                    'event_id': event.id,
+                    'start_time': event.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'end_time': event.end_time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'contact': event.contact.fname
+                })
 
-            # Set the calendar isfinalized to True
             calendar.isfinalized = True
             calendar.save()
 
             # Optionally, you may want to return some information about the created events
             # or simply confirm the operation's success
-            return Response({"message": "Events created and calendar finalized successfully."},
-                            status=status.HTTP_201_CREATED)
+            return Response({"detail": "Events created and calendar finalized successfully.", "events": created_events})
 
         # If we get here, something went wrong
-        return Response({"error": "An unexpected error occurred."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AvailabilityDataView(APIView):
@@ -141,7 +145,7 @@ class AvailabilityDataView(APIView):
     def get(self, request, *args, **kwargs):
         calendar_id = request.query_params.get('calendar_id')
         if not calendar_id:
-            return Response({"error": "Calendar ID is required."}, status=400)
+            return Response({'error': 'Calendar ID is required.'}, status=400)
 
         calendar_info = EventSchedulerView().get_calendar_info(request, calendar_id)
         return Response(calendar_info)

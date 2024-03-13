@@ -11,7 +11,7 @@ urlpatterns = [
     path('user-calendars/<int:pk>/delete/', UserCalendarDeleteView.as_view(), name='user-calendar-delete'),
 
     # calendar urls
-    path('calendars/', UserCalendarsView.as_view(), name='calendar-list'),
-    path('calendars/create/', CalendarCreateView.as_view(), name='calendar-create'),
-    path('calendars/update/<int:cid>/', CalendarUpdateView.as_view(), name='calendar-update'), 
+    path('all/', UserCalendarsView.as_view(), name='calendar-list'),
+    path('create/', CalendarCreateView.as_view(), name='calendar-create'),
+    path('update/<int:cid>/', CalendarUpdateView.as_view(), name='calendar-update'),
 ]
