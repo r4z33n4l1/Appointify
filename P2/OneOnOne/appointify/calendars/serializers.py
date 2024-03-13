@@ -32,10 +32,10 @@ class NonBusyDateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         non_busy_time_data = validated_data.pop('non_busy_times', [])
-        non_busy_date = NonBusyDate.objects.create(**validated_data)
+        non_busy_date, created = NonBusyDate.objects.get_or_create(**validated_data)
 
         for non_busy_time_data_item in non_busy_time_data:
-            non_busy_time = NonBusyTime.objects.create(**non_busy_time_data_item)
+            non_busy_time, created = NonBusyTime.objects.get_or_create(**non_busy_time_data_item)
             non_busy_date.non_busy_times.add(non_busy_time)
 
         return non_busy_date
@@ -100,10 +100,10 @@ class UserCalendarSerializer(serializers.ModelSerializer):
         non_busy_dates_data = validated_data.pop('non_busy_dates', [])
         for non_busy_date_data in non_busy_dates_data:
             non_busy_times_data = non_busy_date_data.pop('non_busy_times', [])
-            non_busy_date = NonBusyDate.objects.create(date=non_busy_date_data.get('date'))
+            non_busy_date, created = NonBusyDate.objects.get_or_create(date=non_busy_date_data.get('date'))
 
             for non_busy_time_data in non_busy_times_data:
-                non_busy_time = NonBusyTime.objects.create(
+                non_busy_time, created = NonBusyTime.objects.get_or_create(
                     time=non_busy_time_data.get('time'),
                     preference=non_busy_time_data.get('preference')
                 )
