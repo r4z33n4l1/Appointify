@@ -5,15 +5,19 @@ from rest_framework import status
 from .models import Contact
 from .serializers import ContactSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 
 class ContactListView(APIView):
     permission_classes = [IsAuthenticated]
+    pagination_class = PageNumberPagination
 
     def get(self, request, *args, **kwargs):
         contacts = Contact.objects.filter(user=request.user)
+        paginator = self.pagination_class()
+        contacts = paginator.paginate_queryset(contacts, request)
         serializer = ContactSerializer(contacts, many=True)
-        return Response(serializer.data)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class ContactCreateView(APIView):
