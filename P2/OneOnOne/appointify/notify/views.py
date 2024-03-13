@@ -2,7 +2,6 @@ import smtplib
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.http import JsonResponse
-from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from .models import Invitation
@@ -109,7 +108,7 @@ class NotifyFinalizedScheduleView(APIView):
         if calendar.isfinalized:
             events = Event.objects.filter(calendar=calendar)
             events_serialized = EventsSerializer(events, many=True).data
-            
+
             for event in events_serialized:
                 contact_email = event['contact_email']
                 print("sedning email to: ", contact_email)
@@ -119,7 +118,8 @@ class NotifyFinalizedScheduleView(APIView):
             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
         else:
             return Response({'message': 'Schedule is not finalized yet'}, status=400)
-        
+
+
 class StatusView(APIView):
     permission_classes = [IsAuthenticated]
 

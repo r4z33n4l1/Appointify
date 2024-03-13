@@ -15,6 +15,8 @@ from calendars.serializers import NonBusyDateSerializer
 from collections import defaultdict
 from django.db import transaction
 from .models import ScheduleGroup
+
+
 class EventSchedulerView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -37,7 +39,8 @@ class EventSchedulerView(APIView):
 
             if invitation.status == 'accepted':
                 # Only for accepted, we include non-busy dates
-                contact_info['non_busy_dates'] = NonBusyDateSerializer(invitation.invited_contact_non_busy_dates.all(), many=True).data
+                contact_info['non_busy_dates'] = NonBusyDateSerializer(invitation.invited_contact_non_busy_dates.all(),
+                                                                       many=True).data
                 guests_info['accepted'].append(contact_info)
             elif invitation.status == 'declined':
                 guests_info['declined'].append(contact_info)
@@ -73,7 +76,6 @@ class EventSchedulerView(APIView):
 
         return availability
 
-        
     def get(self, request, *args, **kwargs):
         calendar_id = request.query_params.get('calendar_id')
         if not calendar_id:
@@ -87,7 +89,8 @@ class EventSchedulerView(APIView):
         # Check for pending guests
         if guests_info['pending']:
             pending_guest_names = [guest['fname'] for guest in guests_info['pending']]
-            return Response({"error": "Pending invitations exist for: {}".format(", ".join(pending_guest_names))}, status=400)
+            return Response({"error": "Pending invitations exist for: {}".format(", ".join(pending_guest_names))},
+                            status=400)
 
         # Generate schedules, ensuring the function now returns detailed schedule information
         schedule_result = generate_meeting_schedules(user_info, guests_info, calendar_id)
@@ -98,15 +101,14 @@ class EventSchedulerView(APIView):
         # If schedules were successfully generated, include the schedule group ID and details in the response
         return Response(schedule_result, status=status.HTTP_200_OK)
 
-        
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
         schedule_group_id = request.data.get('schedule_group_id')
-        
+
         # Validate calendar and schedule group
         calendar = get_object_or_404(Calendars, id=calendar_id, usercalendars__user=request.user, isfinalized=False)
         schedule_group = get_object_or_404(ScheduleGroup, id=schedule_group_id, owner=request.user, calendar=calendar)
-        
+
         with transaction.atomic():
             # Create an event object for each schedule in the schedule group
             print(len(schedule_group.schedules.all()))
@@ -119,17 +121,19 @@ class EventSchedulerView(APIView):
                     end_time=schedule.end_time,
                     status='pending'  # Default status
                 )
-            
+
             # Set the calendar isfinalized to True
             calendar.isfinalized = True
             calendar.save()
-            
+
             # Optionally, you may want to return some information about the created events
             # or simply confirm the operation's success
-            return Response({"message": "Events created and calendar finalized successfully."}, status=status.HTTP_201_CREATED)
+            return Response({"message": "Events created and calendar finalized successfully."},
+                            status=status.HTTP_201_CREATED)
 
         # If we get here, something went wrong
         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class AvailabilityDataView(APIView):
     permission_classes = [IsAuthenticated]
