@@ -136,7 +136,7 @@ class StatusView(APIView):
             elif status == 'accepted':
                 users = accepted_users
             else:
-                users = pending_users | declined_users | accepted_users
+                return JsonResponse({'detail': 'Invalid status'}, status=400)
 
             usernames = [invitation.invited_contact.fname for invitation in users]
 
@@ -150,6 +150,7 @@ class StatusView(APIView):
         paginator = self.pagination_class()
         result_page = paginator.paginate_queryset(calendar_statuses, request)
         return paginator.get_paginated_response(result_page)
+
 
 class InvitedUserLandingView(APIView):
     @staticmethod
