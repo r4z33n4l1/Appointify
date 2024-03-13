@@ -11,6 +11,10 @@ from calendars.models import Calendars, UserCalendars
 from calendars.serializers import NonBusyDateSerializer
 from contacts.models import Contact
 
+from events.models import Event
+from events.serializers import EventsSerializer
+from rest_framework.response import Response
+
 
 # Create your views here.
 class InviteToCalendarSendEmailView(APIView):
@@ -48,6 +52,7 @@ class InviteToCalendarSendEmailView(APIView):
                 {'detail': f'Invitation email sent successfully to {invited_contact.email}',
                  'invitation': serializer.data})
         else:
+            print(serializer.errors)
             return JsonResponse({'detail': 'Invalid data for creating an invitation'}, status=400)
 
 
@@ -78,25 +83,43 @@ class ReminderView(APIView):
             return JsonResponse({'detail': f'Invitation to contact {contact.email} not found'})
 
 
+# class NotifyFinalizedScheduleView(APIView):
+#     @staticmethod
+#     def get(request, *args, **kwargs):
+#         calendar_id = request.data.get('calendar_id')
+#         calendar = get_object_or_404(Calendars, calendar=calendar_id)
+
+#         if calendar.finalized:
+#             for invitation in calendar.invitations.all():
+#                 # TODO: send email to all invited users
+#                 # send_email(invitation, , 'confirm')
+#                 pass
+
+#             serialized_invitations = InvitationSerializer(calendar.invitations, many=True).data
+#             return JsonResponse(
+#                 {'message': 'Actions after schedule finalization completed', 'invitations': serialized_invitations})
+#         else:
+#             return JsonResponse({'message': 'Schedule is not finalized yet'})
+
 class NotifyFinalizedScheduleView(APIView):
-    @staticmethod
-    def get(request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
-        calendar = get_object_or_404(Calendars, calendar=calendar_id)
+        calendar = get_object_or_404(Calendars, id=calendar_id)
 
-        if calendar.finalized:
-            for invitation in calendar.invitations.all():
-                # TODO: send email to all invited users
-                # send_email(invitation, , 'confirm')
-                pass
+        if calendar.isfinalized:
+            events = Event.objects.filter(calendar=calendar)
+            events_serialized = EventsSerializer(events, many=True).data
+            
+            for event in events_serialized:
+                contact_email = event['contact_email']
+                print("sedning email to: ", contact_email)
+                # Placeholder for email sending logic
+                # send_email(contact_email)
 
-            serialized_invitations = InvitationSerializer(calendar.invitations, many=True).data
-            return JsonResponse(
-                {'message': 'Actions after schedule finalization completed', 'invitations': serialized_invitations})
+            return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
         else:
-            return JsonResponse({'message': 'Schedule is not finalized yet'})
-
-
+            return Response({'message': 'Schedule is not finalized yet'}, status=400)
+        
 class StatusView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -136,6 +159,9 @@ class InvitedUserLandingView(APIView):
     def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         non_busy_dates_data = request.data.get('non_busy_dates', [])
+
+        # Clear all associated non_busy dates from before
+        invitation.invited_contact_non_busy_dates.clear()
 
         for non_busy_date_data in non_busy_dates_data:
             non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)

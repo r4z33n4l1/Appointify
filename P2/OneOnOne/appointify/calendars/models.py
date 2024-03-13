@@ -15,7 +15,7 @@ class Calendars(models.Model):
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    isfinalized = models.BooleanField(default=False)
 
 class UserCalendars(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -8,7 +8,7 @@ from contacts.models import Contact
 class InvitationSerializer(serializers.ModelSerializer):
     calendar = serializers.PrimaryKeyRelatedField(queryset=Calendars.objects.all())
     invited_contact = serializers.PrimaryKeyRelatedField(queryset=Contact.objects.all())
-    invited_contact_non_busy_dates = NonBusyDateSerializer(many=True)
+    invited_contact_non_busy_dates = NonBusyDateSerializer(many=True, required=False)
 
     class Meta:
         model = Invitation
