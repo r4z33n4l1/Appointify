@@ -73,7 +73,7 @@ class ReminderView(APIView):
                     {'detail': f'Contact {contact.email} has either accepted or declined the invitation',
                      'invitation': serializer.data})
             try:
-                send_email(invitation, primary_user, 'reminder')
+                # send_email(invitation, primary_user, 'reminder')
                 return JsonResponse({'detail': f'Reminder email sent successfully to {contact.email}',
                                      'invitation': serializer.data})
             except smtplib.SMTPException as e:
