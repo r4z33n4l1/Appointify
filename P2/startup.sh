@@ -15,7 +15,7 @@ pip install -r requirements.txt
 cd appointify
 
 # apply migrations
-python3 manage.py makemigrations
+python3 manage.py makemigrations calendars events contacts notify
 python3 manage.py migrate
 
 # additional packages

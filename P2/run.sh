@@ -9,4 +9,4 @@ source .venv/bin/activate
 cd appointify
 
 # start the Django server
-python manage.py runserver
+python3 manage.py runserver
