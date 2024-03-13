@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Event, Contact
 
+
 class EventsSerializer(serializers.ModelSerializer):
     contact_email = serializers.EmailField(source='contact.email', read_only=True)
     contact_full_name = serializers.SerializerMethodField(read_only=True)
