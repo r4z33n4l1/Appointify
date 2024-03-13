@@ -42,10 +42,10 @@ class InviteToCalendarSendEmailView(APIView):
         serializer = InvitationSerializer(data={'calendar': calendar_id, 'invited_contact': contact_id})
         if serializer.is_valid():
             serializer.save()
-            # try:
-            #     send_email(serializer.instance, primary_user, 'invitation')
-            # except smtplib.SMTPException as e:
-            #     return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
+            try:
+                send_email(serializer.instance, primary_user, 'invitation')
+            except smtplib.SMTPException as e:
+                return JsonResponse({'detail': f'Error sending email: {str(e)}'}, status=500)
 
             return JsonResponse(
                 {'detail': f'Invitation email sent successfully to {invited_contact.email}',
@@ -73,7 +73,7 @@ class ReminderView(APIView):
                     {'detail': f'Contact {contact.email} has either accepted or declined the invitation',
                      'invitation': serializer.data})
             try:
-                # send_email(invitation, primary_user, 'reminder')
+                send_email(invitation, primary_user, 'reminder')
                 return JsonResponse({'detail': f'Reminder email sent successfully to {contact.email}',
                                      'invitation': serializer.data})
             except smtplib.SMTPException as e:
@@ -100,6 +100,29 @@ class ReminderView(APIView):
 #         else:
 #             return JsonResponse({'message': 'Schedule is not finalized yet'})
 
+# class NotifyFinalizedScheduleView(APIView):
+#     def post(self, request, *args, **kwargs):
+#         calendar_id = request.data.get('calendar_id')
+#         calendar = get_object_or_404(Calendars, id=calendar_id)
+
+#         if calendar.isfinalized:
+#             events = Event.objects.filter(calendar=calendar)
+#             events_serialized = EventsSerializer(events, many=True).data
+
+#             for event in events_serialized:
+#                 contact_email = event['contact_email']
+#                 print("sedning email to: ", contact_email)
+#                 send_mail(
+#                     'Finalized Event',
+#                     event,
+#                     request.user.email,
+#                     [contact_email]
+#                 )
+
+#             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
+#         else:
+#             return Response({'message': 'Schedule is not finalized yet'}, status=400)
+        
 class NotifyFinalizedScheduleView(APIView):
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
@@ -109,11 +132,15 @@ class NotifyFinalizedScheduleView(APIView):
             events = Event.objects.filter(calendar=calendar)
             events_serialized = EventsSerializer(events, many=True).data
 
-            for event in events_serialized:
-                contact_email = event['contact_email']
-                print("sedning email to: ", contact_email)
-                # Placeholder for email sending logic
-                # send_email(contact_email)
+            for event_data in events_serialized:
+                contact_email = event_data['contact_email']
+                event_details = '\n'.join([f"{key}: {value}" for key, value in event_data.items()])
+                send_mail(
+                    'Finalized Event',
+                    event_details,
+                    request.user.email,
+                    [contact_email]
+                )
 
             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
         else:
