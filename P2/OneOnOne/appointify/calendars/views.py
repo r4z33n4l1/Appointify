@@ -18,7 +18,12 @@ class UserCalendarListView(APIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        is_finalized = request.query_params.get('isfinalized', None)
         instances = UserCalendars.objects.filter(user=user.id)
+        
+        if is_finalized is not None:
+            instances = instances.filter(calendar__isfinalized=is_finalized)
+        
         paginator = self.pagination_class()
         paginated_instances = paginator.paginate_queryset(instances, request)
         serializer = UserCalendarSerializer(paginated_instances, many=True)
