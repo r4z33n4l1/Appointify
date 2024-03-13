@@ -45,13 +45,19 @@ INSTALLED_APPS = [
     'corsheaders',
     
     # If new app is created, add it here
+    'calendars',
+    'notify',
+    'contacts',
+    'events'
 ]
 
 # Raz - adding jwt config
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
 
 # Raz - 
@@ -185,3 +191,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # IMPORTANT: UNCOMMENT FOR FRONTEND CONNECT 
 CORS_ALLOW_ALL_ORIGINS = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
