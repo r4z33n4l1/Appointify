@@ -16,7 +16,6 @@ class Event(models.Model):
 
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    status = models.CharField(max_length=20, choices=Invitation.STATUS_CHOICES, default='pending')
 
 
 class Schedule(models.Model):

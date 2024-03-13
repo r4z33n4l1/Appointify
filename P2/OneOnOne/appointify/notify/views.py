@@ -124,10 +124,15 @@ class ReminderView(APIView):
 #             return Response({'message': 'Schedule is not finalized yet'}, status=400)
         
 class NotifyFinalizedScheduleView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
         calendar = get_object_or_404(Calendars, id=calendar_id)
-
+        user_calendar = UserCalendars.objects.filter(user=request.user, calendar=calendar)
+        if not user_calendar:
+            return Response({'message': 'You do not have access to this calendar'}, status=403)
         if calendar.isfinalized:
             events = Event.objects.filter(calendar=calendar)
             events_serialized = EventsSerializer(events, many=True).data
