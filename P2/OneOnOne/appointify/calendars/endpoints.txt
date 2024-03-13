@@ -1,10 +1,10 @@
 ### View List of Calendars 
-- Endpoint: api/calendars/
+- Endpoint: calendars/all
 - Method: GET
 - Description: Display list of calendars for authenticated user.
 
 Example:
-Request: GET api/1/calendars/
+Request: GET calendars/all
 Response: 
 {
     "id": 1,
@@ -18,12 +18,12 @@ Response:
 
 
 ### Create Calendar 
-- Endpoint: api/calendars/create/
+- Endpoint: calendars/create/
 - Method: POST
 - Description: create calendar for authenticated user.
 
 Example:
-Request: POST api/calendars/create/
+Request: POST calendars/create/
 
 {
     "name": "Sample Calendar",
@@ -44,16 +44,19 @@ Response:
 }
 
 ### update Calendar
-- Endpoint: api/calendars/update/<int:pk>/
+- Endpoint: calendars/update/<int:pk>/
 - Method: PUT, PATCH
 - Description: update specific calendar for authenticated user.
 - URL Params: pk is the calendar id.
 
 Example:
-Request: PATCH api/calendars/update/1/
+Request: PUT calendars/update/1/
 
 {
-    "name": "Birthday Calendar"
+    "name": "Birthday Calendar",
+    "description": "Sample description",
+    "start_date": "2024-03-01",
+    "end_date": "2024-03-31",
 }
 
 Response: 
@@ -68,12 +71,12 @@ Response:
 }
 
 ### View All Calendars with Preferences 
-- Endpoint: api/user-calendars/
+- Endpoint: calendars/user-calendars/
 - Method: GET
 - Description: view all calendars with preferences for authenticated user.
 
 Example:
-Request: GET api/user-calendars/
+Request: GET calendars/user-calendars/
 Response: 
 {
     {
@@ -96,82 +99,15 @@ Response:
     }
 }
 
-### Create User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
-- Endpoint: api/user-calendars/<int:cid>/create/
-- Method: POST
-- Description: create user preferences ( nonbusy date and nonbusy time) for a specific calendar for authenticated user.
-- URL Params: cid is the calendar id.
-
-Example:
-Request: POST api/user-calendars/18/create/
-
-    {
-        "non_busy_dates": [
-            {
-            "id": 1,
-            "date": "2024-03-05",
-            "non_busy_times": [
-                {
-                "id": 1,
-                "time": "12:00:00",
-                "preference": "high"
-                }
-            ]
-            }
-        ]
-    }
-
-Response: 
-{
-    "id": 29,
-    "non_busy_dates": [
-        {
-            "id": 26,
-            "non_busy_times": [
-                {
-                    "id": 15,
-                    "time": "12:00:00",
-                    "preference": "high"
-                }
-            ]
-        }
-    ],
-    "user": {
-        "id": 1,
-        "password": "pbkdf2_sha256$600000$Uylo3nUGXWa8wlmJ8Ni4Jf$iLHSQSpN3EFn6uLvw9gmEPu9tgsyZawxBh40G9T1YSs=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "john_doe",
-        "first_name": "",
-        "last_name": "",
-        "email": "john.doe@example.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2024-03-10T01:26:42.003621Z",
-        "groups": [],
-        "user_permissions": []
-    },
-    "calendar": {
-        "id": 18,
-        "name": "Birthday Calendar",
-        "description": "Sample description",
-        "start_date": "2024-03-01",
-        "end_date": "2024-03-31",
-        "created_at": "2024-03-11T20:14:11.765131Z",
-        "updated_at": "2024-03-11T20:15:15.325134Z"
-    }
-}
-
-
 ### Update User Preferences for a specific calendar (AFTER CREATION OF CALENDAR)
-- Endpoint: api/user-calendars/<int:cid>/update/
+- Endpoint: calendars/user-calendars/<int:cid>/update/
 - Method: PUT, PATCH
 - Description: update user preferences ( nonbusy date and nonbusy time) for a specific calendar for authenticated user.
 - URL Params: cid is the calendar id.
 
 
 Example:
-Request: POST api/user-calendars/18/create/
+Request: POST calendars/user-calendars/18/update/
 
 {
     {
@@ -193,47 +129,29 @@ Request: POST api/user-calendars/18/create/
 
 Response: 
 {
-    "id": 29,
-    "non_busy_dates": [
-        {
-            "id": 26,
+    {
+        "id": 1,
+        "user": 1,
+        "calendar": 1,
+        "non_busy_dates": [
+            {
+            "id": 1,
+            "date": "2024-03-05",
             "non_busy_times": [
                 {
-                    "id": 15,
-                    "time": "12:00:00",
-                    "preference": "low"
+                "id": 1,
+                "time": "12:00:00",
+                "preference": "low"
                 }
             ]
-        }
-    ],
-    "user": {
-        "id": 1,
-        "password": "pbkdf2_sha256$600000$Uylo3nUGXWa8wlmJ8Ni4Jf$iLHSQSpN3EFn6uLvw9gmEPu9tgsyZawxBh40G9T1YSs=",
-        "last_login": null,
-        "is_superuser": false,
-        "username": "john_doe",
-        "first_name": "",
-        "last_name": "",
-        "email": "john.doe@example.com",
-        "is_staff": false,
-        "is_active": true,
-        "date_joined": "2024-03-10T01:26:42.003621Z",
-        "groups": [],
-        "user_permissions": []
-    },
-    "calendar": {
-        "id": 18,
-        "name": "Birthday Calendar",
-        "description": "Sample description",
-        "start_date": "2024-03-01",
-        "end_date": "2024-03-31",
-        "created_at": "2024-03-11T20:14:11.765131Z",
-        "updated_at": "2024-03-11T20:15:15.325134Z"
+            }
+        ]
     }
 }
 
+
 ### Delete User Calendar along with preferences
-- Endpoint: api/user-calendars/<int:pk>/delete/
+- Endpoint: calendars/user-calendars/<int:pk>/delete/
 - Method: DELETE
 - Description: delete specific calendar with all user preferences.
 - URL Params: pk is the calendar id.
