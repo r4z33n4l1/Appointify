@@ -1,14 +1,22 @@
 "use client";
-import React, { useState } from 'react';
-import { login } from '@/utils/authHelper'
-import { useRouter } from 'next/navigation'; 
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/utils/authContext'; // Ensure this path matches your project structure
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
+  const { isAuthenticated, login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  // Redirect to dashboard once authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,11 +30,9 @@ export default function Login() {
     setError('');
 
     try {
-      const response = await login(username, password)
-      // if login is successful, redirect to dashboard
-      console.log(response);
-      
-      router.push('/dashboard');
+      // Attempt to log in
+      await login(username, password);
+      // Authentication state update and redirection are handled by useEffect
     } catch (error) {
       setError('Login failed. Check your credentials.');
       console.error(error);
@@ -58,7 +64,7 @@ export default function Login() {
           />
         </label>
         {error && <div style={{ color: 'red' }}>{error}</div>}
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading || isAuthenticated}>
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
