@@ -38,7 +38,8 @@ export const refresh = async () => {
                 const response = await fetch('http://127.0.0.1:8000/auth/refresh/', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        
                     },
                     body: JSON.stringify({ refresh })
                 });
