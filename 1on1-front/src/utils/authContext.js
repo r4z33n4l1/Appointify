@@ -40,19 +40,26 @@ export const AuthProvider = ({ children }) => {
     }, [checkAuthStatus]);
 
     const login = async (username, password) => {
-        setLoading(true);
         try {
-            await loginHelper(username, password);
+          setLoading(true);
+          const isSuccess = await loginHelper(username, password);
+          if (isSuccess) {
             await checkAuthStatus();
             router.push('/dashboard');
+          } else {
+            // Handle the failed login attempt
+            throw new Error('Login failed. Please check your credentials.');
+          }
         } catch (error) {
-            console.error('Login error:', error);
-            setAuthState((prevState) => ({
-                ...prevState,
-                isLoading: false,
-            }));
+          // Here, set an error state to show the error in the UI
+          setAuthState(prevState => ({
+            ...prevState,
+            isLoading: false,
+            error: error.message, // Add an error property to your authState
+          }));
         }
-    };
+      };
+    
 
     const logout = useCallback(() => {
         removeTokens();

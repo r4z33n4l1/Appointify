@@ -1,8 +1,11 @@
+import Sidebar from '@/components/sidebar'
 import React from 'react'
 
 function Event() {
   return (
-    <div>Event</div>
+    <div>
+      <Sidebar activeLink="create_event" />
+    </div>
   )
 }
 
