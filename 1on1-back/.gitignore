@@ -5,3 +5,4 @@ db.sqlite3
 .venv
 migrations
 \P2\OneOnOne\appointify\notify\migrations
+.env

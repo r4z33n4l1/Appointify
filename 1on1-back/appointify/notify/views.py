@@ -1,6 +1,7 @@
 import smtplib
 from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
+from django.core import mail
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -9,6 +10,7 @@ from .serializers import InvitationSerializer
 from calendars.models import Calendars, UserCalendars
 from calendars.serializers import NonBusyDateSerializer
 from contacts.models import Contact
+from django.core.mail.backends.smtp import EmailBackend
 
 from events.models import Event
 from events.serializers import EventsSerializer
@@ -196,8 +198,10 @@ class DeclineInvitationView(APIView):
             return JsonResponse({'detail': f'Invitation not found or already declined'}, status=400)
 
 
+
+
 def send_email(invitation, inviter, email_type):
-    from_email = inviter.email
+    from_email = 'appointify@razeenali.com'
     to_email = invitation.invited_contact.email
     calendar_name = invitation.calendar.name
     subject = message = ''
@@ -219,6 +223,10 @@ def send_email(invitation, inviter, email_type):
         unique_link = f'{unique_link_base}finalized/{invitation.unique_token}/'
         subject = 'Meeting Finalized'
         message = f'Your meeting "{calendar_name}" has been finalized. Click the link below for more details:\n\n{unique_link}'
+
+    print(f'Sending email to: {to_email}')
+    print(f'Subject: {subject}')
+    print(f'Message: {message}')
 
     send_mail(
         subject,
