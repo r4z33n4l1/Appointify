@@ -1,0 +1,57 @@
+/* styles.module.css */
+
+.calendarContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.calendarItem {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.scrollableTile {
+    max-height: 200px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.nonBusyTime {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.high {
+    background-color: #ffaaaa !important; 
+}
+
+.medium {
+    background-color: #aaffaa !important; 
+}
+
+.low {
+    background-color: #aaaaff !important; 
+}
+
+
+.updateButton {
+    background-color: #0070f3;
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.updateButton a
+{
+    color: white;
+    text-decoration: none;
+}
