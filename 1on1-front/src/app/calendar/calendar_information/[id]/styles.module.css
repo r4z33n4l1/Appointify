@@ -1,0 +1,99 @@
+/* styles.module.css */
+
+.calendarContainer {
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.calendarContainer a {
+
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.header {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.subContainer {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+.subContainer a {
+    color: #f9f9f9;
+    text-decoration: none;
+}
+
+
+.buttonWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.updateButton {
+    background-color: #0070f3;
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.deleteButton {
+    background-color: #0070f3;
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+}
+
+.modal .header {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.modal .content {
+    margin-top: 20px;
+}
+
+.modal .actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal .button {
+    background-color: #0070f3;
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal .close {
+    background-color: #0070f3;
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}

@@ -2,18 +2,42 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styles from './styles.module.css';
+import { useAuth } from '@/utils/authContext';
 
-function CalendarView({ id }) {
+
+
+export async function isValidCalendarId(calendarId, access) {
+    try {
+
+      const authToken = access;
+      const response = await fetch('http://127.0.0.1:8000/calendars/all/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
+      const data = await response.json();
+      return  data.results.some(calendar => calendar.id.toString() === calendarId);
+  
+    } catch (error) {
+      console.error('Error fetching calendars:', error);
+      throw error;
+    }
+  }
+
+export function CalendarView({ id }) {
 
     console.log('component id', id);
     const [calendarData, setCalendarData] = useState([]);
     const [calendarPreferences, setCalendarPreferences] = useState([]);
     const [value, onChange] = useState(new Date());
+    const { accessToken } = useAuth();
 
     useEffect(() => {
         const fetchData = async (url, setData) => {
             try {
-                const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyMzg1MjA3LCJpYXQiOjE3MTE5NTMyMDcsImp0aSI6Ijg1ZGM5NWY4OTVkNjQxZmZiZTE3MTJkMDE2NzYxYTY1IiwidXNlcl9pZCI6MX0.FkCaPUqedUhA0t2r4dI2adM6c_8AR_nWoQkMkGfdd2M'; // Use the actual auth token here
+                const authToken = accessToken;
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
@@ -122,4 +146,82 @@ function CalendarItem({ item, onChange, value, sortPreferences }) {
     );
 }
 
+export async function fetchAndOrganizeCalendarPreferences(calendarId, accessToken) {
+    try {
+        // Fetch user calendars along with their preferences
+        const response = await fetch('http://127.0.0.1:8000/calendars/user-calendars/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user calendars');
+        }
+
+        const { results: userCalendars } = await response.json();
+        // Find the specific calendar by ID
+        const calendar = userCalendars.find(calendar => calendar.calendar.toString() === calendarId);
+
+        if (!calendar) {
+            // If no matching calendar is found, return an empty object
+            return {};
+        }
+
+        // Process the non_busy_dates from the found calendar
+        const organizedPreferences = calendar.non_busy_dates.reduce((acc, { date, non_busy_times }) => {
+            acc[date] = non_busy_times.map(({ time, preference }) => ({ time, preference }));
+            return acc;
+        }, {});
+
+        return organizedPreferences;
+    } catch (error) {
+        console.error('Error organizing calendar preferences:', error);
+        throw error;
+    }
+}
+
+export async function updateCalendarPreferences(calendarId, preferencesObj, accessToken) {
+    // Convert preferences object into the expected array format
+    const preferencesArray = Object.entries(preferencesObj).map(([date, timePrefs]) => {
+        return {
+            date,
+            non_busy_times: timePrefs.map(timePref => ({
+                time: timePref.time,
+                preference: timePref.preference
+            }))
+        };
+    });
+
+    console.log('Updating preferences with array:', preferencesArray);
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/calendars/user-calendars/${calendarId}/update/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ non_busy_dates: preferencesArray }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error updating preferences');
+        }
+
+        const data = await response.json();
+        console.log('Updated preferences:', data);
+        return true;
+    } catch (error) {
+        console.error('Failed to update calendar preferences:', error);
+        return false;
+    }
+}
+
+  
 export default CalendarView;
+
+
