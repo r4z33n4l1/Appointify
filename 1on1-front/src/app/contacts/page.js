@@ -60,8 +60,9 @@ function ContactsPage() {
             return;
         }
         const result = await response.json();
+        console.log(result)
         if (isEditing) {
-            setContacts(contacts.map(contact => contact.id === contactDetails.id ? result : contact));
+            // setContacts(contacts.map(contact => contact.id === contactDetails.id ? result : contact));
         } else {
             setContacts([...contacts, result]);
         }
@@ -112,13 +113,13 @@ function ContactsPage() {
                     {isEditing && <button type="button" onClick={cancelEdit}>Cancel</button>}
                 </form>
                 <div className={styles.contactsList}>
-                    {contacts.map(contact => (
+                    {/* {contacts.map(contact => (
                         <div key={contact.id} className={styles.contactCard}>
                             <p>{contact.fname} {contact.lname}</p>
                             <p>{contact.email}</p>
                             <button onClick={() => startEdit(contact)}>Edit</button>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
             </div>
         </>
