@@ -38,10 +38,18 @@ const CalendarPreferencesForm = ({ params }) => {
   const handleAddPreference = (e) => {
     e.preventDefault();
     setPreferences((prevPreferences) => {
-      const newPreference = { date, times: [{ time, preference: preferenceLevel }] };
-      return { ...prevPreferences, [date]: [...(prevPreferences[date] || []), newPreference] };
+      // Check if the date already exists in preferences
+      const existingPreferencesForDate = prevPreferences[date] || [];
+      const newTimePreference = { time, preference: preferenceLevel };
+  
+      // Add the new time preference to the existing preferences for the date
+      const updatedPreferencesForDate = [...existingPreferencesForDate, newTimePreference];
+  
+      // Return updated preferences with the new time preference added
+      return { ...prevPreferences, [date]: updatedPreferencesForDate };
     });
   };
+  
 
   const handleSavePreferences = async () => {
     const saveSuccessful = await updateCalendarPreferences(calendarId, preferences, accessToken);
