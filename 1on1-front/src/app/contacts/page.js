@@ -15,7 +15,7 @@ function ContactsPage() {
     const [contactDetails, setContactDetails] = useState({ fname: '', lname: '', email: '', id: null });
     const [isEditing, setIsEditing] = useState(false);
 
-    const authToken = 'eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyMzQ2NTQ0LCJpYXQiOjE3MTE5MTQ1NDQsImp0aSI6ImQ4MWMxMDg4MWQ5MzRmNzA5MTdiYzFlMWUzODFjYmVjIiwidXNlcl9pZCI6MX0'; 
+    const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyNzA0MzUwLCJpYXQiOjE3MTIyNzIzNTAsImp0aSI6IjVjNjQzNmU3YzU2MDRlNWU5YTdkMjA5NDQxMjZmYWNhIiwidXNlcl9pZCI6MX0.bcmvkZcGUB2IyPL6Uy0YLLgpp_zVoKDgXjhVugkO2kI';
 
     useEffect(() => {
         async function fetchContacts() {
