@@ -52,7 +52,7 @@ export async function postGuestPreferences({ uuid, preferences }) {
     }
 }
 
-export async function decline({ uuid }) {
+export async function declineInvitation({ uuid }) {
     try {
         const response = await fetch(`http://127.0.0.1:8000/notify/invited_user_landing/${uuid}/decline/`, {
             method: 'GET',

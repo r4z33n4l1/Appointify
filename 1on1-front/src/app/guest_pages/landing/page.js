@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import getOwnerPreferences, { postGuestPreferences, decline } from '../component.js';
+import getOwnerPreferences, { postGuestPreferences, declineInvitation } from '../component.js';
 import styles from '../../../components/styles.module.css';
 
 const convertTo12HourFormat = (time24h) => {
@@ -120,7 +120,7 @@ function SchedulePage() {
             setShowDeclineConfirmation(true);
         } else {
             try {
-                const response = await decline({ uuid });
+                const response = await declineInvitation({ uuid });
                 console.log('Declined', response);
                 setShowDeclineConfirmation(false);
             } catch (error) {
