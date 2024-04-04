@@ -1,97 +1,118 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import styles from './styles.module.css'; // Import the CSS module
-import { useAuth } from '@/utils/authContext'; 
-import { isValidCalendarId } from '@/components/my_calendar'; 
+import { fetchAndOrganizeCalendarPreferences, updateCalendarPreferences } from '@/components/my_calendar';
+import { useAuth } from '@/utils/authContext';
 
+const CalendarPreferencesForm = ({ params }) => {
+  const { id } = params;
+  const calendarId = id;
+  const [preferences, setPreferences] = useState([]);
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [preferenceLevel, setPreferenceLevel] = useState('low');
+  const [error, setError] = useState('');
+  const router = useRouter();
+  const { accessToken } = useAuth();
 
-function CalendarForm({params}) {
-    // Hook into the router and auth context
-    const router = useRouter();
-    const id = params.id;
-    const { accessToken } = useAuth(); // Assuming your auth hook provides accessToken
-
-    // State for form fields and error message
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
-    const [preference, setPreference] = useState('low');
-    const [error, setError] = useState('');
-
-    // Validate the calendar ID when the component mounts or when the ID changes
-    useEffect(() => {
-        async function fetchAndValidateCalendarId() {
-            const isValid = await isValidCalendarId(id, accessToken);
-            if (!isValid) {
-                // Redirect to the main calendar page if the ID is not valid
-                router.push('/calendar/main_calendar');
-            }
-        }
-
-        if (id) fetchAndValidateCalendarId();
-    }, [id, accessToken, router]);
-
-    // Handle form submission
-        const handleSubmit = async (e) => {
-            e.preventDefault();
-            const authToken = accessToken;
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/calendars/user-calendars/${id}/update/`, { 
-                    method: 'PATCH', 
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`,
-                    },
-                    body: JSON.stringify({
-                        non_busy_dates: [
-                            {
-                                date: date, 
-                                non_busy_times: [
-                                    {
-                                        time: time,
-                                        preference: preference,
-                                    },
-                                ],
-                            },
-                        ],
-                    }),
-                });
-                if (!response.ok) {
-                    throw new Error('Error updating preferences');
-                }
-                const data = await response.json();
-                console.log(data);
-    
-                router.push(`/calendar_information?id=${id}`);
-            } catch (error) {
-                console.error(error.message);
-                setError('Invalid Dates');
-            }
-        router.push(`/calendar/calendar_information/${id}`);
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      const organizedPreferences = await fetchAndOrganizeCalendarPreferences(calendarId, accessToken);
+      setPreferences(organizedPreferences);
+      console.log("organized", organizedPreferences);
     };
+    fetchPreferences();
+  }, [calendarId, accessToken]);
 
-    // Render the form
-    return (
-        <>
-            <button className={styles.updateButton}><a href="main_calendar" className={styles.subLink}>Main Calendar Menu</a></button>
+  const handleDeletePreference = (date, time) => {
+    setPreferences((prevPreferences) => {
+      const updatedPreferences = { ...prevPreferences };
+      updatedPreferences[date] = updatedPreferences[date].filter((t) => t.time !== time);
+      if (updatedPreferences[date].length === 0) {
+        delete updatedPreferences[date];
+      }
+      return updatedPreferences;
+    });
+  };
 
-            {error && <p>{error}</p>}
-            
-            <form className={styles.formContainer} onSubmit={handleSubmit}>
-                <h1>Update Your Time Preferences!</h1>
-                <input className={styles.formInput} type="date" value={date} onChange={(e) => setDate(e.target.value)} placeholder="Date" />
-                <input className={styles.formInput} type="time" value={time} onChange={(e) => setTime(e.target.value)} placeholder="Time" />
-                <select className={styles.formSelect} value={preference} onChange={(e) => setPreference(e.target.value)}>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-                <div className={styles.updatePreferenceButton}>
-                <a href='calendar_information'><button className={styles.formButton} type="submit">Update Preferences</button></a>
-                </div>
-            </form>
-        </>
-    );
-}
+  const handleAddPreference = (e) => {
+    e.preventDefault();
+    setPreferences((prevPreferences) => {
+      const newPreference = { date, times: [{ time, preference: preferenceLevel }] };
+      return { ...prevPreferences, [date]: [...(prevPreferences[date] || []), newPreference] };
+    });
+  };
 
-export default CalendarForm;
+  const handleSavePreferences = async () => {
+    const saveSuccessful = await updateCalendarPreferences(calendarId, preferences, accessToken);
+    if (saveSuccessful) {
+      router.push('/calendar/calendar_information/${id}');
+    } else {
+      setError('Unable to save preferences. Please try again.');
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-semibold mb-4">Calendar Preferences</h2>
+      <div className="space-y-6">
+        {Object.keys(preferences).map((date) => (
+          <div key={date} className="p-4 bg-white rounded shadow">
+            <h3 className="text-lg font-medium mb-2">{date}</h3>
+            {preferences[date].map(({ time, preference }, index) => (
+              <div key={index} className="flex items-center justify-between mb-1">
+                <span className="text-sm">{time} - {preference}</span>
+                <button
+                  onClick={() => handleDeletePreference(date, time)}
+                  className="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <form onSubmit={handleAddPreference} className="mt-6">
+        <div className="flex gap-3 mb-4">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+          <select
+            value={preferenceLevel}
+            onChange={(e) => setPreferenceLevel(e.target.value)}
+            className="border p-2 rounded w-full"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Add Preference
+        </button>
+      </form>
+      <button
+        onClick={handleSavePreferences}
+        className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Save
+      </button>
+      {error && <p className="text-red-500">{error}</p>}
+    </div>
+  );
+};
+
+export default CalendarPreferencesForm;

@@ -183,8 +183,45 @@ export async function fetchAndOrganizeCalendarPreferences(calendarId, accessToke
     }
 }
 
+export async function updateCalendarPreferences(calendarId, preferencesObj, accessToken) {
+    // Convert preferences object into the expected array format
+    const preferencesArray = Object.entries(preferencesObj).map(([date, timePrefs]) => {
+        return {
+            date,
+            non_busy_times: timePrefs.map(timePref => ({
+                time: timePref.time,
+                preference: timePref.preference
+            }))
+        };
+    });
 
+    console.log('Updating preferences with array:', preferencesArray);
 
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/calendars/user-calendars/${calendarId}/update/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ non_busy_dates: preferencesArray }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error updating preferences');
+        }
+
+        const data = await response.json();
+        console.log('Updated preferences:', data);
+        return true;
+    } catch (error) {
+        console.error('Failed to update calendar preferences:', error);
+        return false;
+    }
+}
+
+  
 export default CalendarView;
 
 
