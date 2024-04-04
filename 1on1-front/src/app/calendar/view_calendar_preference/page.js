@@ -5,8 +5,10 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useRouter } from 'next/navigation';
 import styles from './styles.module.css';
+import { useAuth } from '@/utils/authContext';
 
 function CalendarView() {
+    const { accessToken } = useAuth();
     const router = useRouter();
     const [calendarData, setCalendarData] = useState([]);
     const [calendarPreferences, setCalendarPreferences] = useState([]);
@@ -17,7 +19,7 @@ function CalendarView() {
     useEffect(() => {
         const fetchData = async (url, setData) => {
             try {
-                const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyNDU0MzM2LCJpYXQiOjE3MTIwMjIzMzYsImp0aSI6ImM5NzZmNzAxMjQzMjRiZWE4NGM5M2IzODk3NzM3ZDExIiwidXNlcl9pZCI6MX0.w7XwU-Kzi3E2pSt7YfgFwwq4_GIy-oN83pnGAOMHd9Q'; // Use the actual auth token here
+                const authToken = accessToken;
                 const response = await fetch(url, {
                     method: 'GET',
                     headers: {
@@ -86,7 +88,7 @@ function CalendarView() {
 
            
             {filteredData && filteredData.map((item) => (
-                <div key={item.id} className={styles.calendarItem} style={{ cursor: 'pointer' }} onClick={(e) => router.push(`/calendar_information?id=${item.id}`)}>
+                <div key={item.id} className={styles.calendarItem} style={{ cursor: 'pointer' }} onClick={(e) => router.push(`/calendar/calendar_information/${item.id}`)}>
                     <Calendar
                         onChange={onChange}
                         value={value}
