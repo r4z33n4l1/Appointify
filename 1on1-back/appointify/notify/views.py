@@ -161,7 +161,7 @@ class InvitedUserLandingView(APIView):
         calendar = get_object_or_404(UserCalendars, calendar=invitation.calendar)
         owner_preferences = NonBusyDateSerializer(calendar.non_busy_dates.all(), many=True).data
         serializer = InvitationSerializer(invitation)
-        return JsonResponse({'owner_preferences': owner_preferences, 'invitation': serializer.data})
+        return JsonResponse({'owner_preferences': owner_preferences, 'invitation': serializer.data, 'owner_name': calendar.user.first_name + ' ' + calendar.user.last_name, 'calendar_name': invitation.calendar.name, 'calendar_description': invitation.calendar.description})
 
     @staticmethod
     def post(request, unique_link, *args, **kwargs):
