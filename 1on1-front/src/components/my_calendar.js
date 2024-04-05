@@ -221,7 +221,32 @@ export async function updateCalendarPreferences(calendarId, preferencesObj, acce
     }
 }
 
-  
+export async function getAllCalendarData(accessToken) {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/calendars/all/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Error updating preferences');
+        }
+
+        const responseData = await response.json();
+        const { results } = responseData;
+
+        return results;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+
+
 export default CalendarView;
 
 
