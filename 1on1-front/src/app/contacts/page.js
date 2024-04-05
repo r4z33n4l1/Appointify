@@ -58,6 +58,26 @@ function ContactsPage() {
             throw error;
         }
     }
+
+    async function deleteContact(contactId) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete contact");
+            }
+
+            // remove the deleted contact from the state to update the UI
+            setContacts(contacts.filter(contact => contact.id !== contactId));
+        } catch (error) {
+            console.error("Failed to delete contact", error);
+        }
+    }
     
     // Helper function to update an existing contact
     async function updateContact(contactId, contactDetails, authToken) {
@@ -157,6 +177,7 @@ function ContactsPage() {
                                 <p className="text-sm text-gray-600">{contact.email}</p>
                             </div>
                             <button onClick={() => startEdit(contact)} className="bg-green-500 hover:bg-green-600 text-white p-2 rounded">Edit</button>
+                            <button onClick={() => deleteContact(contact.id)}>Delete</button>
                         </div>
                     ))}
                 </div>

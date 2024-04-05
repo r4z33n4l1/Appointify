@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd OneOnOne
+#cd OneOnOne
 
 # create the virtual environment
 python3 -m venv .venv
