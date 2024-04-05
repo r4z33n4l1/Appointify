@@ -137,10 +137,12 @@ class StatusView(APIView):
                 users = declined_users
             elif status == 'accepted':
                 users = accepted_users
+            elif status == 'all':
+                users = pending_users | declined_users | accepted_users
             else:
                 return JsonResponse({'detail': 'Invalid status'}, status=400)
 
-            usernames = [invitation.invited_contact.fname for invitation in users]
+            usernames = [(invitation.invited_contact.fname + ' ' + invitation.invited_contact.lname, invitation.invited_contact.id) for invitation in users]
 
             calendar_status = {
                 "calendar_id": user_calendar.calendar.id,
@@ -153,6 +155,37 @@ class StatusView(APIView):
         result_page = paginator.paginate_queryset(calendar_statuses, request)
         return paginator.get_paginated_response(result_page)
 
+class ContactsFilterView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        calendar_id = request.query_params.get('calendar_id')
+        calendar = get_object_or_404(Calendars, id=calendar_id)
+        user_calendar = UserCalendars.objects.filter(user=request.user, calendar=calendar)
+        if not user_calendar:
+            return Response({'message': 'You do not have access to this calendar'}, status=403)
+
+        invited_contacts = Invitation.objects.filter(calendar=calendar)
+        invited_contacts_serialized = InvitationSerializer(invited_contacts, many=True).data
+
+        # Get all contacts
+        contacts = Contact.objects.all()
+        contacts_serialized = []
+        for contact in contacts:
+            contact_data = {
+                'id': contact.id,
+                'fname': contact.fname,
+                'lname': contact.lname,
+                'email': contact.email,
+                'is_invited': False
+            }
+            for invited_contact in invited_contacts:
+                if invited_contact.invited_contact == contact:
+                    contact_data['is_invited'] = True
+                    break
+            contacts_serialized.append(contact_data)
+
+        return Response(contacts_serialized)
 
 class InvitedUserLandingView(APIView):
     @staticmethod
@@ -161,7 +194,7 @@ class InvitedUserLandingView(APIView):
         calendar = get_object_or_404(UserCalendars, calendar=invitation.calendar)
         owner_preferences = NonBusyDateSerializer(calendar.non_busy_dates.all(), many=True).data
         serializer = InvitationSerializer(invitation)
-        return JsonResponse({'owner_preferences': owner_preferences, 'invitation': serializer.data})
+        return JsonResponse({'owner_preferences': owner_preferences, 'invitation': serializer.data, 'owner_name': calendar.user.first_name + ' ' + calendar.user.last_name, 'calendar_name': invitation.calendar.name, 'calendar_description': invitation.calendar.description})
 
     @staticmethod
     def post(request, unique_link, *args, **kwargs):
