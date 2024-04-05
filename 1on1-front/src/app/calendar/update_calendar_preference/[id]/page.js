@@ -39,6 +39,7 @@ const CalendarPreferencesForm = ({ params }) => {
 
 	const handleDeletePreference = (date, time) => {
 		setPreferences((prevPreferences) => {
+			if (Object.keys(prevPreferences).length === 0) return prevPreferences;
 			const updatedPreferences = { ...prevPreferences };
 			updatedPreferences[date] = updatedPreferences[date].filter((t) => t.time !== time);
 			if (updatedPreferences[date].length === 0) {
