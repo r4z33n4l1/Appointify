@@ -8,6 +8,8 @@ import CalendarDeleteConfirmation from "./deletePopup";
 import CalendarPreferencesDisplay from "../../calendar_helper/PrefDisplayUser";
 import ContactList from "./contactList";
 import ContactsFilter from "./contactList";
+import ContactsSearchAndInvite from "./inviteModel";
+import InviteContactsPopup from "./invitePopup";
 
 export default function CalendarInformation({ params }) {
   const router = useRouter();
@@ -62,6 +64,8 @@ export default function CalendarInformation({ params }) {
         <div className={styles.calendarView}></div>
         <h1 className={styles.header}>Your Calendar</h1>
         <CalendarPreferencesDisplay calendarId={id} />
+        {/* <ContactsSearchAndInvite calendarId={id} /> */}
+        <InviteContactsPopup calendarId={id} />
         <ContactsFilter calendarId={id}/>
         <CalendarView id={id} />
         
