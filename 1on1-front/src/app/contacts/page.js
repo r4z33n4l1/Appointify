@@ -3,20 +3,21 @@ import { useState, useEffect } from 'react';
 import styles from './styles.module.css'; 
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
+import { useAuth } from "@/utils/authContext";
 
 function ContactsPage() {
     const router = useRouter();
     const [contacts, setContacts] = useState([]);
     const [contactDetails, setContactDetails] = useState({ fname: '', lname: '', email: '', id: null });
     const [isEditing, setIsEditing] = useState(false);
-
-    const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyNzA2MjkyLCJpYXQiOjE3MTIyNzQyOTIsImp0aSI6IjJiNjE1M2I4NzMxZjQ1NmM5ZmZlMGY3ZWM4NDM5NTkxIiwidXNlcl9pZCI6MX0.SiEeIR1G0_DBeb23PIbeGAunNFkmw5qTW8t_MWQm6yM';
+    const { accessToken } = useAuth();
+    //const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyNzA2MjkyLCJpYXQiOjE3MTIyNzQyOTIsImp0aSI6IjJiNjE1M2I4NzMxZjQ1NmM5ZmZlMGY3ZWM4NDM5NTkxIiwidXNlcl9pZCI6MX0.SiEeIR1G0_DBeb23PIbeGAunNFkmw5qTW8t_MWQm6yM';
 
     useEffect(() => {
         async function fetchContacts() {
             const response = await fetch('http://127.0.0.1:8000/contacts/all/', {
                 method: 'GET',
-                headers: { 'Authorization': `Bearer ${authToken}` },
+                headers: { 'Authorization': `Bearer ${accessToken}` },
             });
             if (!response.ok) {
                 console.error("Failed to fetch contacts");
@@ -35,14 +36,14 @@ function ContactsPage() {
         setContactDetails({ ...contactDetails, [field]: e.target.value });
     };
 
-    async function addContact(contactDetails, authToken) {
-        console.log("add contact", contactDetails, authToken)
+    async function addContact(contactDetails, accessToken) {
+        console.log("add contact", contactDetails, accessToken)
         try {
             const response = await fetch(`http://127.0.0.1:8000/contacts/add/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`,
+                    'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify(contactDetails),
             });
@@ -64,7 +65,7 @@ function ContactsPage() {
             const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${authToken}`,
+                    'Authorization': `Bearer ${accessToken}`,
                 },
             });
 
@@ -80,13 +81,13 @@ function ContactsPage() {
     }
     
     // Helper function to update an existing contact
-    async function updateContact(contactId, contactDetails, authToken) {
+    async function updateContact(contactId, contactDetails, accessToken) {
         try {
             const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`,
+                    'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify(contactDetails),
             });
@@ -108,9 +109,9 @@ function ContactsPage() {
         try {
             let result;
             if (isEditing) {
-                result = await updateContact(contactDetails.id, contactDetails, authToken);
+                result = await updateContact(contactDetails.id, contactDetails, accessToken);
             } else {
-                result = await addContact(contactDetails, authToken);
+                result = await addContact(contactDetails, accessToken);
             }
             console.log(result);
             setContacts(isEditing ? contacts.map(contact => contact.id === contactDetails.id ? result : contact) : [...contacts, result]);
