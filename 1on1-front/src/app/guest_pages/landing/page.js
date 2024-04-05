@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import getOwnerPreferences, { postGuestPreferences, declineInvitation } from '../component.js';
-import styles from '../../../components/styles.module.css';
+import styles from '@/components/styles.module.css';
 
 const convertTo12HourFormat = (time24h) => {
 	let [hours, minutes] = time24h.split(':');
@@ -149,6 +149,7 @@ function SchedulePage() {
 	else if (status === "finalized") {
 		return (<p>This calendar invite has already been finalized!</p>);
 	}
+    console.log(preferences);
     return (
 		<div>
             <p>Inviter: {owner}</p>
