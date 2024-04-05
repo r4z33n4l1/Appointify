@@ -137,6 +137,8 @@ class StatusView(APIView):
                 users = declined_users
             elif status == 'accepted':
                 users = accepted_users
+            elif status == 'all':
+                users = pending_users | declined_users | accepted_users
             else:
                 return JsonResponse({'detail': 'Invalid status'}, status=400)
 
