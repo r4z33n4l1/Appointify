@@ -11,7 +11,7 @@ const CalendarPreferencesForm = ({ params }) => {
 	const [calendar, setCalendar] = useState([]);
 	const [date, setDate] = useState('');
 	const [time, setTime] = useState('');
-	const [preferenceLevel, setPreferenceLevel] = useState('low');
+	const [preferenceLevel, setPreferenceLevel] = useState('none');
 	const [error, setError] = useState('');
 	const router = useRouter();
 	const { accessToken } = useAuth();
@@ -51,7 +51,7 @@ const CalendarPreferencesForm = ({ params }) => {
 
 	const handleAddPreference = (e) => {
 		e.preventDefault();
-		if (!date || !time) {
+		if (!date || !time || preferenceLevel === 'none') {
 			return;
 		}
 		handleDeletePreference(date, time); 
@@ -102,6 +102,7 @@ const CalendarPreferencesForm = ({ params }) => {
 						onChange={(e) => setPreferenceLevel(e.target.value)}
 						className="border p-2 rounded w-full"
 					>
+						<option value="none">None</option>
 						<option value="low">Low</option>
 						<option value="medium">Medium</option>
 						<option value="high">High</option>
