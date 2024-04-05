@@ -155,6 +155,37 @@ class StatusView(APIView):
         result_page = paginator.paginate_queryset(calendar_statuses, request)
         return paginator.get_paginated_response(result_page)
 
+class ContactsFilterView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        calendar_id = request.query_params.get('calendar_id')
+        calendar = get_object_or_404(Calendars, id=calendar_id)
+        user_calendar = UserCalendars.objects.filter(user=request.user, calendar=calendar)
+        if not user_calendar:
+            return Response({'message': 'You do not have access to this calendar'}, status=403)
+
+        invited_contacts = Invitation.objects.filter(calendar=calendar)
+        invited_contacts_serialized = InvitationSerializer(invited_contacts, many=True).data
+
+        # Get all contacts
+        contacts = Contact.objects.all()
+        contacts_serialized = []
+        for contact in contacts:
+            contact_data = {
+                'id': contact.id,
+                'fname': contact.fname,
+                'lname': contact.lname,
+                'email': contact.email,
+                'is_invited': False
+            }
+            for invited_contact in invited_contacts:
+                if invited_contact.invited_contact == contact:
+                    contact_data['is_invited'] = True
+                    break
+            contacts_serialized.append(contact_data)
+
+        return Response(contacts_serialized)
 
 class InvitedUserLandingView(APIView):
     @staticmethod
