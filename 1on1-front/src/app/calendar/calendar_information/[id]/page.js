@@ -10,6 +10,7 @@ import ContactList from "./contactList";
 import ContactsFilter from "./contactList";
 import ContactsSearchAndInvite from "./inviteModel";
 import InviteContactsPopup from "./invitePopup";
+import { fetchCalendarStatusUsernamesAndIds } from "@/utils/getContacts";
 
 export default function CalendarInformation({ params }) {
   const router = useRouter();
@@ -17,17 +18,27 @@ export default function CalendarInformation({ params }) {
   const currentPage = usePathname();
   const searchParams = useSearchParams();
   const { accessToken } = useAuth();
+  const [ready, setReady] = useState(false);
+
+
 
   useEffect(() => {
-    async function checkCalendarId() {
-      const valid = await isValidCalendarId(id, accessToken);
-      console.log("valid", valid);
-      if (!valid) {
-        router.push("/calendar/main_calendar");
+    async function checkPending() {
+      const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
+      console.log('userDetailsin Check pending', userDetails);
+      if (userDetails.length === 0) {
+        setReady(true); // Set ready to true when no pending users
+      } else {
+        setReady(false); // Ensure ready is set to false when there are pending users
       }
     }
-    checkCalendarId();
-  }, [id, router]);
+    checkPending();
+  }, [id, accessToken]);
+
+  const handleScheduleMeeting = () => {
+    alert("ready to schedule!");
+  };
+
 
   const handleUpdateCalendar = () => {
     router.push(`/calendar/update_calendar/${id}`);
@@ -67,6 +78,23 @@ export default function CalendarInformation({ params }) {
         {/* <ContactsSearchAndInvite calendarId={id} /> */}
         <InviteContactsPopup calendarId={id} />
         <ContactsFilter calendarId={id}/>
+        <div className="buttonReady">
+          <button
+            className={`${
+              ready ? "bg-green-500" : "bg-gray-500"
+            } text-white py-2 px-4 rounded`}
+            disabled={!ready}
+            onClick={handleScheduleMeeting} 
+          >
+            Schedule Meeting
+          </button>
+          <button
+    className="bg-blue-500 text-white py-2 px-4 rounded ml-2"
+    onClick={() => window.location.reload()}
+  >
+    Reload Page
+  </button>
+        </div>
         <CalendarView id={id} />
         
 
