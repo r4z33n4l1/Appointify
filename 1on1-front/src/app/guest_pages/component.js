@@ -14,15 +14,13 @@ export default async function getOwnerPreferences({ uuid }) {
 
         const preferences = {};
 
-        if (responseData && responseData.invitation.status === "declined") return false;
         if (responseData && responseData.owner_preferences) {
             responseData.owner_preferences.forEach((item) => {
                 const { date, non_busy_times } = item;
                 preferences[date] = non_busy_times.map(({ time }) => time);
             });
         }
-
-        return preferences;
+        return {preferences, owner_name: responseData.owner_name, status: responseData.invitation.status, calendar_name: responseData.calendar_name, calendar_description: responseData.calendar_description};
     } catch (error) {
         throw new Error('Invalid link');
     }
@@ -64,7 +62,6 @@ export async function declineInvitation({ uuid }) {
         if (!response.ok) {
             throw new Error('Error declining');
         }
-        // router.push(`/calendar_information?id=${id}`);
 
         return preferences;
     } catch (error) {

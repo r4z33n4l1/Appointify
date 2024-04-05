@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -20,12 +20,17 @@ const convertTo12HourFormat = (time24h) => {
 };
 
 function SchedulePage() {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const uuid = `${searchParams.get('uuid')}`;
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedDateTimes, setSelectedDateTimes] = useState([]);
     const [ownerPreferences, setOwnerPreferences] = useState([]);
+    const [status, setStatus] = useState([]);
+    const [owner, setOwner] = useState('');
+    const [calendar_name, setCalName] = useState('');
+    const [calendar_desc, setCalDesc] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [openDropdown, setOpenDropdown] = useState(null);
@@ -36,7 +41,11 @@ function SchedulePage() {
         const fetchData = async () => {
             try {
                 const response = await getOwnerPreferences({ uuid });
-                setOwnerPreferences(response);
+                setOwnerPreferences(response.preferences);
+                setStatus(response.status);
+                setOwner(response.owner_name);
+                setCalName(response.calendar_name);
+                setCalDesc(response.calendar_description);
             } catch (error) {
                 console.error('Invalid uuid:', error);
             }
@@ -103,13 +112,13 @@ function SchedulePage() {
 		}
 	
 		setPreferences({...preferences});
-		console.log(preferences);
 	};
 
     const handleNextButtonClick = async () => {
         try {
             const response = await postGuestPreferences({ uuid, preferences });
             console.log('Preferences updated:', response);
+            router.push(`/guest_pages/submit?uuid=${uuid}`);
         } catch (error) {
             console.error('Error updating preferences:', error);
         }
@@ -128,53 +137,67 @@ function SchedulePage() {
             }
         }
     };
-	if (ownerPreferences === false) {
+
+    if (Object.keys(ownerPreferences).length === 0) {
+        return (
+            <p>Invalid URL!</p>
+        );
+    }
+	else if (status === "declined") {
 		return (<p>You have already declined this calendar invite!</p>);
 	}
+	else if (status === "finalized") {
+		return (<p>This calendar invite has already been finalized!</p>);
+	}
     return (
-        <div className={styles.calendarContainer}>
-            <div className={styles.calendarItem}>
-                <Calendar
-                    onClickDay={onChange}
-                    value={selectedDate}
-                    minDate={new Date(new Date(startDate).getTime() + 86400000)}
-                    maxDate={new Date(new Date(endDate).getTime() + 86400000)}
-                    tileDisabled={({ date }) => {
-                        const tileDate = date.toDateString();
-                        const dates = Object.keys(ownerPreferences);
-                        const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
-                        return !formattedDates.includes(tileDate);
-                    }}
-                />
-            </div>
-            <div>
-                {selectedDateTimes.map((time, index) => (
-                    <div key={index} className={styles.time}>
-						<button onClick={() => handleTimeClick(time)}>
-							{convertTo12HourFormat(time)}
-						</button>
-                        {openDropdown === time && (
-                            <div>
-                                <button onClick={() => handlePreferenceClick('High')}>High</button><br />
-                                <button onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
-                                <button onClick={() => handlePreferenceClick('Low')}>Low</button><br />
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
-			<button onClick={handleNextButtonClick}>Next</button>
-			<button onClick={handleDeclineButtonClick}>
-                {'Decline'}
-            </button>
-            {showDeclineConfirmation && (
-                <div>
-                    <p>Are you sure you want to decline?</p>
-					<button onClick={() => setShowDeclineConfirmation(false)}>Back</button>
-                    <button onClick={handleDeclineButtonClick}>Decline</button>
-                </div>
-            )}
-        </div>
+		<div>
+            <p>Inviter: {owner}</p>
+			<p>Meeting Name: {calendar_name}</p>
+            <p>Description: {calendar_desc}</p>
+			<div className={styles.calendarContainer}>
+				<div className={styles.calendarItem}>
+					<Calendar
+						onClickDay={onChange}
+						value={selectedDate}
+						minDate={new Date(new Date(startDate).getTime() + 86400000)}
+						maxDate={new Date(new Date(endDate).getTime() + 86400000)}
+						tileDisabled={({ date }) => {
+							const tileDate = date.toDateString();
+							const dates = Object.keys(ownerPreferences);
+							const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
+							return !formattedDates.includes(tileDate);
+						}}
+					/>
+				</div>
+				<div>
+					{selectedDateTimes.map((time, index) => (
+						<div key={index} className={styles.time}>
+							<button onClick={() => handleTimeClick(time)}>
+								{convertTo12HourFormat(time)}
+							</button>
+							{openDropdown === time && (
+								<div>
+									<button onClick={() => handlePreferenceClick('High')}>High</button><br />
+									<button onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
+									<button onClick={() => handlePreferenceClick('Low')}>Low</button><br />
+								</div>
+							)}
+						</div>
+					))}
+				</div>
+				<button onClick={handleNextButtonClick}>Next</button>
+				<button onClick={handleDeclineButtonClick}>
+					{'Decline'}
+				</button>
+				{showDeclineConfirmation && (
+					<div>
+						<p>Are you sure you want to decline?</p>
+						<button onClick={() => setShowDeclineConfirmation(false)}>Back</button>
+						<button onClick={handleDeclineButtonClick}>Decline</button>
+					</div>
+				)}
+			</div>
+		</div>
     );
 }
 
