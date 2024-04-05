@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # navigate to the project directory
-cd OneOnOne
+#cd OneOnOne
 
 # activate the virtual environment
 source .venv/bin/activate
