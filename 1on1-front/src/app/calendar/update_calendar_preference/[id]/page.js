@@ -71,7 +71,7 @@ const CalendarPreferencesForm = ({ params }) => {
 	const handleSavePreferences = async () => {
 		const saveSuccessful = await updateCalendarPreferences(calendarId, preferences, accessToken);
 		if (saveSuccessful) {
-			router.push('/calendar/calendar_information/${id}');
+			router.push(`/calendar/calendar_information/${id}`);
 		} else {
 			setError('Unable to save preferences. Please try again.');
 		}
