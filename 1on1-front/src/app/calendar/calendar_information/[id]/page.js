@@ -15,28 +15,31 @@ import { fetchCalendarStatusUsernamesAndIds } from "@/utils/getContacts";
 export default function CalendarInformation({ params }) {
   const router = useRouter();
   const { id } = params;
-  const currentPage = usePathname();
-  const searchParams = useSearchParams();
   const { accessToken } = useAuth();
   const [ready, setReady] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
 
-
-  useEffect(() => {
-    async function checkPending() {
-      const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
-      console.log('userDetailsin Check pending', userDetails);
-      if (userDetails.length === 0) {
-        setReady(true); // Set ready to true when no pending users
-      } else {
-        setReady(false); // Ensure ready is set to false when there are pending users
-      }
+  async function checkPending() {
+    const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
+    console.log('userDetailsin Check pending', userDetails);
+    if (userDetails.length === 0) {
+      setReady(true); // Set ready to true when no pending users
+    } else {
+      setReady(false); // Ensure ready is set to false when there are pending users
     }
+  }
+  useEffect(() => {
     checkPending();
   }, [id, accessToken]);
 
   const handleScheduleMeeting = () => {
     alert("ready to schedule!");
+  };
+  
+  const handleRefresh = () => {
+    checkPending();
+    setRefreshKey((prev) => prev + 1);
   };
 
 
@@ -75,9 +78,8 @@ export default function CalendarInformation({ params }) {
         <div className={styles.calendarView}></div>
         <h1 className={styles.header}>Your Calendar</h1>
         <CalendarPreferencesDisplay calendarId={id} />
-        {/* <ContactsSearchAndInvite calendarId={id} /> */}
         <InviteContactsPopup calendarId={id} />
-        <ContactsFilter calendarId={id}/>
+        <ContactsFilter key={refreshKey} calendarId={id}/>
         <div className="buttonReady">
           <button
             className={`${
@@ -90,9 +92,9 @@ export default function CalendarInformation({ params }) {
           </button>
           <button
     className="bg-blue-500 text-white py-2 px-4 rounded ml-2"
-    onClick={() => window.location.reload()}
+    onClick={() => handleRefresh()}
   >
-    Reload Page
+    Refresh
   </button>
         </div>
         <CalendarView id={id} />
