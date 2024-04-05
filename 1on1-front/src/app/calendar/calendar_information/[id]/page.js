@@ -6,6 +6,8 @@ import { CalendarView, isValidCalendarId } from "@/components/my_calendar.js";
 import { useAuth } from "@/utils/authContext";
 import CalendarDeleteConfirmation from "./deletePopup";
 import CalendarPreferencesDisplay from "../../calendar_helper/PrefDisplayUser";
+import ContactList from "./contactList";
+import ContactsFilter from "./contactList";
 
 export default function CalendarInformation({ params }) {
   const router = useRouter();
@@ -60,7 +62,9 @@ export default function CalendarInformation({ params }) {
         <div className={styles.calendarView}></div>
         <h1 className={styles.header}>Your Calendar</h1>
         <CalendarPreferencesDisplay calendarId={id} />
+        <ContactsFilter calendarId={id}/>
         <CalendarView id={id} />
+        
 
         <div className={styles.subContainer}>
           <div className={styles.buttonWrapper}>

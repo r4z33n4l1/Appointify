@@ -142,7 +142,7 @@ class StatusView(APIView):
             else:
                 return JsonResponse({'detail': 'Invalid status'}, status=400)
 
-            usernames = [invitation.invited_contact.fname for invitation in users]
+            usernames = [(invitation.invited_contact.fname + ' ' + invitation.invited_contact.lname, invitation.invited_contact.id) for invitation in users]
 
             calendar_status = {
                 "calendar_id": user_calendar.calendar.id,
