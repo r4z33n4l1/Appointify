@@ -95,8 +95,7 @@ class UserCalendarUpdateView(APIView):
         # if calendar is finalized, return error
         if instance.calendar.isfinalized:
             return Response({'message': 'Calendar finalized.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # check if dates are within the calendar's date range
+         
         non_busy_dates = request.data.get('non_busy_dates', [])
         for non_busy_date in non_busy_dates:
             date = datetime.datetime.strptime(non_busy_date.get('date'), '%Y-%m-%d').date()

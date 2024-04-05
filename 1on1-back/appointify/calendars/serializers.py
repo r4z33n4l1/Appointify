@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Calendars, UserCalendars, NonBusyDate, NonBusyTime
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -96,20 +97,33 @@ class UserCalendarSerializer(serializers.ModelSerializer):
         return user_calendar
 
     def update(self, instance, validated_data):
-        instance.non_busy_dates.clear()
-        non_busy_dates_data = validated_data.pop('non_busy_dates', [])
-        for non_busy_date_data in non_busy_dates_data:
-            non_busy_times_data = non_busy_date_data.pop('non_busy_times', [])
-            non_busy_date, created = NonBusyDate.objects.get_or_create(date=non_busy_date_data.get('date'))
+        # Clearing all existing associations is not necessary
+        incoming_dates = {item.get('date') for item in validated_data.get('non_busy_dates', [])}
+        
+        # Delete NonBusyDate instances not in incoming_dates
+        NonBusyDate.objects.filter(usercalendars=instance).exclude(date__in=incoming_dates).delete()
 
-            for non_busy_time_data in non_busy_times_data:
-                non_busy_time, created = NonBusyTime.objects.get_or_create(
-                    time=non_busy_time_data.get('time'),
-                    preference=non_busy_time_data.get('preference')
-                )
+        for non_busy_date_data in validated_data.get('non_busy_dates', []):
+            date = non_busy_date_data.get('date')
+            non_busy_date, _ = NonBusyDate.objects.get_or_create(date=date)
+            
+            incoming_times = {item.get('time') for item in non_busy_date_data.get('non_busy_times', [])}
+            
+            # Delete NonBusyTime instances not in incoming_times for each NonBusyDate
+            non_busy_date.non_busy_times.exclude(time__in=incoming_times).delete()
+
+            for non_busy_time_data in non_busy_date_data.get('non_busy_times', []):
+                time = non_busy_time_data.get('time')
+                preference = non_busy_time_data.get('preference')
+                
+                non_busy_time, created = NonBusyTime.objects.get_or_create(time=time, defaults={'preference': preference})
+                if not created:
+                    non_busy_time.preference = preference
+                    non_busy_time.save()
+                
                 non_busy_date.non_busy_times.add(non_busy_time)
-
-            instance.non_busy_dates.add(non_busy_date)  # Add this line
+            
+            instance.non_busy_dates.add(non_busy_date)
 
         instance.save()
         return instance
