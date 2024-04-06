@@ -239,21 +239,21 @@ def send_email(invitation, inviter, email_type):
     calendar_name = invitation.calendar.name
     subject = message = ''
 
-    unique_link_base = 'http://127.0.0.1:8000/notify/invited_user_landing/'
+    unique_link_base = 'http://localhost:3000/guest_pages/landing?uuid='
 
     if email_type == 'invitation':
-        unique_link = f'{unique_link_base}{invitation.unique_token}/'
+        unique_link = f'{unique_link_base}{invitation.unique_token}'
         subject = f'Invitation to Calendar {calendar_name}'
         message = f'You have been invited to join the calendar "{calendar_name}" by {inviter.username}. Please click the link below to respond:\n\n{unique_link}'
 
     elif email_type == 'reminder':
-        unique_link = f'{unique_link_base}{invitation.unique_token}/'
+        unique_link = f'{unique_link_base}{invitation.unique_token}'
         subject = f'Reminder: Invitation to Calendar {calendar_name}'
         message = f'This is a reminder that you\'ve been invited to join the calendar "{calendar_name}" by {inviter.username}. Please click the link below to respond:\n\n{unique_link}'
 
     elif email_type == 'confirm':
         # Assuming we have a finalized link for confirmation
-        unique_link = f'{unique_link_base}finalized/{invitation.unique_token}/'
+        unique_link = f'{unique_link_base}finalized/{invitation.unique_token}'
         subject = 'Meeting Finalized'
         message = f'Your meeting "{calendar_name}" has been finalized. Click the link below for more details:\n\n{unique_link}'
 
