@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import ContactsSearchAndInvite from './inviteModel';
+import styles from "./styles.module.css";
 
 const InviteContactsPopup = ({ calendarId }) => {
     // Use state to control the open state of the popup
@@ -16,7 +17,7 @@ const InviteContactsPopup = ({ calendarId }) => {
                 onClose={closeModal}
                 modal
                 nested
-                trigger={<button className="invite-button">Invite Contacts</button>}
+                trigger={<button className={styles.inviteButton}>Invite Contacts</button>}
                 contentStyle={{ overflow: 'auto', maxHeight: '80vh' }} // Add this line
             >
                 {close => (

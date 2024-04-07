@@ -11,6 +11,8 @@ import ContactsFilter from "./contactList";
 import ContactsSearchAndInvite from "./inviteModel";
 import InviteContactsPopup from "./invitePopup";
 import { fetchCalendarStatusUsernamesAndIds } from "@/utils/getContacts";
+import NavBar from "@/components/navbar.js";
+import SideBar from "@/components/sidebar.js";
 
 export default function CalendarInformation({ params }) {
   const router = useRouter();
@@ -72,64 +74,65 @@ export default function CalendarInformation({ params }) {
     }
   };
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.calendarContainer}>
-        <div className={styles.calendarView}></div>
-        <h1 className={styles.header}>Your Calendar</h1>
-        <CalendarPreferencesDisplay calendarId={id} />
-        <InviteContactsPopup calendarId={id} />
-        <ContactsFilter key={refreshKey} calendarId={id}/>
-        <div className="buttonReady">
-          <button
-            className={`${
-              ready ? "bg-green-500" : "bg-gray-500"
-            } text-white py-2 px-4 rounded`}
-            disabled={!ready}
-            onClick={handleScheduleMeeting} 
-          >
-            Schedule Meeting
-          </button>
-          <button
-    className="bg-blue-500 text-white py-2 px-4 rounded ml-2"
-    onClick={() => handleRefresh()}
-  >
-    Refresh
-  </button>
-        </div>
-        <CalendarView id={id} />
-        
 
-        <div className={styles.subContainer}>
-          <div className={styles.buttonWrapper}>
-            <button
-              className={styles.updateButton}
-              style={{ cursor: "pointer" }}
-              onClick={handleUpdateCalendar}
-            >
-              <a className={styles.subLink}>Update Calendar Information</a>
+
+  return (
+    <>
+      <NavBar />
+  
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
+        <SideBar />
+        
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', marginTop: '5rem' }}>
+          
+          <div className={styles.calendarContainer}>
+          <div className="buttonReady">
+            <button style={{backgroundColor: '#398d86'}} className={`${
+              ready ? "bg-green-500" : "bg-gray-500"
+            } text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
+              Schedule Meeting
+            </button>
+            <button style={{ backgroundColor: '#ba0a51bb'}} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={() => handleRefresh()}>
+              Refresh
             </button>
           </div>
-          <div className={styles.buttonWrapper}>
-            <button
-              className={styles.updateButton}
-              style={{ cursor: "pointer" }}
-              onClick={handleUpdateCalendarPreference}
-            >
-              <a className={styles.subLink}>Update Calendar Preferences</a>
-            </button>
+            <h1 className={styles.header}>Your Calendar</h1>
+            <div className={styles.calendarView}>
+              <CalendarView id={id} />
+            </div>
+            <div className={styles.subContainer}>
+              <div className={styles.buttonWrapper}>
+                <button className={styles.updateButton} style={{ cursor: "pointer" }} onClick={handleUpdateCalendar}>
+                  <a className={styles.subLink}>Update Calendar Information</a>
+                </button>
+              </div>
+              <div className={styles.buttonWrapper}>
+                <button className={styles.updateButton} style={{ cursor: "pointer" }} onClick={handleUpdateCalendarPreference}>
+                  <a className={styles.subLink}>Update Calendar Preferences</a>
+                </button>
+              </div>
+              <div className={styles.buttonWrapper}>
+                <CalendarDeleteConfirmation id={id} calendarName="Calendar" onDeleteConfirm={handleDeleteConfirm} className={styles.updateButton} style={{ cursor: "pointer" }} />
+              </div>
+            </div>
           </div>
-          <div className={styles.buttonWrapper}>
-            <CalendarDeleteConfirmation
-              id={id}
-              calendarName="Calendar"
-              onDeleteConfirm={handleDeleteConfirm}
-              className={styles.updateButton}
-              style={{ cursor: "pointer" }}
-            />
-          </div>
+          
+
+          
+          <div style={{ marginLeft: '0rem', width: '10%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
+          <InviteContactsPopup calendarId={id} />
+          <ContactsFilter key={refreshKey} calendarId={id}/>
+        </div>
+
+        <div style={{ marginLeft: '0rem', width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'flex-start' }}>
+          <CalendarPreferencesDisplay calendarId={id} />
+        </div>
+
+
+                  
         </div>
       </div>
-    </div>
+    </>
   );
+  
 }

@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchCalendarStatusUsernamesAndIds } from '@/utils/getContacts';
 import { useAuth } from '@/utils/authContext';
+import styles from './styles.module.css'
 
 
 export function ContactList({ contacts, status, calendarId }) {
@@ -38,26 +39,30 @@ export function ContactList({ contacts, status, calendarId }) {
     if (status !== 'pending') {
         return (
             <div>
-                <ul className="list-disc space-y-2 mt-4 pl-5">
+                <ul className={styles.list}>
                     {contacts.map((contact, index) => (
-                        <li key={index} className="text-lg">{contact.name}</li>
+                        <li key={index} className={styles.item}>{contact.name}</li>
                     ))}
                 </ul>
             </div>
         );
     }
     return (
-        <div>
-            <ul className="list-disc space-y-2 mt-4 pl-5">
+            <ul className={styles.list}>
                 {contacts.map((contact, index) => (
-                    <li key={index} className="text-lg">
-                        {contact.name}
-                        <button className="ml-2 bg-blue-500 text-white px-2 py-1 rounded" onClick={() => handleRemind(contact.id, calendarId)}>Remind</button>
+                    <li key={index} className={styles.item}>
+                        <span className={styles.name}>{contact.name}</span>
+                        <button 
+                            className={styles.button}
+                            onClick={() => handleRemind(contact.id, calendarId)}
+                        >
+                            Remind
+                        </button>
                     </li>
                 ))}
             </ul>
-        </div>
     );
+    
 }
 
 
@@ -77,7 +82,7 @@ const ContactsFilter = ({ calendarId }) => {
 
     return (
         <div>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-2 rounded">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-2 rounded" style={{margin: '0.5rem'}}>
                 <option value="all">All</option>
                 <option value="pending">Pending</option>
                 <option value="accepted">Accepted</option>

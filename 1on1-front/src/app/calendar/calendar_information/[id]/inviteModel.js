@@ -100,6 +100,7 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
                         </div>
                         {!contact.is_invited ? (
                             <button
+                            style={{backgroundColor: '#ba0a51bb'}}
                                 onClick={() => {
                                     setClicked(!clicked);
                                     handleInvite(contact.id)}}

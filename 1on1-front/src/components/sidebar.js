@@ -1,51 +1,169 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
-const links = [
-  { name: 'Dashboard', url: '/dashboard', icon: 'home' },
-  { name: 'Calendar', url: '/calendar', icon: 'calendar_today' },
-  { name: 'Contacts', url: '/contacts', icon: 'contacts' },
-];
+// const links = [
+//   { name: 'Dashboard', url: '/dashboard', icon: 'dashboard' },
+//   { name: 'Calendar', url: '/calendar', icon: 'calendar_today' },
+//   { name: 'Contacts', url: '/contacts', icon: 'contacts' },
+//   { name: 'Schedule', url: '/schedule', icon: 'schedule' },
+//   { name: 'Logout', url: '/logout', icon: 'logout' },
+// ];
 
-function Sidebar({ activePage }) {
+// function Sidebar({ activePage }) {
+//   const router = useRouter();
+//   const [isToggled, setIsToggled] = useState(false);
+
+//   const handleLinkClick = (url, event) => {
+//     event.preventDefault();
+//     router.push(url);
+//   };
+
+//   return (
+//     <div className={`${styles.sidebarContainer} ${isToggled ? styles.toggled : ''}`}>
+//       <button
+//         id="menu-toggle"
+//         onClick={() => setIsToggled(!isToggled)}
+//         className={styles.menuToggle}
+//       >
+//         <span className="material-icons">
+//           {isToggled ? 'close' : 'menu'}
+//         </span>
+//       </button>
+
+//       <div className={styles.listGroup}>
+//         {links.map(({ name, url, icon }) => (
+//           <a
+//             key={url}
+//             href={url}
+//             onClick={(event) => handleLinkClick(url, event)}
+//             className={`${styles.listItem} ${activePage === url ? styles.active : ''}`}
+//           >
+//             <span className={`material-icons ${styles.icon}`}>{icon}</span>
+//             <span>{name}</span>
+//           </a>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default Sidebar;
+
+
+
+// import React, { useEffect } from 'react';
+// import { useAuth } from '@/utils/authContext'; // Import the useAuth hook
+
+// function SideBar() {
+
+//     const { isAuthenticated, logout } = useAuth(); // Use the useAuth hook
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     // Redirect to login if not authenticated
+//     if (!isAuthenticated) {
+//       router.push('/login');
+//     }
+//   }, [isAuthenticated, router]);
+
+//   const handleLogout = () => {
+//     logout(); // This will call the logout method from the context
+//     // The logout method from context should handle the redirect
+//   };
+
+//   return (
+//     <>
+//       <meta charSet="UTF-8" />
+//       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+//       <link rel="stylesheet" href="/assets/dashboard.css" />
+//       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%3A700" />
+//       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto%3A400%2C500%2C700" />
+//       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C500%2C700" />
+//       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" />
+//     <div className="bg-light border-right" id="sidebar-wrapper" style={{ background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat" }}>
+//       <div className="list-group list-group-flush">
+//         <a href="/dashboard" style={{ display: "flex", alignItems: "center", backgroundColor: "#136f68" }}>
+//           <img src="/assets/home.png" width="20px" height="20px" />
+//           <span>Dashboard</span>
+//         </a>
+//         <a href="/main_calendar" style={{ display: "flex", alignItems: "center" }}>
+//           <img src="/assets/calendar-7-256.png" width="20px" height="20px" />
+//           <span>Calendar</span>
+//         </a>
+//         <a href="/contacts" style={{ display: "flex", alignItems: "center" }}>
+//           <img src="/assets/contacts-256.png" width="20px" height="20px" />
+//           <span>Contacts</span>
+//         </a>
+//         <a href="/schedule" style={{ display: "flex", alignItems: "center" }}>
+//           <img src="/assets/clock-5-256.png" width="20px" height="20px" />
+//           <span>Schedule</span>
+//         </a>
+//         <a style={{ display: "flex", alignItems: "center" }}>
+//           <img src="/assets/account-logout-256.png" width="20px" height="20px" />
+//           <button onClick={handleLogout}><span>Logout</span></button>
+        
+//         </a>
+//       </div>
+//     </div>
+//     </>
+//   );
+// }
+
+// export default SideBar;
+
+import React, { useEffect } from 'react';
+import { useRouter,  usePathname } from 'next/navigation'; // Import useRouter
+import { useAuth } from '@/utils/authContext'; // Import the useAuth hook
+
+function SideBar() {
+  const { isAuthenticated, logout } = useAuth(); // Use the useAuth hook
   const router = useRouter();
-  const [isToggled, setIsToggled] = useState(false);
 
-  const handleLinkClick = (url) => {
-    router.push(url);
+  useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
+  const handleLogout = () => {
+    logout(); // This will call the logout method from the context
+    // The logout method from context should handle the redirect
   };
 
-  return (
-    <div className={`fixed top-0 left-0 h-screen w-64 overflow-y-auto transition-transform duration-300 ease-out bg-gray-100 border-r border-gray-300 z-10 ${isToggled ? 'translate-x-0' : '-translate-x-full'}`}>
-      {/* Toggle Button */}
-      <button
-        id="menu-toggle"
-        onClick={() => setIsToggled(!isToggled)}
-        className="absolute top-4 right-[-3.75rem] p-2 rounded-full bg-white border border-gray-300 cursor-pointer shadow-md"
-      >
-        <span className="material-icons">
-          {isToggled ? 'close' : 'menu'}
-        </span>
-      </button>
+  // Function to determine if the link is the active page
+  const isActive = (path) =>  usePathname() === path;
 
-      <div className="list-group">
-        {links.map(({ name, url, icon }) => (
-          <button
-            key={url}
-            onClick={() => handleLinkClick(url)}
-            data-url={url}
-            className={`block px-4 py-2 flex items-center hover:bg-gray-200 hover:text-blue-500 transition duration-150 w-full text-left ${
-              activePage === url ? 'bg-blue-500 text-white' : 'text-gray-700'
-            }`}
-          >
-            <span className="material-icons mr-2">{icon}</span>
-            <span>{name}</span>
-          </button>
-        ))}
+  return (
+    <>
+      <div className="bg-light border-right" id="sidebar-wrapper" style={{ background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat" }}>
+        <div className="list-group list-group-flush">
+          <a href="/dashboard" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/dashboard') ? '#136f68' : '' }}>
+            <img src="/assets/home.png" width="20px" height="20px" />
+            <span>Dashboard</span>
+          </a>
+          <a href="/calendar/main_calendar" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/calendar/main_calendar') ? '#136f68' : '' }}>
+            <img src="/assets/calendar-7-256.png" width="20px" height="20px" />
+            <span>Calendar</span>
+          </a>
+          <a href="/contacts" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/contacts') ? '#136f68' : '' }}>
+            <img src="/assets/home.png" width="20px" height="20px" />
+            <span>Contacts</span>
+          </a>
+          <a href="/schedule" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/schedule') ? '#136f68' : '' }}>
+            <img src="/assets/calendar-7-256.png" width="20px" height="20px" />
+            <span>Schedule</span>
+          </a>
+          <a style={{ display: "flex", alignItems: "center" }}>
+            <img src="/assets/account-logout-256.png" width="20px" height="20px" />
+            <button onClick={handleLogout}><span>Logout</span></button>
+          </a>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
-export default Sidebar;
+export default SideBar;
+
+

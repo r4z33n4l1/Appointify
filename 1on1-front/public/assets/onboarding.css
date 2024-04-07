@@ -1,0 +1,235 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.nav-link
+{
+    color: rgb(96, 86, 86);
+}
+
+.nav-link:hover
+{
+    font-weight: bold;
+    color: rgb(104, 99, 99);
+    text-decoration: underline;
+    text-decoration-color: rgb(96, 86, 86);
+    border-bottom: 1px solid rgb(96, 86, 86);
+
+}
+
+#logo
+{
+
+   margin-right: 5rem;
+
+}
+
+#nav-bar
+{
+    margin: 3rem;
+}
+
+li
+{
+    margin-left: 2rem;
+}
+
+.main-container {  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat;
+    height: 70vh;
+    flex-direction: column;
+}
+
+.slogan
+{
+    /* margin-bottom: 5rem; */
+    max-width: 52rem;
+    font-size: 7rem;
+    font-weight: 800;
+    line-height: 1.1710526316;
+    letter-spacing: -0.304rem;
+    color: #ffffff;
+    font-family: Plus Jakarta Sans, 'Source Sans Pro';
+}
+
+.slogan .slogan-0 {
+    font-size: 7.6rem;
+    font-weight: 800;
+    line-height: 1.1710526316;
+    letter-spacing: -0.304rem;
+    color: #ffffff;
+    font-family: Plus Jakarta Sans, 'Source Sans Pro';
+  }
+
+  .slogan .slogan-1 {
+    font-size: 7.6rem;
+    font-weight: 800;
+    line-height: 1.1710526316;
+    letter-spacing: -0.304rem;
+    text-decoration-line: underline;
+    text-decoration-color: #dc5492;
+    font-family: Plus Jakarta Sans, 'Source Sans Pro';
+}
+
+.btn-container
+{
+    display: flex;
+    gap: 4rem;
+    padding: 2rem;
+}
+
+button {
+    width: 30rem; /* Adjust width as needed */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* #features
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem;
+} */
+
+#features {
+    padding: 80px 0;
+    background-color: #f8f8f8; /* Add a subtle background color */
+  }
+  
+  #features h1 {
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', 'Source Sans Pro';
+    font-weight: 800;
+    text-decoration: underline;
+    color: #333; /* Set a dark text color */
+  }
+  
+  #features .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  #features .col-sm {
+    text-align: center;
+    margin: 30px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  #features .col-sm:hover {
+    transform: scale(1.05); /* Add a slight scale effect on hover */
+  }
+  
+  #features h1, #features p {
+    color: #555; /* Set a slightly darker text color */
+  }
+  
+  #features img {
+    width: 100px;
+    height: 100px;
+    margin: 20px 0;
+    object-fit: cover; /* Ensure the image maintains its aspect ratio */
+    border-radius: 50%;
+  }
+  
+  @media (max-width: 768px) {
+    #features .col-sm {
+      margin: 20px 0;
+    }
+  }
+  
+  
+.row {
+    display: flex;
+    justify-content: space-between; 
+}
+
+.col-sm {
+    padding: 5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+}
+
+
+  
+  #how-to {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #77aeaa, #2E475C) 50% 50% no-repeat;
+  }
+
+  .app-heading {
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', 'Source Sans Pro';
+    font-weight: 800;
+    color: #ffffff;
+  }
+  #how-to-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #how-to-col img {
+    width: 100%;
+    height: auto;
+    margin-left: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .how-to-ul {
+    list-style: none;
+    padding: 3rem;
+    margin: 0;
+  }
+
+  .how-to-ul li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .how-to-ul li img {
+    width: 70px;
+    height: 70px;
+    margin-right: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+h6
+{
+    color: white;
+}
+
+.how-to-ul li img:hover {
+    transform: scale(1.3); /* Increase the size on hover */
+    transition: transform 0.4s ease-in-out; /* Add a smooth transition effect */
+  }
+
+  .meeting-gif img {
+    background-repeat: no-repeat;
+    max-width: 100vw;
+    max-height: 100%;
+  }
+  
+.footer-centre
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

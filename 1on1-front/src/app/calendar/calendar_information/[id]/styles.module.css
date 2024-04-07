@@ -1,11 +1,16 @@
 /* styles.module.css */
 
+.container
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .calendarContainer {
     margin: 20px auto;
     padding: 10px;
-    border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
     text-align: center;
 }
 
@@ -40,16 +45,16 @@
 }
 
 .updateButton {
-    background-color: #0070f3;
+    background-color: #ba0a51bb;
     color: #ffffff;
-    padding: 10px 16px;
+    padding: 5px 5px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 .deleteButton {
-    background-color: #0070f3;
+    background-color: #6d6f72;
     color: #ffffff;
     padding: 10px 16px;
     border: none;
@@ -81,7 +86,7 @@
 }
 
 .modal .button {
-    background-color: #0070f3;
+    background-color: #ba0a51bb;
     color: #ffffff;
     padding: 10px 16px;
     border: none;
@@ -90,10 +95,68 @@
 }
 
 .modal .close {
-    background-color: #0070f3;
+    background-color: #7d7d7d;
     color: #ffffff;
     padding: 10px 16px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
+
+
+.inviteButton
+{
+    background-color: #c80754cc;
+    color: #ffffff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.container {
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 6px;
+    box-shadow: 3px 4px 5px rgba(0, 0, 0, 0.05);
+}
+
+.name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.button {
+    background-color: #398d86;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin: 0.5rem;
+}
+
+.button:hover {
+    background-color: #2c6d66;
+}
+

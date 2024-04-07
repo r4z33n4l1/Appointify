@@ -1,35 +1,107 @@
-.container {
-    padding: 20px;
-    background-color: #f7f7f7;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+/* styles.module.css */
+
+.calendarContainer {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
 }
 
-.header {
-    font-size: 32px;
-    margin-bottom: 20px;
-    color: #333;
+.calendarItem {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #398d86; 
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-.buttonsContainer {
-    display: flex;
-    gap: 10px;
+.scrollableTile {
+    max-height: 200px;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
-.button {
-    padding: 10px 20px;
+.nonBusyTime {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    background-color: transparent;
+}
+
+.high {
+    background-color: #ffaaaa !important; 
+}
+
+.medium {
+    background-color: #aaffaa !important; 
+}
+
+.low {
+    background-color: #aaaaff !important; 
+}
+
+
+.updateButton {
+    background-color: #0070f3;
+    color: #ffffff;
+    padding: 10px 16px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
-.button:hover {
-    background-color: #0056b3;
+.updateButton a
+{
+    color: white;
+    text-decoration: none;
 }
+
+
+.finalBtn {
+    background-color: #0aa167a4; 
+    color: #fff;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 20px
+  }
+  
+
+.unfinalBtn {
+    background-color: #a92121a5; 
+    color: #fff;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 30px
+  }
+
+  .customCalendar {
+    border: none;
+    color: white;
+    background-color: #398d86;
+}
+
+.customCalendar button {
+
+    color: white;
+}
+
+.customCalendar button:hover {
+    background-color: #0c433e;
+    color: white;
+}
+
+.itemName {
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    color: #ffffff;
+    margin-bottom: 8px; 
+    text-align: center;
+}
+
+  

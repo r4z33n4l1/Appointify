@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchAndOrganizeCalendarPreferences, updateCalendarPreferences, getAllCalendarData } from '@/components/my_calendar';
 import { useAuth } from '@/utils/authContext';
+import NavBar from "@/components/navbar.js";
+import SideBar from "@/components/sidebar.js";
 
 const CalendarPreferencesForm = ({ params }) => {
 	const { id } = params;
@@ -79,7 +81,13 @@ const CalendarPreferencesForm = ({ params }) => {
 	};
 
 	return (
-		<div className="container mx-auto p-4">
+<>
+		<NavBar />
+
+		<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
+			<SideBar />
+				
+		<div className="container mx-auto p-4" style={{ marginTop: '10vh'}}>
 			<h2 className="text-2xl font-semibold mb-4">Calendar Preferences</h2>
 			<form onSubmit={handleAddPreference} className="mt-6">
 				<div className="flex gap-3 mb-4">
@@ -109,12 +117,14 @@ const CalendarPreferencesForm = ({ params }) => {
 					</select>
 				</div>
 				<button
+				style={{backgroundColor: '#ba0a51bb'}}
 					type="submit"
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 				>
 					Add Preference
 				</button>
 				<button
+				style= {{backgroundColor: '#398d86'}}
 					onClick={handleSavePreferences}
 					className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
 				>
@@ -141,6 +151,8 @@ const CalendarPreferencesForm = ({ params }) => {
 				))}
 			</div>
 		</div>
+		</div>
+		</>
 	);
 };
 

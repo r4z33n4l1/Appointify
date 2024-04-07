@@ -4,6 +4,9 @@ import styles from './styles.module.css';
 import { useRouter } from 'next/navigation';
 import Head from 'next/head';
 import { useAuth } from "@/utils/authContext";
+import NavBar from "@/components/navbar.js";
+import SideBar from "@/components/sidebar.js";
+import Image from 'next/image';
 
 function ContactsPage() {
     const router = useRouter();
@@ -133,13 +136,97 @@ function ContactsPage() {
         setIsEditing(false);
     };
 
-    return (
-        <>
-            <Head>
-                <title>Contacts</title>
-            </Head>
-            <div className="container mx-auto p-4">
-                <h1 className="text-2xl font-semibold mb-4">{isEditing ? 'Edit Contact' : 'Add New Contact'}</h1>
+//     return (
+//         <>
+//          <Head>
+//                  <title>Contacts</title>
+//              </Head>
+//         <NavBar />
+
+//         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
+//             <SideBar />
+            
+//         </div>
+//         </>
+//     )
+// }
+
+//     return (
+//         <>
+//             <Head>
+//                 <title>Contacts</title>
+//             </Head>
+
+
+//             <div className="container mx-auto p-4">
+//                 <h1 className="text-2xl font-semibold mb-4">{isEditing ? 'Edit Contact' : 'Add New Contact'}</h1>
+//                 <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-6">
+//                     <input
+//                         className="border p-2 rounded"
+//                         type="text"
+//                         placeholder="First Name"
+//                         value={contactDetails.fname}
+//                         onChange={(e) => handleChange(e, 'fname')}
+//                         required
+//                     />
+//                     <input
+//                         className="border p-2 rounded"
+//                         type="text"
+//                         placeholder="Last Name"
+//                         value={contactDetails.lname}
+//                         onChange={(e) => handleChange(e, 'lname')}
+//                         required
+//                     />
+//                     <input
+//                         className="border p-2 rounded"
+//                         type="email"
+//                         placeholder="Email"
+//                         value={contactDetails.email}
+//                         onChange={(e) => handleChange(e, 'email')}
+//                         required
+//                     />
+//                     <div className="flex gap-2">
+//                         <button type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">{isEditing ? 'Update Contact' : 'Add Contact'}</button>
+//                         {isEditing && <button type="button" onClick={cancelEdit} className="flex-1 bg-gray-300 p-2 rounded hover:bg-gray-400">Cancel</button>}
+//                     </div>
+//                 </form>
+//                 <div className="space-y-4">
+//                     {contacts.map(contact => (
+//                         <div key={contact.id} className="bg-white shadow p-4 rounded flex justify-between items-center">
+//                             <div>
+//                                 <p>{contact.fname} {contact.lname}</p>
+//                                 <p className="text-sm text-gray-600">{contact.email}</p>
+//                             </div>
+//                             <button onClick={() => startEdit(contact)} className="bg-green-500 hover:bg-green-600 text-white p-2 rounded">Edit</button>
+//                             <button onClick={() => deleteContact(contact.id)}>Delete</button>
+//                         </div>
+//                     ))}
+//                 </div>
+//             </div>
+//         </>
+//     );
+// }
+
+return (
+    <>
+        <Head>
+            <title>Contacts</title>
+        </Head>
+        <NavBar />
+
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
+            <SideBar />
+            <div className="container mx-auto p-4" style={{marginTop: '10vh'}}>
+            <h1 style={{ 
+    color: '#136f68', 
+    textAlign: 'center', 
+    fontSize: '2rem',
+    fontWeight: 'bold',
+    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+    marginBottom: '1rem', 
+    fontFamily: '"Segoe UI", Arial, sans-serif' 
+}}>{isEditing ? 'Edit Contact' : 'Add New Contact'}</h1>
+
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-6">
                     <input
                         className="border p-2 rounded"
@@ -166,25 +253,41 @@ function ContactsPage() {
                         required
                     />
                     <div className="flex gap-2">
-                        <button type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">{isEditing ? 'Update Contact' : 'Add Contact'}</button>
+                        <button style={{ backgroundColor: '#ba0a51bb'}}type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">{isEditing ? 'Update Contact' : 'Add Contact'}</button>
                         {isEditing && <button type="button" onClick={cancelEdit} className="flex-1 bg-gray-300 p-2 rounded hover:bg-gray-400">Cancel</button>}
                     </div>
                 </form>
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {contacts.map(contact => (
+                            <div key={contact.id} className="bg-white shadow p-4 rounded">
+                                <div>
+                                    <p>{contact.fname} {contact.lname}</p>
+                                    <p className="text-sm text-gray-600">{contact.email}</p>
+                                </div>
+                                <div className="flex justify-end space-x-2">
+                                    <button style={{ backgroundColor: '#398d86' }} onClick={() => startEdit(contact)} className="text-white p-2 rounded">Edit</button>
+                                    <button style={{ backgroundColor: '#ba0a51bb' }} onClick={() => deleteContact(contact.id)} className="text-white p-2 rounded">Delete</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                {/* <div className="space-y-4">
                     {contacts.map(contact => (
                         <div key={contact.id} className="bg-white shadow p-4 rounded flex justify-between items-center">
                             <div>
                                 <p>{contact.fname} {contact.lname}</p>
                                 <p className="text-sm text-gray-600">{contact.email}</p>
                             </div>
-                            <button onClick={() => startEdit(contact)} className="bg-green-500 hover:bg-green-600 text-white p-2 rounded">Edit</button>
-                            <button onClick={() => deleteContact(contact.id)}>Delete</button>
+                            <button style={{backgroundColor: '#398d86'}} onClick={() => startEdit(contact)} className="bg-green-500 hover:bg-green-600 text-white p-2 rounded">Edit</button>
+                            <button style={{backgroundColor: '#ba0a51bb'}} onClick={() => deleteContact(contact.id)} className="bg-red-500 hover:bg-red-600 text-white p-2 rounded">Delete</button>
                         </div>
                     ))}
-                </div>
+                </div> */}
             </div>
-        </>
-    );
+        </div>
+    </>
+);
 }
 
 
