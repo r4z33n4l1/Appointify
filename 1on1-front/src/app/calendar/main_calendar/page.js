@@ -18,6 +18,10 @@ function CalendarView() {
     const [value, onChange] = useState(new Date());
     const [showFinalized, setShowFinalized] = useState(true); 
     const [showUnfinalized, setShowUnfinalized] = useState(true); 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
 
     useEffect(() => {
         const fetchData = async (url, setData) => {
@@ -67,10 +71,10 @@ function CalendarView() {
 
     return (
         <>
-            <NavBar />
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
-                <SideBar />
-                <a href="create_calendar" className="create-calendar-btn" style={{ display: 'inline-flex', alignItems: 'center', color: 'white', textDecoration: 'none' }}>
+             <NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
+                <a href="create_calendar" className="create-calendar-btn" style={{ display: 'inline-flex', alignItems: 'center', color: 'white', textDecoration: 'none',  margin: '15vh',  marginLeft: '300px'}}>
                     <span style={{ display: 'inline-flex', alignItems: 'flex-start' }}>
                         <Image src="/assets/plus-512.png" width={20} height={20} alt="Plus Icon" />
                         <span style={{ marginLeft: '1rem' }}>Create a new calendar</span>

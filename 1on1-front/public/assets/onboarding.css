@@ -57,7 +57,7 @@ li
 }
 
 .slogan .slogan-0 {
-    font-size: 7.6rem;
+    font-size: 7rem;
     font-weight: 800;
     line-height: 1.1710526316;
     letter-spacing: -0.304rem;
@@ -66,13 +66,28 @@ li
   }
 
   .slogan .slogan-1 {
-    font-size: 7.6rem;
+    font-size: 7rem;
     font-weight: 800;
     line-height: 1.1710526316;
     letter-spacing: -0.304rem;
     text-decoration-line: underline;
     text-decoration-color: #dc5492;
     font-family: Plus Jakarta Sans, 'Source Sans Pro';
+}
+
+@media (max-width: 391px)
+{
+  .slogan .slogan-0
+  {
+    font-size: 2rem;
+    letter-spacing: 0rem;
+    
+  }
+  .slogan .slogan-1
+  {
+    font-size: 2rem;
+    letter-spacing: 0rem;
+  }
 }
 
 .btn-container
@@ -226,10 +241,3 @@ h6
     max-height: 100%;
   }
   
-.footer-centre
-{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}

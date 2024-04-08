@@ -111,11 +111,13 @@
 
 // export default SideBar;
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter,  usePathname } from 'next/navigation'; // Import useRouter
 import { useAuth } from '@/utils/authContext'; // Import the useAuth hook
+import styles from './styles.module.css'
 
-function SideBar() {
+function SideBar({ isSidebarOpen }) {
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const { isAuthenticated, logout } = useAuth(); // Use the useAuth hook
   const router = useRouter();
 
@@ -134,9 +136,33 @@ function SideBar() {
   // Function to determine if the link is the active page
   const isActive = (path) =>  usePathname() === path;
 
+  const sidebarClass = isSidebarOpen ? 'sidebar-open' : 'sidebar-closed';
+  console.log(sidebarClass);
+
+
   return (
     <>
-      <div className="bg-light border-right" id="sidebar-wrapper" style={{ background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat" }}>
+  <meta charSet="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="assets/dashboard.css" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto%3A400%2C500%2C700"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossOrigin="anonymous"
+  />
+  <link rel="stylesheet" href="../styles/dev_schedule_style.css" />
+
+      <div className={styles[sidebarClass]} id="sidebar-wrapper" style={{background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat"}}>
         <div className="list-group list-group-flush">
           <a href="/dashboard" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/dashboard') ? '#136f68' : '' }}>
             <img src="/assets/home.png" width="20px" height="20px" />

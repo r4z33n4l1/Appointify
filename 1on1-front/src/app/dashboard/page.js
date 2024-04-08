@@ -11,6 +11,10 @@ function DashboardLayout() {
   const { accessToken } = useAuth();
   const [calendarData, setCalendarData] = useState([]);
   const [selectedCalendarId, setSelectedCalendarId] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,10 +46,10 @@ function DashboardLayout() {
 
   return (
     <>
-      <NavBar />
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
-        <SideBar />
-        <div style={{ marginLeft: '20px' }}>
+      <NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
+        <div style={{ marginLeft: '300px', marginTop: '10vh'}}>
           <a href="/calendar/main_calendar" className="create-calendar-btn" style={{ display: 'inline-flex', alignItems: 'center', color: 'white', textDecoration: 'none' }}>
               <span style={{ display: 'inline-flex', alignItems: 'flex-start' }}>
                   <Image src="/assets/plus-512.png" width={20} height={20} alt="Plus Icon" />

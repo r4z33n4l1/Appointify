@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-function NavBar() {
+function NavBar({ toggleSidebar }) {
   return (
     <>
      <meta charSet="UTF-8" />
@@ -11,18 +11,38 @@ function NavBar() {
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto%3A400%2C500%2C700" />
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C500%2C700" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" />
-    <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top" style={{ background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat" }}>
+    <div id="page-content-wrapper">
+  <nav
+    className="navbar navbar-expand-lg navbar-light bg-light border-bottom fixed-top"
+    style={{
+      background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat"
+    }}
+  >
+    <a className="navbar-brand" href="#">
+      <button
+        className="btn btn-primary"
+        id="menu-toggle"
+        onClick={toggleSidebar}
+        style={{ backgroundColor: "#136f68" }}
+      >
+        ☰
+      </button>
+      <img src="/assets/logo_white.png" width={160} height={40} alt="" />
+    </a>
+    <div className="ml-auto">
       <a className="navbar-brand" href="#">
-        <img src="/assets/logo_white.png" width={160} height={40} alt="" />
+        <button
+          type="submit"
+          className="btn btn-primary"
+          style={{ backgroundColor: "#398d86" }}
+        >
+          <img src="/assets/user.png" width="30px" height="30px" /> User
+        </button>
       </a>
-      <div className="ml-auto">
-        <a className="navbar-brand" href="#">
-          <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#398d86" }}>
-            <img src="/assets/user.png" width="30px" height="30px" /> User
-          </button>
-        </a>
-      </div>
-    </nav>
+    </div>
+  </nav>
+</div>
+
     </>
   );
 }

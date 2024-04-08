@@ -14,6 +14,10 @@ function CalendarForm() {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const { isAuthenticated, accessToken } = useAuth(); // Use the useAuth hook
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -36,10 +40,9 @@ function CalendarForm() {
     return (
         <>
 
-<NavBar />
-
-<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
-    <SideBar />
+<NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
         
             <form className={styles.formContainer} onSubmit={handleSubmit}>
              <h1 className={styles.wowHeader}>Create Your Calendar!</h1>

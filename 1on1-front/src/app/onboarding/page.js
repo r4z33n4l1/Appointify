@@ -1,3 +1,5 @@
+
+'use client'
 import Head from 'next/head';
 import Image from 'next/image';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -5,8 +7,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 export default function OnboardingPage() {
     return (
         <>
+  <>
   <meta charSet="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, initial-scale=1.0"
+  />
   <title>Onboarding Page</title>
   <link rel="stylesheet" href="assets/onboarding.css" />
   <link
@@ -20,80 +26,80 @@ export default function OnboardingPage() {
     crossOrigin="anonymous"
   />
   <header>
-    <nav className="navbar navbar-expand-lg" id="nav-bar">
-        <ul className="navbar-nav mr-auto">
-          <li className="nav-item" id="logo">
-            <a className="navbar-brand" href="#">
-              <img src="/assets/logo.png" width={160} height={40} alt="" />
-            </a>
-          </li>
-          <li className="nav-item active">
-            <a className="nav-link" href="#">
-              Home <span className="sr-only">(current)</span>
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Features
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Pricing
-            </a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">
-              Contact Us
-            </a>
-          </li>
-        </ul>
-        <ul className="navbar-nav ml-auto">
-          <li>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{
-                backgroundColor: "rgba(255, 255, 255, 0.89)",
-                width: "7rem",
-                color: "black"
-              }}
-            >
-              <a href="/login" style={{ color: "rgb(0, 0, 0)" }}>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light" id="nav-bar">
+      <div className="container">
+        <a className="navbar-brand" href="#">
+          <img src="assets/logo.png" width={160} height={40} alt="logo" />
+        </a>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarText"
+          aria-controls="navbarText"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon" />
+        </button>
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <a className="nav-link" href="#">
+                Home
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#features">
+                Features
+              </a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" href="#contact">
+                Contact Us
+              </a>
+            </li>
+          </ul>
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item">
+              <a
+                className="btn btn-primary"
+                href="/login"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.89)",
+                  color: "black"
+                }}
+              >
                 Login
               </a>
-            </button>
-          </li>
-          <li>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              style={{
-                backgroundColor: "#B4326C",
-                color: "rgb(255, 255, 255)",
-                width: "7rem"
-              }}
-            >
-              <a href="/signup" style={{ color: "white" }}>
+            </li>
+            <li className="nav-item">
+              <a
+                className="btn btn-primary"
+                href="/signup"
+                style={{ backgroundColor: "#B4326C", color: "white" }}
+              >
                 Get Started
               </a>
-            </button>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
     </nav>
   </header>
   <main>
-    <div className="main-container">
+    <div
+      className="container"
+      style={{ background: "linear-gradient(135deg, #528582, #2E475C)" }}
+    >
       <div className="row">
-        <div className="col-md-12 text-center">
+        <div className="col-sm text-center">
           <p className="slogan">
             <span className="slogan-0">Booking made easy with</span>
             <span className="slogan-1">Appointify</span>
           </p>
         </div>
       </div>
-      <div className="row">
-        <div className="col-md-12 text-center">
+      <div className="row justify-content-center">
+        <div className="col-md-6 text-center">
           <div className="btn-container">
             <button
               type="button"
@@ -108,6 +114,10 @@ export default function OnboardingPage() {
                 Sign Up
               </a>
             </button>
+          </div>
+        </div>
+        <div className="col-md-6 text-center">
+          <div className="btn-container">
             <button
               type="button"
               className="btn btn-secondary btn-lg"
@@ -125,7 +135,7 @@ export default function OnboardingPage() {
       <h1
         style={{
           textAlign: "center",
-          fontFamily: 'Plus Jakarta Sans, "Source Sans Pro"',
+          fontFamily: '"Plus Jakarta Sans", "Source Sans Pro"',
           fontWeight: 800,
           textDecoration: "underline"
         }}
@@ -133,18 +143,19 @@ export default function OnboardingPage() {
         Features
       </h1>
       <div className="row">
-        <div className="col-sm">
+        <div className="col-sm-4 text-center">
           <h1>Fast.</h1>
           <img
-            src="/assets/clock.png"
+            src="assets/clock.png"
             width="100rem"
             height="100rem"
             style={{ margin: "1.5rem" }}
+            alt="clock"
           />
           <p
             style={{
               textAlign: "justify",
-              fontFamily: 'Plus Jakarta Sans, "Source Sans Pro"'
+              fontFamily: '"Plus Jakarta Sans", "Source Sans Pro"'
             }}
           >
             Appointify revolutionizes scheduling with lightning-speed
@@ -153,18 +164,19 @@ export default function OnboardingPage() {
             your time management
           </p>
         </div>
-        <div className="col-sm">
+        <div className="col-sm-4 text-center">
           <h1>Easy.</h1>
           <img
-            src="/assets/easy.png"
+            src="assets/easy.png"
             width="100rem"
             height="100rem"
             style={{ margin: "1.5rem" }}
+            alt="easy"
           />
           <p
             style={{
               textAlign: "justify",
-              fontFamily: 'Plus Jakarta Sans, "Source Sans Pro"'
+              fontFamily: '"Plus Jakarta Sans", "Source Sans Pro"'
             }}
           >
             Simplicity meets functionality with Appointify's easy-to-use
@@ -173,18 +185,19 @@ export default function OnboardingPage() {
             a breeze for users of all backgrounds
           </p>
         </div>
-        <div className="col-sm">
+        <div className="col-sm-4 text-center">
           <h1>Efficient.</h1>
           <img
             src="assets/e.png"
             width="100rem"
             height="100rem"
             style={{ margin: "1.5rem" }}
+            alt="e"
           />
           <p
             style={{
               textAlign: "justify",
-              fontFamily: 'Plus Jakarta Sans, "Source Sans Pro'
+              fontFamily: '"Plus Jakarta Sans", "Source Sans Pro"'
             }}
           >
             Boost your productivity with Appointify's efficient scheduling
@@ -205,7 +218,6 @@ export default function OnboardingPage() {
         <div className="col-md-6">
           <ul className="how-to-ul">
             <li>
-              {" "}
               <img src="assets/calendar.png" alt="Step 1" />
               <h6>Create a new Calendar!</h6>
             </li>
@@ -214,9 +226,8 @@ export default function OnboardingPage() {
               <h6>Invite your contacts!</h6>
             </li>
             <li>
-              {" "}
               <img src="assets/duration.png" alt="Step 3" />
-              <h6> Remind your contacts</h6>
+              <h6>Remind your contacts</h6>
             </li>
             <li>
               <img src="assets/schedule.png" alt="Step 4" />
@@ -231,36 +242,30 @@ export default function OnboardingPage() {
       </div>
     </div>
     <div className="meeting-gif">
-      <img src="assets/meeting.gif" />
+      <img src="assets/meeting.gif" alt="meeting" />
     </div>
   </main>
-  <footer className="py-3 my-4">
+  <footer className="py-3 my-4" id="contact">
     <ul className="nav justify-content-center border-bottom pb-3 mb-3">
       <li className="nav-item">
-        <a href="#" className="nav-link px-2 text-body-secondary">
+        <a href="onboarding.html" className="nav-link px-2 text-body-secondary">
           Home
         </a>
       </li>
       <li className="nav-item">
-        <a href="#" className="nav-link px-2 text-body-secondary">
+        <a href="#features" className="nav-link px-2 text-body-secondary">
           Features
         </a>
       </li>
       <li className="nav-item">
-        <a href="#" className="nav-link px-2 text-body-secondary">
-          Pricing
-        </a>
-      </li>
-      <li className="nav-item">
-        <a href="#" className="nav-link px-2 text-body-secondary">
+        <a href="#contact" className="nav-link px-2 text-body-secondary">
           Contact Us
         </a>
       </li>
     </ul>
     <div className="text-center">
       <p className="text-body-secondary">Follow us on social media:</p>
-      <div className="nav justify-content-center border-bottom pb-3 mb-3">
-
+      <div className= "nav justify-content-center border-bottom pb-3 mb-3">
       <a href="#" className="social-icon">
         <img
           src="assets/facebook.png"
@@ -297,6 +302,7 @@ export default function OnboardingPage() {
     </div>
     <p className="text-center text-body-secondary">© 2024 Appointify, Inc</p>
   </footer>
+</>
 </>
 
     );

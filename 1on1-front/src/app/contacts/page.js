@@ -14,6 +14,10 @@ function ContactsPage() {
     const [contactDetails, setContactDetails] = useState({ fname: '', lname: '', email: '', id: null });
     const [isEditing, setIsEditing] = useState(false);
     const { accessToken } = useAuth();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
     //const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyNzA2MjkyLCJpYXQiOjE3MTIyNzQyOTIsImp0aSI6IjJiNjE1M2I4NzMxZjQ1NmM5ZmZlMGY3ZWM4NDM5NTkxIiwidXNlcl9pZCI6MX0.SiEeIR1G0_DBeb23PIbeGAunNFkmw5qTW8t_MWQm6yM';
 
     useEffect(() => {
@@ -212,20 +216,20 @@ return (
         <Head>
             <title>Contacts</title>
         </Head>
-        <NavBar />
-
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
-            <SideBar />
+        <NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
+        
             <div className="container mx-auto p-4" style={{marginTop: '10vh'}}>
             <h1 style={{ 
-    color: '#136f68', 
-    textAlign: 'center', 
-    fontSize: '2rem',
-    fontWeight: 'bold',
-    textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-    marginBottom: '1rem', 
-    fontFamily: '"Segoe UI", Arial, sans-serif' 
-}}>{isEditing ? 'Edit Contact' : 'Add New Contact'}</h1>
+                color: '#136f68', 
+                textAlign: 'center', 
+                fontSize: '2rem',
+                fontWeight: 'bold',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                marginBottom: '1rem', 
+                fontFamily: '"Segoe UI", Arial, sans-serif' 
+            }}>{isEditing ? 'Edit Contact' : 'Add New Contact'}</h1>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-6">
                     <input

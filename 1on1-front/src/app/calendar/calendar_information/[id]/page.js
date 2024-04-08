@@ -20,6 +20,10 @@ export default function CalendarInformation({ params }) {
   const { accessToken } = useAuth();
   const [ready, setReady] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
 
 
   async function checkPending() {
@@ -78,12 +82,11 @@ export default function CalendarInformation({ params }) {
 
   return (
     <>
-      <NavBar />
-  
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
-        <SideBar />
+       <NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
         
-        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', marginTop: '5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', marginTop: '5rem',  marginLeft: '300px'}}>
           
           <div className={styles.calendarContainer}>
           <div className="buttonReady">

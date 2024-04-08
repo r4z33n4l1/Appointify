@@ -4,7 +4,18 @@ body {
     font-family: Roboto, 'Source Sans Pro';
 }
 
+.toggled #sidebar-wrapper {
+  width: 0;
+}
 
+.toggled #page-content-wrapper {
+  margin-left: 0;
+}
+
+/* HIDE/SHOW LINK ON SIDEBAR*/
+.hidden {
+  display: none !important; /* OVERRIDE DISPLAY PROPERTIES*/
+}
 
 #sidebar-wrapper .list-group a {
     display: flex;
@@ -173,7 +184,8 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 15vh;
+    display: flex;
+    align-items: center;
   }
   
   

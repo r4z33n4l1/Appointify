@@ -15,6 +15,10 @@ function CalendarForm({params}) {
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
 
     useEffect(() => {
         async function checkCalendarId() {
@@ -47,10 +51,9 @@ function CalendarForm({params}) {
 
     return (
         <>
-            <NavBar />
-
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
-                <SideBar />
+            <NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
                     
                         <form className={styles.formContainer} onSubmit={handleSubmit}>
                         <h1 className={styles.wowHeader}>Update Your Calendar!</h1>
