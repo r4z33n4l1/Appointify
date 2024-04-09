@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/utils/authContext'; // Assumed path
+import {useRouter} from 'next/navigation';
 
 const ContactsSearchAndInvite = ({ calendarId }) => {
     const [contacts, setContacts] = useState([]);
@@ -10,6 +11,12 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
     const [shouldUpdate, setShouldUpdate] = useState(false);
     const [showInvited, setShowInvited] = useState(true);
     const [clicked, setClicked] = useState(false);
+
+    const router = useRouter();
+
+    const handleGoToContactPage = () => {
+        router.push('/contacts');
+    };
 
     useEffect(() => {
         fetchContacts();
@@ -91,6 +98,14 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
                     <span className="ml-2">Show Not Invited</span>
                 </label>
             </div>
+            <button
+                onClick={() => {
+                    handleGoToContactPage();
+                }}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+            >
+                Edit Contacts
+            </button>
             <ul className="space-y-2">
                 {filteredContacts.map((contact) => (
                     <li key={contact.id} className="flex justify-between items-center bg-white p-3 rounded shadow">
