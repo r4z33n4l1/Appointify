@@ -26,12 +26,13 @@ export default function CalendarInformation({ params }) {
   }
 
   async function checkPending() {
-    const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
-    console.log('userDetailsin Check pending', userDetails);
-    if (userDetails.length === 0) {
-      setReady(true); // Set ready to true when no pending users
+    const allDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'all');
+    const pendingDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
+    const acceptedDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'accepted');
+    if (allDetails.length > 0 && acceptedDetails.length > 0 && pendingDetails.length === 0) {
+      setReady(true);
     } else {
-      setReady(false); // Ensure ready is set to false when there are pending users
+      setReady(false);
     }
   }
   useEffect(() => {
@@ -86,8 +87,8 @@ return (
       <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginTop: '5rem', marginLeft: '300px' }}>
         <div className={styles.calendarContainer}>
           <div className="buttonReady">
-            <button style={{ backgroundColor: ready ? '#398d86' : '#ba0a51bb' }} className={`text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
-              {ready ? "Schedule Meeting" : "View Suggested Schedules"}
+            <button style={{ backgroundColor: ready ? '#398d86' : 'gray' }} className={`text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
+              Schedule
             </button>
             <button style={{ backgroundColor: '#ba0a51bb' }} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={handleRefresh}>
               Refresh
