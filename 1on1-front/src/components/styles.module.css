@@ -8,6 +8,7 @@
 }
 
 .calendarItem {
+    background-color: #386662;
     width: 300px;
     border: 1px solid #ccc;
     padding: 10px;
@@ -30,15 +31,59 @@
 }
 
 .high {
-    background-color: #ffaaaa !important; 
+    background-color: #07be5d !important; 
 }
 
 .medium {
-    background-color: #aaffaa !important; 
+    background-color: #aaaaff!important; 
 }
 
 .low {
-    background-color: #aaaaff !important; 
+    background-color: #c23d3db1 !important; 
 }
 
+.itemName {
+    font-size: 1.2rem; 
+    color: #333; 
+    font-weight: bold;
+    margin-bottom: 4px; 
+}
 
+.itemDescription {
+    font-size: 1rem; 
+    color: #555; 
+    margin-bottom: 8px; 
+    line-height: 1.5; 
+}
+
+.itemContainer {
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd; 
+    padding: 15px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+}
+
+.sidebar-open {
+    background: linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat;
+    height: 100vh; 
+    width: 250px;
+    position: fixed; 
+    left: 0; 
+    top: 0; 
+    overflow-y: auto; 
+    transition: left 0.3s; 
+    margin-top: 5vh;
+}
+
+.sidebar-closed {
+    background: linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat;
+    height: 100vh; 
+    width: 250px; 
+    position: fixed; 
+    left: -250px; 
+    top: 0; 
+    overflow-y: auto; 
+}
+
+  

@@ -6,6 +6,9 @@ import 'react-calendar/dist/Calendar.css';
 import { useRouter } from 'next/navigation';
 import styles from './styles.module.css';
 import { useAuth } from '@/utils/authContext';
+import NavBar from "@/components/navbar.js";
+import SideBar from "@/components/sidebar.js";
+import Image from 'next/image';
 
 function CalendarView() {
     const { accessToken } = useAuth();
@@ -64,83 +67,89 @@ function CalendarView() {
 
     return (
         <>
-        <button className={styles.updateButton}><a href="main_calendar" className={styles.subLink}>Main Calendar Menu</a></button>
-            
-        <div className={styles.calendarContainer}>
-             <div className={styles.filterOptions}>
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={showFinalized}
-                        onChange={() => setShowFinalized(!showFinalized)}
-                    />
-                    Show Finalized
-                </label>
-                <label>
-                    <input
-                        type="checkbox"
-                        checked={showUnfinalized}
-                        onChange={() => setShowUnfinalized(!showUnfinalized)}
-                    />
-                    Show Unfinalized
-                </label>
-            </div>
+            <NavBar />
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '4vh' }}>
+                <SideBar />
+                <a href="create_calendar" className="create-calendar-btn" style={{ display: 'inline-flex', alignItems: 'center', color: 'white', textDecoration: 'none' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'flex-start' }}>
+                        <Image src="/assets/plus-512.png" width={20} height={20} alt="Plus Icon" />
+                        <span style={{ marginLeft: '1rem' }}>Create a new calendar</span>
+                    </span>
+                </a>
 
-           
-            {filteredData && filteredData.map((item) => (
-                <div key={item.id} className={styles.calendarItem} style={{ cursor: 'pointer' }} onClick={(e) => router.push(`/calendar/calendar_information/${item.id}`)}>
-                    <Calendar
-                        onChange={onChange}
-                        value={value}
-                        minDate={new Date(new Date(item.start_date).getTime() + 86400000)} 
-                        maxDate={new Date(new Date(item.end_date).getTime() + 86400000)} 
-                        tileContent={({ date, view }) => {
-                            if (view === 'month') {
-                                const tileDate = date.toDateString();
-
-                                if (!item.non_busy_dates) {
-                                    return;
-                                }
-                                const shiftedNonBusyDates = item.non_busy_dates.map(nonBusyDate => ({
-                                    ...nonBusyDate,
-                                    date: new Date(new Date(nonBusyDate.date).getTime() + 86400000).toDateString()
-                                }));
-
-                                const nonBusyTimes = [];
-
-                                shiftedNonBusyDates.forEach(nonBusyDate => {
-                                    if (nonBusyDate.date === tileDate) {
-                                        nonBusyTimes.push(...nonBusyDate.non_busy_times);
-                                    }
-                                });
-
-                                const sortedTimes = sortPreferences(nonBusyTimes);
-
-                                return (
-                                    <div className={styles.scrollableTile}>
-                                        {sortedTimes.map((time, index) => (
-                                            <div key={index} className={`${styles.nonBusyTime} ${styles[time.preference]}`}>
-                                                {time.time}
-                                            </div>
-                                        ))}
-                                    </div>
-                                );
-                            }
-                        }}
-                    />
-
-                    <p>ID: {item.id}</p>
-                    <p>Name: {item.name}</p>
-                    <p>Description: {item.description}</p>
-                    <p>Start Date: {item.start_date}</p>
-                    <p>End Date: {item.end_date}</p>
+        < div style={{marginTop: '15vh'}}>
+        <div className={styles.filterOptions}>
+                    <label className={styles.finalBtn}>
+                        <input
+                            type="checkbox"
+                            checked={showFinalized}
+                            onChange={() => setShowFinalized(!showFinalized)}
+                        />
+                        Show Finalized
+                    </label>
+                    <label className={styles.unfinalBtn}>
+                        <input
+                            type="checkbox"
+                            checked={showUnfinalized}
+                            onChange={() => setShowUnfinalized(!showUnfinalized)}
+                        />
+                        Show Unfinalized
+                    </label>
                 </div>
-            ))}
-        </div>
+            <div className={styles.calendarContainer}>
 
+                {filteredData && filteredData.map((item) => (
+                    <div key={item.id} className={styles.calendarItem} style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
+                        <Calendar
+                            onChange={onChange}
+                            value={value}
+                            minDate={new Date(new Date(item.start_date).getTime() + 86400000)} 
+                            maxDate={new Date(new Date(item.end_date).getTime() + 86400000)} 
+                            className={styles.customCalendar}
+                            tileContent={({ date, view }) => {
+                                if (view === 'month') {
+                                    const tileDate = date.toDateString();
+
+                                    if (!item.non_busy_dates) {
+                                        return;
+                                    }
+                                    const shiftedNonBusyDates = item.non_busy_dates.map(nonBusyDate => ({
+                                        ...nonBusyDate,
+                                        date: new Date(new Date(nonBusyDate.date).getTime() + 86400000).toDateString()
+                                    }));
+
+                                    const nonBusyTimes = [];
+
+                                    shiftedNonBusyDates.forEach(nonBusyDate => {
+                                        if (nonBusyDate.date === tileDate) {
+                                            nonBusyTimes.push(...nonBusyDate.non_busy_times);
+                                        }
+                                    });
+
+                                    const sortedTimes = sortPreferences(nonBusyTimes);
+
+                                    return (
+                                        <div className={styles.scrollableTile}>
+                                            {sortedTimes.map((time, index) => (
+                                                <div key={index} className={`${styles.nonBusyTime} ${styles[time.preference]}`}>
+                                                    {time.time}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    );
+                                }
+                            }}
+                        />
+
+                    <p className={styles.itemName}>{item.name}</p>
+
+                    </div>
+                ))}
+                </div>
+            </div>
+            </div>
         </>
     );
 }
-
 export default CalendarView;
 

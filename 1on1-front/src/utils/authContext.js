@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { accessValid, refresh, login as loginHelper , removeTokens} from './authHelper';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -10,24 +11,31 @@ export const AuthProvider = ({ children }) => {
         accessToken: null,
         isAuthenticated: false,
         isLoading: true,
+        token_username: "",
     });
     const router = useRouter();
 
     const checkAuthStatus = useCallback(async () => {
         const isValid = accessValid();
         if (isValid) {
+            const accessToken = localStorage.getItem('access');
+            const decoded = accessToken ? jwtDecode(accessToken) : null;
             setAuthState({
-                accessToken: localStorage.getItem('access'),
+                accessToken: accessToken,
                 isAuthenticated: true,
                 isLoading: false,
+                token_username: decoded ? decoded.username : "",
             });
         } else {
             const refreshed = await refresh();
             if (refreshed) {
+                const accessToken = localStorage.getItem('access');
+                const decodedToken = accessToken ? jwtDecode(accessToken) : null;
                 setAuthState({
-                    accessToken: localStorage.getItem('access'),
+                    accessToken: accessToken,
                     isAuthenticated: true,
                     isLoading: false,
+                    tokenUsername: decodedToken ? decodedToken.username : "", // Set username from decoded token
                 });
             } else {
                 logout();
@@ -83,6 +91,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
     };
+
 
     return <AuthContext.Provider value={contextValue}>{!authState.isLoading ? children : <p>Loading...</p>}</AuthContext.Provider>;
 };

@@ -4,6 +4,8 @@ import styles from './styles.module.css'
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/utils/authContext';
 import { isValidCalendarId } from '@/components/my_calendar.js';
+import NavBar from "@/components/navbar.js";
+import SideBar from "@/components/sidebar.js";
 function CalendarForm({params}) {
     const {accessToken} = useAuth(); 
     const router = useRouter();
@@ -13,6 +15,10 @@ function CalendarForm({params}) {
     const [description, setDescription] = useState('');
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
 
     useEffect(() => {
         async function checkCalendarId() {
@@ -44,16 +50,21 @@ function CalendarForm({params}) {
     };
 
     return (
-        <><button className={styles.updateButton}><a href="main_calendar" className={styles.subLink}>Main Calendar Menu</a></button>
-            
-            <form className={styles.formContainer} onSubmit={handleSubmit}>
-                <h1>Update Your Calendar!</h1>
-                <input className={styles.formInput} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-                <textarea className={styles.formTextarea} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-                <input className={styles.formInput} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                <input className={styles.formInput} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                <a href='calendar_information'><button className={styles.formButton} type="submit">Update Calendar</button></a>
-            </form>
+        <>
+            <NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
+                    
+                        <form className={styles.formContainer} onSubmit={handleSubmit}>
+                        <h1 className={styles.wowHeader}>Update Your Calendar!</h1>
+                            <input className={styles.formInput} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+                            <textarea className={styles.formTextarea} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
+                            <input className={styles.formInput} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                            <input className={styles.formInput} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                            <a href='calendar_information'><button className={styles.formButton} type="submit">Update Calendar</button></a>
+                        </form>
+                        </div>
+
         </>
     );
 }

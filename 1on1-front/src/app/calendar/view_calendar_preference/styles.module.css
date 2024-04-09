@@ -4,14 +4,16 @@
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    align-items: flex-start;
 }
 
 .calendarItem {
     width: 300px;
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #398d86; 
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .scrollableTile {
@@ -55,3 +57,51 @@
     color: white;
     text-decoration: none;
 }
+
+
+.finalBtn {
+    background-color: #19bb7da4; 
+    color: #fff;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 20px
+  }
+  
+
+.unfinalBtn {
+    background-color: #c85656bb; 
+    color: #fff;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 30px
+  }
+
+  .customCalendar {
+    border: none;
+    color: white;
+    background-color: #398d86;
+}
+
+.customCalendar button {
+    /* background-color: #106962; */
+    color: white;
+}
+
+.customCalendar button:hover {
+    background-color: #0c433e;
+    color: white;
+}
+
+.itemName {
+    font-size: 1.2rem; 
+    font-weight: bold; 
+    color: #ffffff; 
+    margin-bottom: 8px; 
+    text-align: center;
+}
+
+  

@@ -169,7 +169,7 @@ class ContactsFilterView(APIView):
         invited_contacts_serialized = InvitationSerializer(invited_contacts, many=True).data
 
         # Get all contacts
-        contacts = Contact.objects.all()
+        contacts = Contact.objects.filter(user=request.user)
         contacts_serialized = []
         for contact in contacts:
             contact_data = {

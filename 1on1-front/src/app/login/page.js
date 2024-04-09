@@ -37,7 +37,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100" style={{ background: 'linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat' }}>
       <div className="max-w-md w-full space-y-8 p-10 bg-white shadow-lg rounded-lg">
         <div className="flex justify-center">
           <Image src="/assets/logo.png" alt="logo" width={160} height={40} />
@@ -69,14 +69,14 @@ export default function Login() {
             </div>
 
             <div className="text-sm">
-              <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500" style={{color: '#398d86'}}>
                 Don't have an account? Sign Up
               </a>
             </div>
           </div>
 
           <div>
-            <button type="submit" className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${loading ? 'bg-indigo-300' : 'bg-indigo-600 hover:bg-indigo-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}>
+            <button style={{backgroundColor: '#398d86'}} type="submit" className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${loading ? 'bg-indigo-300' : 'bg-indigo-600 hover:bg-indigo-700'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}>
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </div>

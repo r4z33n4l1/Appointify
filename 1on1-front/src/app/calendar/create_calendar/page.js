@@ -3,6 +3,10 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './styles.module.css'
 import { useAuth } from '@/utils/authContext';
+import NavBar from "@/components/navbar.js";
+import SideBar from "@/components/sidebar.js";
+import Image from 'next/image';
+
 function CalendarForm() {
     const router = useRouter();
     const [name, setName] = useState('');
@@ -10,6 +14,10 @@ function CalendarForm() {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const { isAuthenticated, accessToken } = useAuth(); // Use the useAuth hook
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const toggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,10 +39,13 @@ function CalendarForm() {
 
     return (
         <>
-        <button className={styles.updateButton}><a href="main_calendar" className={styles.subLink}>Main Calendar Menu</a></button>
-            
+
+<NavBar toggleSidebar={toggleSidebar} />
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
+        <SideBar isSidebarOpen={isSidebarOpen} />
+        
             <form className={styles.formContainer} onSubmit={handleSubmit}>
-             <h1>Create Your Calendar!</h1>
+             <h1 className={styles.wowHeader}>Create Your Calendar!</h1>
                 <input className={styles.formInput} type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
                 <textarea className={styles.formTextarea} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
                 <input className={styles.formInput} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
@@ -43,6 +54,7 @@ function CalendarForm() {
                     Create Calendar
                 </button>
             </form>
+            </div>
         </>
     );
 }

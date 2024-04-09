@@ -61,7 +61,7 @@ export function CalendarView({ id }) {
     let id_data = ''
     let id_preference = ''
 
-    calendarData.map((dataItem, index) => {
+    calendarData?.map((dataItem, index) => {
 
         if(dataItem.id == id)
         {
@@ -137,11 +137,12 @@ function CalendarItem({ item, onChange, value, sortPreferences }) {
                         }}
                     />
 
-                    <p>ID: {item.id}</p>
-                    <p>Name: {item.name}</p>
-                    <p>Description: {item.description}</p>
-                    <p>Start Date: {item.start_date}</p>
-                    <p>End Date: {item.end_date}</p>
+            <div className={styles.itemContainer}>
+                <p className={styles.itemName}>Name: {item.name}</p>
+                <p className={styles.itemDescription}>Description: {item.description}</p>
+            </div>
+
+
         </div>
     );
 }
