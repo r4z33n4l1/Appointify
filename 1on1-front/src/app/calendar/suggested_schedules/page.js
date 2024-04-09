@@ -64,8 +64,13 @@ export default function SuggestedSchedulesPage() {
         }
     }, [id, accessToken]);
 
+    const handleBack = () => {
+        router.back();
+    };
+
     return (
         <div className={styles.container}>
+            <button onClick={handleBack} className={styles.backButton}>Back</button>
             <div className={styles.suggestedSchedules}>
                 {error && <p>Error: {error}</p>}
                 {suggestedSchedules.length > 0 && suggestedSchedules.map(group => (
