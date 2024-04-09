@@ -1,0 +1,60 @@
+.container {
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.suggestedSchedules {
+    margin-top: 20px;
+}
+
+.scheduleGroup {
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.scheduleGroup:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.scheduleGroup h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.scheduleItem {
+    background-color: #ffffff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.scheduleItem p {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.confirmButton {
+    background-color: #5cb85c;
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.errorMessage {
+    color: #d9534f;
+    font-size: 16px;
+    margin-top: 10px;
+}

@@ -19,7 +19,6 @@ export default function CalendarInformation({ params }) {
   const [ready, setReady] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-
   async function checkPending() {
     const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
     console.log('userDetailsin Check pending', userDetails);
@@ -32,16 +31,15 @@ export default function CalendarInformation({ params }) {
   useEffect(() => {
     checkPending();
   }, [id, accessToken]);
-
-  const handleScheduleMeeting = () => {
-    alert("ready to schedule!");
-  };
   
   const handleRefresh = () => {
     checkPending();
     setRefreshKey((prev) => prev + 1);
   };
 
+  const handleScheduleMeeting = () => {
+    router.push(`/calendar/suggested_schedules/${id}`);
+  };
 
   const handleUpdateCalendar = () => {
     router.push(`/calendar/update_calendar/${id}`);
@@ -88,7 +86,7 @@ export default function CalendarInformation({ params }) {
             disabled={!ready}
             onClick={handleScheduleMeeting} 
           >
-            Schedule Meeting
+            View Suggested Schedules
           </button>
           <button
     className="bg-blue-500 text-white py-2 px-4 rounded ml-2"
@@ -99,7 +97,6 @@ export default function CalendarInformation({ params }) {
         </div>
         <CalendarView id={id} />
         
-
         <div className={styles.subContainer}>
           <div className={styles.buttonWrapper}>
             <button
