@@ -25,7 +25,6 @@ export default function CalendarInformation({ params }) {
     setIsSidebarOpen(!isSidebarOpen);
   }
 
-
   async function checkPending() {
     const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
     console.log('userDetailsin Check pending', userDetails);
@@ -38,16 +37,15 @@ export default function CalendarInformation({ params }) {
   useEffect(() => {
     checkPending();
   }, [id, accessToken]);
-
-  const handleScheduleMeeting = () => {
-    alert("ready to schedule!");
-  };
   
   const handleRefresh = () => {
     checkPending();
     setRefreshKey((prev) => prev + 1);
   };
 
+  const handleScheduleMeeting = () => {
+    router.push(`/calendar/suggested_schedules/${id}`);
+  };
 
   const handleUpdateCalendar = () => {
     router.push(`/calendar/update_calendar/${id}`);
@@ -80,62 +78,45 @@ export default function CalendarInformation({ params }) {
 
 
 
-  return (
-    <>
-       <NavBar toggleSidebar={toggleSidebar} />
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
-        <SideBar isSidebarOpen={isSidebarOpen} />
-        
-        <div style={{ display: 'flex', flexDirection: 'row', width: '100%', marginTop: '5rem',  marginLeft: '300px'}}>
-          
-          <div className={styles.calendarContainer}>
+return (
+  <>
+    <NavBar toggleSidebar={toggleSidebar} />
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh' }}>
+      <SideBar isSidebarOpen={isSidebarOpen} />
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginTop: '5rem', marginLeft: '300px' }}>
+        <div className={styles.calendarContainer}>
           <div className="buttonReady">
-            <button style={{backgroundColor: '#398d86'}} className={`${
-              ready ? "bg-green-500" : "bg-gray-500"
-            } text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
-              Schedule Meeting
+            <button style={{ backgroundColor: ready ? '#398d86' : '#ba0a51bb' }} className={`text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
+              {ready ? "Schedule Meeting" : "View Suggested Schedules"}
             </button>
-            <button style={{ backgroundColor: '#ba0a51bb'}} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={() => handleRefresh()}>
+            <button style={{ backgroundColor: '#ba0a51bb' }} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={handleRefresh}>
               Refresh
             </button>
           </div>
-            <h1 className={styles.header}>Your Calendar</h1>
-            <div className={styles.calendarView}>
-              <CalendarView id={id} />
+          <h1 className={styles.header}>Your Calendar</h1>
+          <CalendarPreferencesDisplay calendarId={id} />
+          <InviteContactsPopup calendarId={id} />
+          <ContactsFilter key={refreshKey} calendarId={id} />
+          <CalendarView id={id} />
+          <div className={styles.subContainer}>
+            <div className={styles.buttonWrapper}>
+              <button className={styles.updateButton} style={{ cursor: "pointer" }} onClick={handleUpdateCalendar}>
+                <a className={styles.subLink}>Update Calendar Information</a>
+              </button>
             </div>
-            <div className={styles.subContainer}>
-              <div className={styles.buttonWrapper}>
-                <button className={styles.updateButton} style={{ cursor: "pointer" }} onClick={handleUpdateCalendar}>
-                  <a className={styles.subLink}>Update Calendar Information</a>
-                </button>
-              </div>
-              <div className={styles.buttonWrapper}>
-                <button className={styles.updateButton} style={{ cursor: "pointer" }} onClick={handleUpdateCalendarPreference}>
-                  <a className={styles.subLink}>Update Calendar Preferences</a>
-                </button>
-              </div>
-              <div className={styles.buttonWrapper}>
-                <CalendarDeleteConfirmation id={id} calendarName="Calendar" onDeleteConfirm={handleDeleteConfirm} className={styles.updateButton} style={{ cursor: "pointer" }} />
-              </div>
+            <div className={styles.buttonWrapper}>
+              <button className={styles.updateButton} style={{ cursor: "pointer" }} onClick={handleUpdateCalendarPreference}>
+                <a className={styles.subLink}>Update Calendar Preferences</a>
+              </button>
+            </div>
+            <div className={styles.buttonWrapper}>
+              <CalendarDeleteConfirmation id={id} calendarName="Calendar" onDeleteConfirm={handleDeleteConfirm} className={styles.updateButton} style={{ cursor: "pointer" }} />
             </div>
           </div>
-          
-
-          
-          <div style={{ marginLeft: '0rem', width: '10%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'center' }}>
-          <InviteContactsPopup calendarId={id} />
-          <ContactsFilter key={refreshKey} calendarId={id}/>
-        </div>
-
-        <div style={{ marginLeft: '0rem', width: '40%', display: 'flex', flexDirection: 'column', justifyContent: 'start', alignItems: 'flex-start' }}>
-          <CalendarPreferencesDisplay calendarId={id} />
-        </div>
-
-
-                  
         </div>
       </div>
-    </>
-  );
-  
+    </div>
+  </>
+);
+
 }
