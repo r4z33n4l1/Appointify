@@ -1,7 +1,9 @@
 'use client';
 import React from 'react';
+import { useAuth } from '@/utils/authContext';
 
 function NavBar({ toggleSidebar }) {
+  const {token_username} = useAuth();
   return (
     <>
      <meta charSet="UTF-8" />
@@ -36,7 +38,7 @@ function NavBar({ toggleSidebar }) {
           className="btn btn-primary"
           style={{ backgroundColor: "#398d86" }}
         >
-          <img src="/assets/user.png" width="30px" height="30px" /> User
+          <img src="/assets/user.png" width="30px" height="30px" /> {token_username}
         </button>
       </a>
     </div>
