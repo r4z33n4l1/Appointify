@@ -21,14 +21,22 @@ class UserCalendarListView(APIView):
         user = request.user
         is_finalized = request.query_params.get('isfinalized', None)
         instances = UserCalendars.objects.filter(user=user.id)
-        
+
         if is_finalized is not None:
             instances = instances.filter(calendar__isfinalized=is_finalized)
-        
+
         paginator = self.pagination_class()
         paginated_instances = paginator.paginate_queryset(instances, request)
-        serializer = UserCalendarSerializer(paginated_instances, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        response_data = []
+
+        for user_calendar in paginated_instances:
+            user_calendar_data = UserCalendarSerializer(user_calendar).data
+            user_non_busy_dates = user_calendar.non_busy_dates.all()
+            user_non_busy_dates_serialized = NonBusyDateSerializer(user_non_busy_dates, many=True).data
+            user_calendar_data['non_busy_dates'] = user_non_busy_dates_serialized
+            response_data.append(user_calendar_data)
+
+        return paginator.get_paginated_response(response_data)
     
 
 class  UserCalendarView(APIView):

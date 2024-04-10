@@ -95,9 +95,10 @@ export default function CalendarInformation({ params }) {
 
   async function checkPending() {
     const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
-    if (userDetails.length === 0) {
+    const acceptedDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'accepted');
+    if (userDetails.length === 0 && acceptedDetails.length > 0) {
       // before setting ready to true, check suggested schedules
-      await fetchSuggestedSchedules();
+      setReady(true);
     } else {
       setReady(false);
     }
