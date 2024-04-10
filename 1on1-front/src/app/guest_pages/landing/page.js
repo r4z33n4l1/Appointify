@@ -6,7 +6,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import getOwnerPreferences, { postGuestPreferences, declineInvitation } from '../component.js';
 import styles from '@/components/styles.module.css';
-import NavBar from "@/components/navbar.js";
+import NavBar from "@/components/navbar_guest.js";
 import landingstyles from './styles.module.css'; 
 
 const convertTo12HourFormat = (time24h) => {

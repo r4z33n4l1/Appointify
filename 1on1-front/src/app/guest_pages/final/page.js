@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import getOwnerPreferences, { declineInvitation } from '../component.js';
-import NavBar from "@/components/navbar.js";
+import NavBar from "@/components/navbar_guest.js";
 import styles from './styles.module.css'; 
 
 function SubmitPage() {
