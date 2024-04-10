@@ -25,16 +25,36 @@ export default function CalendarInformation({ params }) {
     setIsSidebarOpen(!isSidebarOpen);
   }
 
-  async function checkPending() {
-    const allDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'all');
-    const pendingDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
-    const acceptedDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'accepted');
-    if (allDetails.length > 0 && acceptedDetails.length > 0 && pendingDetails.length === 0) {
+  async function fetchSuggestedSchedules() {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/events/create_event?calendar_id=${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching suggested schedules');
+      }
+      // ok response set ready to true
       setReady(true);
+    } catch (error) {
+      console.error(error);
+      // error - set ready to false
+      setReady(false);
+    }
+  }
+
+  async function checkPending() {
+    const userDetails = await fetchCalendarStatusUsernamesAndIds(accessToken, id, 'pending');
+    if (userDetails.length === 0) {
+      // before setting ready to true, check suggested schedules
+      await fetchSuggestedSchedules();
     } else {
       setReady(false);
     }
   }
+  
   useEffect(() => {
     checkPending();
   }, [id, accessToken]);
