@@ -1,8 +1,6 @@
 
 'use client'
-import Head from 'next/head';
-import Image from 'next/image';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 export default function OnboardingPage() {
     return (

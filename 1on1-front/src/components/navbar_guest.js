@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useAuth } from '@/utils/authContext';
+import Image from 'next/image';
 
 function NavBar({ toggleSidebar }) {
   return (
@@ -30,11 +30,11 @@ function NavBar({ toggleSidebar }) {
       </button>
       
     </a>
-    <img src="/assets/logo_white.png" width={160} height={40} alt="" />
+    <Image src="/assets/logo_white.png" width={160} height={40} alt="logowhite" />
     <div className="ml-auto">
       <a className="navbar-brand" href="#">
         <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#398d86" }}>
-          <img src="/assets/user.png" width="30px" height="30px" style={{display: 'inline'}}/> Guest
+          <Image src="/assets/user.png" width="30px" height="30px" style={{display: 'inline'}} alt="username"/> Guest
         </button>
       </a>
     </div>

@@ -20,7 +20,7 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
 
     useEffect(() => {
         fetchContacts();
-    }, [calendarId, shouldUpdate, accessToken, clicked]);
+    }, [calendarId]);
 
     // create useeffect for when search term changes 
     useEffect(() => {

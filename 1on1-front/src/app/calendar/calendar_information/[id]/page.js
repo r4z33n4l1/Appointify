@@ -106,7 +106,7 @@ export default function CalendarInformation({ params }) {
 
   useEffect(() => {
     checkPending();
-  }, [id, accessToken]);
+  }, []);
 
   const handleRefresh = () => {
     checkPending();
