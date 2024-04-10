@@ -73,7 +73,7 @@ const ContactsFilter = ({ calendarId }) => {
 
     useEffect(() => {
         fetchContacts();
-    }, []);
+    });
 
     const fetchContacts = async () => {
         const contactsFetched = await fetchCalendarStatusUsernamesAndIds(accessToken, calendarId, status);

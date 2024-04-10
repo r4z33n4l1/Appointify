@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import getOwnerPreferences, { declineInvitation } from '../component.js';
 import NavBar from "@/components/navbar_guest.js";
 import styles from './styles.module.css'; 
+import { Suspense } from 'react';
 
 function SubmitPage() {
     const router = useRouter();
@@ -62,4 +63,13 @@ function SubmitPage() {
     );
 }
 
-export default SubmitPage;
+
+function FinalGuestPage(){
+    return(
+        <Suspense fallback={<div>Loading...</div>}>
+            <SubmitPage/>
+        </Suspense>
+    );
+}
+
+export default FinalGuestPage;

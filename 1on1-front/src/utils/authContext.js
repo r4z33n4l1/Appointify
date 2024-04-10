@@ -70,16 +70,16 @@ export const AuthProvider = ({ children }) => {
       };
     
 
-    const logout = useCallback(() => {
-      removeTokens();
-      setAuthState({
-        accessToken: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
-      router.push('/login');
-    }, [removeTokens, setAuthState, router]);
-
+      const logout = useCallback(() => {
+        removeTokens();
+        setAuthState({
+          accessToken: null,
+          isAuthenticated: false,
+          isLoading: false,
+        });
+        router.push('/login');
+      }, [setAuthState, router]);
+      
     const setLoading = (isLoading) => {
         setAuthState((prevState) => ({
             ...prevState,

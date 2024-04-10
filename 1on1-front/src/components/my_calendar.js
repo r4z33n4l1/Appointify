@@ -96,6 +96,7 @@ export function CalendarView({ id, showPreferences = true }) {
     );
 }
 
+
 function CalendarItem({ item, onChange, value, sortPreferences, showPreferences }) {
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState(null);
@@ -103,6 +104,18 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
     const [selectedPreferences, setSelectedPreferences] = useState([]);
     const [isFinalized, setIsFinalized] = useState([]);
     const { accessToken } = useAuth();
+
+    useEffect(() => {
+        if (item.isfinalized) {
+            const checkIfFinalized = async () => {
+                const finalizedCalendars = await fetchFinalizedCalendars(accessToken);
+                const isCalendarFinalized = finalizedCalendars.find(calendar => calendar.calendar_id === item.id);
+                setIsFinalized(isCalendarFinalized);
+            };
+
+            checkIfFinalized();
+        }
+    }, [item.id, accessToken, item.isfinalized]);
 
     const getPreferencesForDate = (date) => {
         const tileDate = date.toDateString();
@@ -149,7 +162,7 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
             const todayPreferences = getPreferencesForDate(today);
             setSelectedPreferences(todayPreferences);
         }
-    }, [showPreferences]); 
+    }, [showPreferences]);
 
     const preferenceClass = (preference) => {
         switch (preference.toLowerCase()) {
@@ -160,100 +173,30 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
         }
     };
 
+    const date = isFinalized.start_time?.split(' ')[0];
+    const starttime = isFinalized.start_time?.split(' ')[1];
+    const endtime = isFinalized.end_time?.split(' ')[1];
 
-    
+    const handleFinalDateClick = (value) => {
+        const dateObj = new Date(value);
+        const formattedDate = dateObj.toISOString().split('T')[0];
 
-
-    if(item.isfinalized)
-    {
-
-        useEffect(() => {
-            const checkIfFinalized = async () => {
-                const finalizedCalendars = await fetchFinalizedCalendars(accessToken);
-                
-                const isCalendarFinalized = finalizedCalendars.find(calendar => calendar.calendar_id === item.id);
-                setIsFinalized(isCalendarFinalized);
-            };
-    
-            checkIfFinalized();
-        }, [item.id, accessToken]);
-
-    
-
-        const date = isFinalized.start_time?.split(' ')[0];
-        const starttime = isFinalized.start_time?.split(' ')[1];
-        const endtime = isFinalized.end_time?.split(' ')[1];
-
-        const handleFinalDateClick = (value) => {
-
-            const dateObj = new Date(value);
-            const formattedDate = dateObj.toISOString().split('T')[0];
-    
-            if(formattedDate == date)
-            {
-                setSelectedFinalDate(true);
-            }
-    
+        if (formattedDate == date) {
+            setSelectedFinalDate(true);
         }
+    };
 
-        const isDateInEventRange = (chosen_date) => {
-            const dateObj = new Date(chosen_date);
-            const formattedDate = dateObj.toISOString().split('T')[0];
-            
-            return formattedDate == date;
-        };
-
-        return (
-            <div className="flex flex-col md:flex-row justify-center items-start p-4">
-                <div className={styles.calendarItem} style={{marginRight: '10px'}}>
-                    <Calendar
-                        onChange={handleFinalDateClick}
-                        value={value}
-                        minDate={new Date(new Date(item.start_date).getTime() + 86400000)}
-                        maxDate={new Date(new Date(item.end_date).getTime() + 86400000)}
-                        tileClassName={({ date, view }) => {
-                            if (view === 'month' && isDateInEventRange(date)) {
-                                return styles['event-day']
-                            }
-                        }}
-                    />
-                    <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
-                        <div className={styles.itemContainer}>
-                            <p className={styles.itemName}>{item.name}</p>
-                            <p className={styles.itemDescription}>{item.description}</p>
-                            <p> finalized</p>
-                            
-                        </div>
-                    </div>
-                </div>
-                { showPreferences && selectedFinalDate && (
-                    <div className={styles.preferencesBox}>
-                        <h3 className={styles.preferencesDate} style={{alignText: 'center'}}>
-                            scheduled event: <br></br>
-                            {date? date: 'No date selected'}
-                        </h3>
-                        <ul className={styles.preferencesList}>
-                           
-                                <li
-                                   
-                                    className={`px-3 py-1 inline-flex items-center text-sm rounded-full font-medium ${styles.preferenceItem}text-white mr-2 mb-2`}
-                                >
-                                    {`${starttime} - ${endtime} with ${isFinalized.contact}`}
-                                </li>
-                            
-                        </ul>
-                    </div>
-                )}
-            </div>
-        );
-    }
-
+    const isDateInEventRange = (chosen_date) => {
+        const dateObj = new Date(chosen_date);
+        const formattedDate = dateObj.toISOString().split('T')[0];
+        return formattedDate == date;
+    };
 
     return (
         <div className="flex flex-col md:flex-row justify-center items-start p-4">
-            <div className={styles.calendarItem} style={{marginRight: '10px'}}>
+            <div className={styles.calendarItem} style={{ marginRight: '10px' }}>
                 <Calendar
-                    onChange={handleDateClick}
+                    onChange={item.isfinalized ? handleFinalDateClick : handleDateClick}
                     value={value}
                     minDate={new Date(new Date(item.start_date).getTime() + 86400000)}
                     maxDate={new Date(new Date(item.end_date).getTime() + 86400000)}
@@ -268,7 +211,7 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
                     <div className={styles.itemContainer}>
                         <p className={styles.itemName}>{item.name}</p>
                         <p className={styles.itemDescription}>{item.description}</p>
-                        <p> unfinalized</p>
+                        <p>{item.isfinalized ? 'finalized' : 'unfinalized'}</p>
                     </div>
                 </div>
             </div>
@@ -289,9 +232,25 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
                     </ul>
                 </div>
             )}
+            {showPreferences && item.isfinalized && selectedFinalDate && (
+                <div className={styles.preferencesBox}>
+                    <h3 className={styles.preferencesDate} style={{ alignText: 'center' }}>
+                        scheduled event: <br></br>
+                        {date ? date : 'No date selected'}
+                    </h3>
+                    <ul className={styles.preferencesList}>
+                        <li
+                            className={`px-3 py-1 inline-flex items-center text-sm rounded-full font-medium ${styles.preferenceItem}text-white mr-2 mb-2`}
+                        >
+                            {`${starttime} - ${endtime} with ${isFinalized.contact}`}
+                        </li>
+                    </ul>
+                </div>
+            )}
         </div>
     );
 }
+
 
 export async function fetchAndOrganizeCalendarPreferences(calendarId, accessToken) {
     try {

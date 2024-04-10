@@ -70,7 +70,7 @@ export default function Login() {
 
             <div className="text-sm">
               <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500" style={{color: '#398d86'}}>
-                Don't have an account? Sign Up
+                Don&apos;t have an account? Sign Up
               </a>
             </div>
           </div>

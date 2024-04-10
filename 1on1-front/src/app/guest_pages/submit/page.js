@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import getOwnerPreferences, { declineInvitation } from '../component.js';
 import styles from './styles.module.css'; 
 import NavBar from "@/components/navbar_guest.js";
@@ -91,4 +91,14 @@ function SubmitPage() {
     );
 }
 
-export default SubmitPage;
+
+
+function SubmitGuestPage(){
+    return(
+        <Suspense fallback={<div>Loading...</div>}>
+            <SubmitPage/>
+        </Suspense>
+    );
+}
+
+export default SubmitGuestPage;
