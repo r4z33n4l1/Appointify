@@ -145,7 +145,9 @@ export default function CalendarInformation({ params }) {
 		}
 	};
 
-
+	const handleBack = () => {
+		router.push(`/calendar/main_calendar`);
+	};
 
 	return (
 	<>
@@ -154,6 +156,9 @@ export default function CalendarInformation({ params }) {
 			<SideBar isSidebarOpen={isSidebarOpen} />
 			<div style={{ marginTop: '5rem' }}>
 				<div className={styles.calendarContainer}>
+					<button style={{ backgroundColor: '#ba0a51bb' }} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={handleBack}>
+              			Back to all Calendars
+            		</button>
 					<h1 className={styles.header}>Calendar Options</h1>
 					<div className={styles.subContainer}>
 						<button style={{ backgroundColor: ready ? '#398d86' : 'gray' }} className={`text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
