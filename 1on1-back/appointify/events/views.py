@@ -134,7 +134,7 @@ class EventSchedulerView(APIView):
 
         # If we get here, something went wrong
         return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_400_BAD_REQUEST)
-
+    
 
 class AvailabilityDataView(APIView):
     permission_classes = [IsAuthenticated]
@@ -146,3 +146,21 @@ class AvailabilityDataView(APIView):
 
         calendar_info = EventSchedulerView().get_calendar_info(request, calendar_id)
         return Response(calendar_info)
+    
+
+class FinalizedEventView(APIView):
+     def get(self, request, *args, **kwargs):
+
+        created_events = []
+        for events in Event.objects.all():
+             event = {
+                'calendar_id': events.calendar.id,
+                'calendar_name': events.calendar.name,
+                'contact': events.contact.fname,
+                'start_time': events.start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                'end_time': events.end_time.strftime('%Y-%m-%d %H:%M:%S'),
+            }
+             
+             created_events.append(event)
+
+        return Response({"detail": "Events retrieval simulated.", "events": created_events}) 
