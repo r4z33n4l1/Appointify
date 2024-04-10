@@ -104,11 +104,19 @@ function SchedulePage() {
             const existingTimeIndex = existingDate.non_busy_times.findIndex(item => item.time === openDropdown);
 
             if (existingTimeIndex !== -1) {
-                preferences.non_busy_dates[existingDateIndex].non_busy_times[existingTimeIndex].preference = preference;
-            } else {
+                if (preference === 'None') {
+                    preferences.non_busy_dates[existingDateIndex].non_busy_times.splice(existingTimeIndex, 1);
+                    if (preferences.non_busy_dates[existingDateIndex].non_busy_times.length === 0) {
+                        preferences.non_busy_dates.splice(existingDateIndex, 1);
+                    }
+                }
+                else {
+                    preferences.non_busy_dates[existingDateIndex].non_busy_times[existingTimeIndex].preference = preference;
+                }
+            } else if (preference !== 'None') {
                 preferences.non_busy_dates[existingDateIndex].non_busy_times.push(timePreference);
             }
-        } else {
+        } else if (preference !== 'None') {
             preferences.non_busy_dates.push({
                 date: dateKey,
                 non_busy_times: [timePreference]
@@ -124,6 +132,7 @@ function SchedulePage() {
                 [openDropdown]: preference
             }
         }));
+        console.log(preferences);
     };
 
     const handleNextButtonClick = async () => {
@@ -188,9 +197,10 @@ function SchedulePage() {
                                         {selectedDateTimes.map((time, index) => {
                                             const preference = selectedPreferences[selectedDate]?.[time] || '';
                                             const preferenceColor = preference ? {
-                                                backgroundColor: preference === 'High' ? '#4CAF50' :
-                                                    preference === 'Medium' ? '#FFC107' :
-                                                        preference === 'Low' ? '#F44336' : '#fff'
+                                                backgroundColor: preference === 'None' ? '#ba0a51bb' :
+                                                    preference === 'High' ? '#4CAF50' :
+                                                        preference === 'Medium' ? '#FFC107' :
+                                                            preference === 'Low' ? '#F44336' : '#fff'
                                             } : {};
 
                                             return (
@@ -202,6 +212,7 @@ function SchedulePage() {
                                                         {openDropdown === time && (
                                                             <div className={landingstyles.dropdownContainer}>
                                                                 <select className={landingstyles.dropdown} onChange={(e) => handlePreferenceClick(e.target.value)}>
+                                                                    <option value="None">None</option>
                                                                     <option value="High">High</option>
                                                                     <option value="Medium">Medium</option>
                                                                     <option value="Low">Low</option>
