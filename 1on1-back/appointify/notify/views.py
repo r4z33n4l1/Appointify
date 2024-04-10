@@ -200,17 +200,18 @@ class InvitedUserLandingView(APIView):
     def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         non_busy_dates_data = request.data.get('non_busy_dates', [])
-        
+        print(non_busy_dates_data)
         if invitation.calendar.isfinalized:
             print('Calendar is already finalized')
             return Response({'detail': f'Calendar {invitation.calendar.name} is already finalized'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Remove old non-busy dates specific to this invitation before adding new ones
         invitation.invited_contact_non_busy_dates.clear()
-
+        print("Invitation dates after clearing")
         # Add new non-busy dates and times unique to this invitation
         for non_busy_date_data in non_busy_dates_data:
             # Create a new NonBusyDate instance for this invitation
+            print("this runs ", non_busy_date_data)
             non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)
             non_busy_date_serializer.is_valid(raise_exception=True)
             non_busy_date = non_busy_date_serializer.save()
@@ -225,7 +226,7 @@ class InvitedUserLandingView(APIView):
 
             # Add the new NonBusyDate to this invitation
             invitation.invited_contact_non_busy_dates.add(non_busy_date)
-
+        print("I come here")
         # Update invitation status
         invitation.status = 'accepted'
         invitation.save()
