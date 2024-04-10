@@ -1,6 +1,6 @@
 # 1on1-full
 
-## Setup -
+# Setup
 ## Backend
 - cd into backend directory
 - make an .env with the key `SECRET_KEY` under appointify/appointify
