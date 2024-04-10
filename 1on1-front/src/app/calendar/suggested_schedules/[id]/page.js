@@ -81,21 +81,25 @@ export default function SuggestedSchedules({ params }) {
                 <title>Schedules</title>
             </Head>
             <NavBar toggleSidebar={toggleSidebar} />
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh' }}>
+            <div style={{ display: 'dflex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}>
                 <SideBar isSidebarOpen={isSidebarOpen} />
                 <div className="container mx-auto p-4" style={{ marginTop: '10vh' }}>
                     <button onClick={handleBack} className={styles.backButton}>Back</button>
                     <div className={styles.suggestedSchedules}>
                         {error && <p>Error: {error}</p>}
                         {suggestedSchedules.length > 0 && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                                 {suggestedSchedules.map(group => (
                                     <div key={group.schedule_group_id} className="bg-white shadow p-4 rounded">
-                                        <h3>Schedule Group {group.schedule_group_id}</h3>
+                                        <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span style={{ textAlign: 'left' }}>Schedule Group {group.schedule_group_id}</span>
+                                            <button style={{ backgroundColor: '#ba0a51bb' }} onClick={() => finalizeSchedule(id, group.schedule_group_id)} className="text-white p-2 rounded">
+                                                Confirm
+                                            </button>
+                                        </h3>
                                         {group.schedules.map(schedule => (
-                                            <div key={schedule.schedule_id} className="flex justify-end space-x-2">
+                                            <div key={schedule.schedule_id} className="flex justify-center space-x-2">
                                                 <p>{schedule.date} at {schedule.time} with {schedule.contact}</p>
-                                                <button style={{ backgroundColor: '#ba0a51bb' }} onClick={() => finalizeSchedule(id, group.schedule_group_id)} className="text-white p-2 rounded">Confirm</button>
                                             </div>
                                         ))}
                                     </div>
