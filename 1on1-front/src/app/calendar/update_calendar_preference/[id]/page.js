@@ -116,20 +116,22 @@ const CalendarPreferencesForm = ({ params }) => {
 						<option value="high">High</option>
 					</select>
 				</div>
-				<button
-				style={{backgroundColor: '#ba0a51bb'}}
-					type="submit"
-					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-				>
-					Add Preference
-				</button>
-				<button
-				style= {{backgroundColor: '#398d86'}}
-					onClick={handleSavePreferences}
-					className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-				>
-					Save
-				</button>
+				<div style={{ marginBottom: '3vh', display: 'flex', justifyContent: 'space-between' }}>
+					<button
+						style={{ backgroundColor: '#ba0a51bb' }}
+						type="submit"
+						className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					>
+						Add Preference
+					</button>
+					<button
+						style={{ backgroundColor: '#398d86' }}
+						onClick={handleSavePreferences}
+						className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+					>
+						Save
+					</button>
+				</div>
 			</form>
 			{error && <p className="text-red-500">{error}</p>}
 			<div className="space-y-6">
