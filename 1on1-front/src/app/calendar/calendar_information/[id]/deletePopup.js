@@ -19,7 +19,7 @@ const CalendarDeleteConfirmation = ({ id, calendarName, onDeleteConfirm }) => {
      <div className={styles.header}> Delete {calendarName} </div>
      <div className={styles.content}>
          {' '}
-         Are you sure you want to delete {calendarName} with id {id}? This action cannot be undone.
+         Are you sure you want to delete {calendarName}? This action cannot be undone.
      </div>
      <div className={styles.actions}>
          <button

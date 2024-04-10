@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import styles from './styles.module.css';
 import { useAuth } from '@/utils/authContext';
+import { useRouter } from "next/navigation";
 
 
 
@@ -94,6 +95,7 @@ export function CalendarView({ id }) {
 }
 
 function CalendarItem({ item, onChange, value, sortPreferences }) {
+    const router = useRouter();
     return (
         <div className={styles.calendarItem}>
              <Calendar
@@ -136,12 +138,12 @@ function CalendarItem({ item, onChange, value, sortPreferences }) {
                             }
                         }}
                     />
-
-            <div className={styles.itemContainer}>
-                <p className={styles.itemName}>Name: {item.name}</p>
-                <p className={styles.itemDescription}>Description: {item.description}</p>
+            <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
+                <div className={styles.itemContainer}>
+                    <p className={styles.itemName}>Name: {item.name}</p>
+                    <p className={styles.itemDescription}>Description: {item.description}</p>
+                </div>
             </div>
-
 
         </div>
     );
