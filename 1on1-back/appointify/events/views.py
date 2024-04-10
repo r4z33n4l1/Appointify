@@ -205,9 +205,8 @@ class AddScheduleGroupView(APIView):
                 first = guest_name.split(' ')[0]
                 guest = get_object_or_404(Contact, fname=first)
                 
-                #date = datetime.strptime(date_str, '%Y-%m-%d')
-                #time = datetime.strptime(time_str, '%H:%M').time()
-                start_datetime = make_aware(datetime.combine(date, time))
+                date_string = date_str + ' ' + time_str
+                start_datetime = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
                 end_datetime = start_datetime + timedelta(hours=1)  
                 if any(s.start_time == start_datetime for s in schedule_group.schedules.all()):
                     return Response({'error': f'Time conflict exists for {guest_name} on {date_str} at {time_str}.'}, status=status.HTTP_400_BAD_REQUEST)
