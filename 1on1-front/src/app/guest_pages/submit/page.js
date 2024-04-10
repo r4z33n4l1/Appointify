@@ -15,7 +15,6 @@ function SubmitPage() {
     const [owner, setOwner] = useState('');
     const [calendar_name, setCalName] = useState('');
     const [calendar_desc, setCalDesc] = useState('');
-	const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,16 +39,11 @@ function SubmitPage() {
     };
 
     const handleDeclineButtonClick = async () => {
-        if (!showDeclineConfirmation) {
-            setShowDeclineConfirmation(true);
-        } else {
-            try {
-                const response = await declineInvitation({ uuid });
-                console.log('Declined', response);
-                setShowDeclineConfirmation(false);
-            } catch (error) {
-                console.error('Error declining:', error);
-            }
+        try {
+            const response = await declineInvitation({ uuid });
+            console.log('Declined', response);
+        } catch (error) {
+            console.error('Error declining:', error);
         }
     };
 
@@ -72,7 +66,11 @@ function SubmitPage() {
                     <p className={styles.text}>Your date and time preferences have been sent to {owner}.</p>
                     <p className={styles.text}>Meeting Name: {calendar_name}</p>
                     <p className={styles.text}>Description: {calendar_desc}</p>
-                    <button className={styles.button} onClick={handleRescheduleButtonClick}>Reschedule</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                        <button className={styles.button} onClick={handleDeclineButtonClick}>Decline</button>
+                        <button className={styles.button} onClick={handleRescheduleButtonClick}>Reschedule</button>
+                    </div>
+                    {/* <button className={styles.button} onClick={handleRescheduleButtonClick}>Reschedule</button>
                     <button className={styles.button} onClick={handleDeclineButtonClick}>
                         {'Decline'}
                     </button>
@@ -82,7 +80,7 @@ function SubmitPage() {
                             <button className={styles.button} onClick={() => setShowDeclineConfirmation(false)}>Back</button>
                             <button className={styles.button} onClick={handleDeclineButtonClick}>Decline</button>
                         </div>
-                    )}
+                    )} */}
                 </>
             )}
         </div>

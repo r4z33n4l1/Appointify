@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { useRouter } from 'next/navigation';
 import { accessValid, refresh, login as loginHelper , removeTokens} from './authHelper';
 import { jwtDecode } from 'jwt-decode';
+import React from 'react';
 
 const AuthContext = createContext();
 
@@ -92,8 +93,46 @@ export const AuthProvider = ({ children }) => {
         logout,
     };
 
+    const LoadingScreen = () => {
+        const spinnerStyle = {
+          borderTopColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomColor: 'transparent',
+          borderLeftColor: '#34D399', // Tailwind CSS "emerald-400" color
+          borderWidth: '4px',
+          width: '64px',
+          height: '64px',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+        };
+      
+        const containerStyle = {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100vw',
+          height: '100vh',
+          background: 'linear-gradient(to right, #56ab2f, #a8e063)', // Green gradient background
+        };
+      
+        return (
+          <div style={containerStyle}>
+            <div style={spinnerStyle} />
+          </div>
+        );
+      };
+      
+      // CSS for animation
+      const styles = `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
 
-    return <AuthContext.Provider value={contextValue}>{!authState.isLoading ? children : <p>Loading...</p>}</AuthContext.Provider>;
+    
+
+    return <AuthContext.Provider value={contextValue}>{!authState.isLoading ? children :<LoadingScreen/>}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

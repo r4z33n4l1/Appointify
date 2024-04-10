@@ -91,22 +91,27 @@ class NotifyFinalizedScheduleView(APIView):
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
         calendar = get_object_or_404(Calendars, id=calendar_id)
-        user_calendar = UserCalendars.objects.filter(user=request.user, calendar=calendar)
+        user_calendar = UserCalendars.objects.get(user=request.user, calendar=calendar)
         if not user_calendar:
             return Response({'message': 'You do not have access to this calendar'}, status=403)
         if calendar.isfinalized:
             events = Event.objects.filter(calendar=calendar)
             events_serialized = EventsSerializer(events, many=True).data
-
             for event_data in events_serialized:
-                contact_email = event_data['contact_email']
-                event_details = '\n'.join([f"{key}: {value}" for key, value in event_data.items()])
-                send_mail(
-                    'Finalized Event',
-                    event_details,
-                    request.user.email,
-                    [contact_email]
-                )
+                invitations = Invitation.objects.filter(calendar=calendar)
+                for invitation in invitations:
+                    if invitation.invited_contact.email == event_data['contact_email']:
+                        contact_email = event_data['contact_email']
+                        event_details = '\n'.join([f"{key}: {value}" for key, value in event_data.items()])
+                        unique_link = f'http://localhost:3000/guest_pages/final?uuid={invitation.unique_token}'
+                        message = f'Your meeting with {user_calendar.user}, "{calendar.name}" has been finalized. Click the link below for more details:\n\n{unique_link}'
+                        send_mail(
+                            'Meeting Finalized',
+                            message,
+                            'appointify@razeenali.com',
+                            [contact_email],
+                            fail_silently=False,
+                        )
 
             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
         else:
@@ -200,17 +205,18 @@ class InvitedUserLandingView(APIView):
     def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         non_busy_dates_data = request.data.get('non_busy_dates', [])
-        
+        print(non_busy_dates_data)
         if invitation.calendar.isfinalized:
             print('Calendar is already finalized')
             return Response({'detail': f'Calendar {invitation.calendar.name} is already finalized'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Remove old non-busy dates specific to this invitation before adding new ones
         invitation.invited_contact_non_busy_dates.clear()
-
+        print("Invitation dates after clearing")
         # Add new non-busy dates and times unique to this invitation
         for non_busy_date_data in non_busy_dates_data:
             # Create a new NonBusyDate instance for this invitation
+            print("this runs ", non_busy_date_data)
             non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)
             non_busy_date_serializer.is_valid(raise_exception=True)
             non_busy_date = non_busy_date_serializer.save()
@@ -225,7 +231,7 @@ class InvitedUserLandingView(APIView):
 
             # Add the new NonBusyDate to this invitation
             invitation.invited_contact_non_busy_dates.add(non_busy_date)
-
+        print("I come here")
         # Update invitation status
         invitation.status = 'accepted'
         invitation.save()
