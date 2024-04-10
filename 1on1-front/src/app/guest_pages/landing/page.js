@@ -120,6 +120,7 @@ function SchedulePage() {
             console.log('Preferences updated:', response);
             router.push(`/guest_pages/submit?uuid=${uuid}`);
         } catch (error) {
+            alert('This calendar has already been finalized');
             console.error('Error updating preferences:', error);
         }
     };

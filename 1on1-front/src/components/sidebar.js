@@ -160,7 +160,6 @@ function SideBar({ isSidebarOpen }) {
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     crossOrigin="anonymous"
   />
-  <link rel="stylesheet" href="../styles/dev_schedule_style.css" />
 
       <div className={styles[sidebarClass]} id="sidebar-wrapper" style={{background: "linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat"}}>
         <div className="list-group list-group-flush">

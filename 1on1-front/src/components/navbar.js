@@ -29,8 +29,9 @@ function NavBar({ toggleSidebar }) {
       >
         ☰
       </button>
-      <img src="/assets/logo_white.png" width={160} height={40} alt="" />
+      
     </a>
+    <img src="/assets/logo_white.png" width={160} height={40} alt="" />
     <div className="ml-auto">
       <a className="navbar-brand" href="#">
         <button

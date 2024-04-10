@@ -71,88 +71,90 @@ function CalendarView() {
 
     return (
         <>
-             <NavBar toggleSidebar={toggleSidebar} />
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'left', marginTop: '5vh'}}>
-        <SideBar isSidebarOpen={isSidebarOpen} />
-                <a href="create_calendar" className="create-calendar-btn" style={{ display: 'inline-flex', alignItems: 'center', color: 'white', textDecoration: 'none',  margin: '15vh',  marginLeft: '300px'}}>
+            <NavBar toggleSidebar={toggleSidebar} />
+            <div style={{ display: 'd-flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}>
+                <SideBar isSidebarOpen={isSidebarOpen} />
+
+
+                <a href="create_calendar" className="create-calendar-btn" style={{ maxWidth: '370px', justifyContent: 'center',display: 'flex', alignItems: 'center', color: 'white', textDecoration: 'none', margin: '1vh', marginTop: '10vh' }}>
                     <span style={{ display: 'inline-flex', alignItems: 'flex-start' }}>
                         <Image src="/assets/plus-512.png" width={20} height={20} alt="Plus Icon" />
                         <span style={{ marginLeft: '1rem' }}>Create a new calendar</span>
                     </span>
                 </a>
 
-        < div style={{marginTop: '15vh'}}>
-        <div className={styles.filterOptions}>
-                    <label className={styles.finalBtn}>
-                        <input
-                            type="checkbox"
-                            checked={showFinalized}
-                            onChange={() => setShowFinalized(!showFinalized)}
-                        />
-                        Show Finalized
-                    </label>
-                    <label className={styles.unfinalBtn}>
-                        <input
-                            type="checkbox"
-                            checked={showUnfinalized}
-                            onChange={() => setShowUnfinalized(!showUnfinalized)}
-                        />
-                        Show Unfinalized
-                    </label>
-                </div>
-            <div className={styles.calendarContainer}>
+                <div>
+                    <div style={{ justifyContent: 'center', margin: '1vh' }}>
+                        <label className={styles.finalBtn} style={{ justifyContent: 'center' }}>
+                            <input
+                                type="checkbox"
+                                checked={showFinalized}
+                                onChange={() => setShowFinalized(!showFinalized)}
+                            />
+                            Show Finalized
+                        </label>
+                        <label className={styles.unfinalBtn} style={{ justifyContent: 'center' }}>
+                            <input
+                                type="checkbox"
+                                checked={showUnfinalized}
+                                onChange={() => setShowUnfinalized(!showUnfinalized)}
+                            />
+                            Show Unfinalized
+                        </label>
+                    </div>
+                    <div className={styles.calendarContainer} style={{justifyContent: 'center'}}>
 
-                {filteredData && filteredData.map((item) => (
-                    <div key={item.id} className={styles.calendarItem}>
-                        <Calendar
-                            onChange={onChange}
-                            value={value}
-                            minDate={new Date(new Date(item.start_date).getTime() + 86400000)} 
-                            maxDate={new Date(new Date(item.end_date).getTime() + 86400000)} 
-                            className={styles.customCalendar}
-                            tileContent={({ date, view }) => {
-                                if (view === 'month') {
-                                    const tileDate = date.toDateString();
+                        {filteredData && filteredData.map((item) => (
+                            <div key={item.id} className={styles.calendarItem}>
+                                <Calendar
+                                    onChange={onChange}
+                                    value={value}
+                                    minDate={new Date(new Date(item.start_date).getTime() + 86400000)}
+                                    maxDate={new Date(new Date(item.end_date).getTime() + 86400000)}
+                                    className={styles.customCalendar}
+                                    tileContent={({ date, view }) => {
+                                        if (view === 'month') {
+                                            const tileDate = date.toDateString();
 
-                                    if (!item.non_busy_dates) {
-                                        return;
-                                    }
-                                    const shiftedNonBusyDates = item.non_busy_dates.map(nonBusyDate => ({
-                                        ...nonBusyDate,
-                                        date: new Date(new Date(nonBusyDate.date).getTime() + 86400000).toDateString()
-                                    }));
+                                            if (!item.non_busy_dates) {
+                                                return;
+                                            }
+                                            const shiftedNonBusyDates = item.non_busy_dates.map(nonBusyDate => ({
+                                                ...nonBusyDate,
+                                                date: new Date(new Date(nonBusyDate.date).getTime() + 86400000).toDateString()
+                                            }));
 
-                                    const nonBusyTimes = [];
+                                            const nonBusyTimes = [];
 
-                                    shiftedNonBusyDates.forEach(nonBusyDate => {
-                                        if (nonBusyDate.date === tileDate) {
-                                            nonBusyTimes.push(...nonBusyDate.non_busy_times);
-                                        }
-                                    });
+                                            shiftedNonBusyDates.forEach(nonBusyDate => {
+                                                if (nonBusyDate.date === tileDate) {
+                                                    nonBusyTimes.push(...nonBusyDate.non_busy_times);
+                                                }
+                                            });
 
-                                    const sortedTimes = sortPreferences(nonBusyTimes);
+                                            const sortedTimes = sortPreferences(nonBusyTimes);
 
-                                    return (
-                                        <div className={styles.scrollableTile}>
-                                            {sortedTimes.map((time, index) => (
-                                                <div key={index} className={`${styles.nonBusyTime} ${styles[time.preference]}`}>
-                                                    {time.time}
+                                            return (
+                                                <div className={styles.scrollableTile}>
+                                                    {sortedTimes.map((time, index) => (
+                                                        <div key={index} className={`${styles.nonBusyTime} ${styles[time.preference]}`}>
+                                                            {time.time}
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    );
-                                }
-                            }}
-                        />
+                                            );
+                                        }
+                                    }}
+                                />
 
-                    <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
-                    <p className={styles.itemName}>{item.name}</p>
-                    </div>
+                                <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
+                                    <p className={styles.itemName}>{item.name}</p>
+                                </div>
 
+                            </div>
+                        ))}
                     </div>
-                ))}
                 </div>
-            </div>
             </div>
         </>
     );
