@@ -168,10 +168,10 @@ function SchedulePage() {
                     </>
                 ) : (
                     <>
-                        {status === "declined" ? (
-                            <p className={landingstyles.text}>You have already declined this calendar invite!</p>
-                        ) : status === "finalized" ? (
+                        {status === "finalized" ? (
                             <p className={landingstyles.text}>This calendar invite has already been finalized!</p>
+                        ) : status === "declined" ? (
+                            <p className={landingstyles.text}>You have already declined this calendar invite!</p>
                         ) : (
                             <>
                                 <div className="h4 mb-2 mt-2">Please select your available dates and times:</div>
