@@ -35,7 +35,7 @@ export const refresh = async () => {
         const refresh = localStorage.getItem('refresh');
         if (refresh) {
             try {
-                const response = await fetch('http://127.0.0.1:8000/auth/refresh/', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}auth/refresh/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export const isLoggedIn = async () => {
 
 export async function login(username, password) {
     try {
-        const response = await fetch('http://127.0.0.1:8000/auth/login/', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}auth/login/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ export async function login(username, password) {
 export async function signup(userData) {
     try {
 
-        const response = await fetch('http://127.0.0.1:8000/auth/signup/', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}auth/signup/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

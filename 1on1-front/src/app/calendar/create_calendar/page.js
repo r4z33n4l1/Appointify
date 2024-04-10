@@ -22,7 +22,7 @@ function CalendarForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const authToken = accessToken;
-        const response = await fetch('http://127.0.0.1:8000/calendars/create/', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/create/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

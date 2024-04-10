@@ -4,7 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 
 export default async function getOwnerPreferences({ uuid }) {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/notify/invited_user_landing/${uuid}/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}notify/invited_user_landing/${uuid}/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ export default async function getOwnerPreferences({ uuid }) {
 export async function postGuestPreferences({ uuid, preferences }) {
     try {
         console.log("Preferences being sent to BE: ", preferences);
-        const response = await fetch(`http://127.0.0.1:8000/notify/invited_user_landing/${uuid}/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}notify/invited_user_landing/${uuid}/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function postGuestPreferences({ uuid, preferences }) {
 
 export async function declineInvitation({ uuid }) {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/notify/invited_user_landing/${uuid}/decline/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}notify/invited_user_landing/${uuid}/decline/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

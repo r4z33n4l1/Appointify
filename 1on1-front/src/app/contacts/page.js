@@ -23,7 +23,7 @@ function ContactsPage() {
 
     useEffect(() => {
         async function fetchContacts() {
-            const response = await fetch('http://127.0.0.1:8000/contacts/all/', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}contacts/all/`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${accessToken}` },
             });
@@ -51,7 +51,7 @@ function ContactsPage() {
     const deleteSelectedContacts = async () => {
         try {
             await Promise.all(selectedContacts.map(async contactId => {
-                const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}contacts/view/${contactId}/`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
@@ -79,7 +79,7 @@ function ContactsPage() {
     async function addContact(contactDetails, accessToken) {
         console.log("add contact", contactDetails, accessToken)
         try {
-            const response = await fetch(`http://127.0.0.1:8000/contacts/add/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}contacts/add/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ function ContactsPage() {
 
     async function deleteContact(contactId) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}contacts/view/${contactId}/`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -123,7 +123,7 @@ function ContactsPage() {
     // Helper function to update an existing contact
     async function updateContact(contactId, contactDetails, accessToken) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}contacts/view/${contactId}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -20,7 +20,7 @@ function DashboardLayout() {
 		const fetchData = async () => {
 			try {
 				const authToken = accessToken;
-				const response = await fetch('http://127.0.0.1:8000/calendars/all/', {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/all/`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ return (
 
 async function fetchFinalizedCalendars(accessToken) {
 try {
-	const response = await fetch('http://127.0.0.1:8000/events/finalized_events/', {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}events/finalized_events/`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',

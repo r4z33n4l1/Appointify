@@ -11,7 +11,7 @@ export async function isValidCalendarId(calendarId, access) {
     try {
 
         const authToken = access;
-        const response = await fetch('http://127.0.0.1:8000/calendars/all/', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/all/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,8 +56,8 @@ export function CalendarView({ id, showPreferences = true }) {
             }
         };
 
-        fetchData('http://127.0.0.1:8000/calendars/all/', setCalendarData);
-        fetchData('http://127.0.0.1:8000/calendars/user-calendars/', setCalendarPreferences); 
+        fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/all/`, setCalendarData);
+        fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/user-calendars/`, setCalendarPreferences); 
     }, []);
 
     console.log(calendarData);
@@ -296,7 +296,7 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
 export async function fetchAndOrganizeCalendarPreferences(calendarId, accessToken) {
     try {
         // Fetch user calendars along with their preferences
-        const response = await fetch('http://127.0.0.1:8000/calendars/user-calendars/', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/user-calendars/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -345,7 +345,7 @@ export async function updateCalendarPreferences(calendarId, preferencesObj, acce
     console.log('Updating preferences with array:', preferencesArray);
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/calendars/user-calendars/${calendarId}/update/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/user-calendars/${calendarId}/update/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -370,7 +370,7 @@ export async function updateCalendarPreferences(calendarId, preferencesObj, acce
 
 export async function getAllCalendarData(accessToken) {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/calendars/all/`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/all/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -395,7 +395,7 @@ export async function getAllCalendarData(accessToken) {
 
 async function fetchFinalizedCalendars(accessToken) {
     try {
-        const response = await fetch('http://127.0.0.1:8000/events/finalized_events/', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}events/finalized_events/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
