@@ -28,6 +28,7 @@ export default async function getOwnerPreferences({ uuid }) {
 
 export async function postGuestPreferences({ uuid, preferences }) {
     try {
+        console.log("Preferences being sent to BE: ", preferences);
         const response = await fetch(`http://127.0.0.1:8000/notify/invited_user_landing/${uuid}/`, {
             method: 'POST',
             headers: {

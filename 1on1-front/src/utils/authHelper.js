@@ -108,12 +108,19 @@ export async function login(username, password) {
 
 export async function signup(userData) {
     try {
+
         const response = await fetch('http://127.0.0.1:8000/auth/signup/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(userData),
+            body: JSON.stringify({
+                username: userData.username,
+                email: userData.email,
+                password: userData.password,
+                first_name: userData.firstName,
+                last_name: userData.lastName,
+            }),
         });
 
         if (response.status === 201) {

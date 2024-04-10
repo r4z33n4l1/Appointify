@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from .models import Invitation
 from .serializers import InvitationSerializer
 from calendars.models import Calendars, UserCalendars
-from calendars.serializers import NonBusyDateSerializer
+from calendars.serializers import NonBusyDateSerializer, NonBusyTimeSerializer
 from contacts.models import Contact
 from django.core.mail.backends.smtp import EmailBackend
 
@@ -200,22 +200,40 @@ class InvitedUserLandingView(APIView):
     def post(request, unique_link, *args, **kwargs):
         invitation = get_object_or_404(Invitation, unique_token=unique_link)
         non_busy_dates_data = request.data.get('non_busy_dates', [])
+        
         if invitation.calendar.isfinalized:
-            return JsonResponse({'detail': f'Calendar {invitation.calendar.name} is already finalized'}, status=400)
+            print('Calendar is already finalized')
+            return Response({'detail': f'Calendar {invitation.calendar.name} is already finalized'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Remove old non-busy dates specific to this invitation before adding new ones
         invitation.invited_contact_non_busy_dates.clear()
 
+        # Add new non-busy dates and times unique to this invitation
         for non_busy_date_data in non_busy_dates_data:
+            # Create a new NonBusyDate instance for this invitation
             non_busy_date_serializer = NonBusyDateSerializer(data=non_busy_date_data)
             non_busy_date_serializer.is_valid(raise_exception=True)
-            non_busy_date_serializer.save()
-            invitation.invited_contact_non_busy_dates.add(non_busy_date_serializer.instance)
+            non_busy_date = non_busy_date_serializer.save()
 
+            # Create new NonBusyTime instances for this non_busy_date and add them
+            non_busy_times_data = non_busy_date_data.get('non_busy_times', [])
+            for non_busy_time_data in non_busy_times_data:
+                non_busy_time_serializer = NonBusyTimeSerializer(data=non_busy_time_data)
+                non_busy_time_serializer.is_valid(raise_exception=True)
+                non_busy_time = non_busy_time_serializer.save()
+                non_busy_date.non_busy_times.add(non_busy_time)
+
+            # Add the new NonBusyDate to this invitation
+            invitation.invited_contact_non_busy_dates.add(non_busy_date)
+
+        # Update invitation status
         invitation.status = 'accepted'
         invitation.save()
-        serializer = InvitationSerializer(invitation)
-        return JsonResponse({'detail': f'{invitation.invited_contact.fname} preferences updated for this calendar',
-                             'invitation': serializer.data})
 
+        # Serialize and return the updated invitation
+        serializer = InvitationSerializer(invitation)
+        return Response({'detail': f'{invitation.invited_contact.fname} preferences updated for this calendar',
+                 'invitation': serializer.data})
 
 class DeclineInvitationView(APIView):
     @staticmethod
