@@ -66,7 +66,7 @@ return (
 		<div className={styles.calendarContainer}>
 			<div className={styles.eventslist} style={{maxWidth: '400px', minWidth: '300px'}}>
 			<p style={{color: 'white'}}>Scheduled Events</p>
-				{calendars.length > 0 ? calendars.map(calendar => (
+				{calendars ? (calendars.length > 0 ? calendars.map(calendar => (
 					<div key={calendar.calendar_id} className={styles.eventcard}>
 						<p>Calendar: {calendar.calendar_name}</p>
 						<p>Date: {calendar.start_time?.split(' ')[0]}</p>
@@ -74,7 +74,8 @@ return (
 						<p>End Time: {calendar.end_time?.split(' ')[1]}</p>
 						<p>with {calendar.contact}</p>
 					</div>
-				)) : <p>No events scheduled yet.</p>}
+				)) : <p>nothing</p>) : <p>No events scheduled yet.</p>}
+				
 			</div>
 			<div className={styles.dropdown}>
 				<p>Select Your Calendar</p>
