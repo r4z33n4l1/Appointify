@@ -110,7 +110,7 @@ function ViewCalendar() {
                     <div className={styles.calendarContainer} style={{ justifyContent: 'center' }}>
 
                         {filteredData && filteredData.map((item) => (
-                            <div key={item.id} className={styles.calendarItem}>
+                            <div key={item.id} className={styles.calendarContainer}>
 {/*                                 <Calendar
                                     onChange={onChange}
                                     value={value}
