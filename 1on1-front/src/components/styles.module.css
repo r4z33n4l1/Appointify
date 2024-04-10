@@ -108,3 +108,8 @@
     overflow-y: auto; 
 }
 
+.event-day
+{
+    background: rgb(36, 2, 121) !important;
+    color: white;
+}

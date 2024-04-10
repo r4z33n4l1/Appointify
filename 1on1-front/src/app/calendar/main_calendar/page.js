@@ -67,9 +67,9 @@ function ViewCalendar() {
         if (showFinalized && showUnfinalized) {
             return true; // Show all calendars
         } else if (showFinalized && !showUnfinalized) {
-            return item.finalized === 'finalized'; // Show only finalized calendars
+            return item.isfinalized; // Show only finalized calendars
         } else if (!showFinalized && showUnfinalized) {
-            return item.finalized !== 'finalized'; // Show only unfinalized calendars
+            return !item.isfinalized;// Show only unfinalized calendars
         }
         return false;
     });

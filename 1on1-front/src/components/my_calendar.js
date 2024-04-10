@@ -47,7 +47,9 @@ export function CalendarView({ id, showPreferences = true }) {
                     },
                 });
                 const responseData = await response.json();
+                console.log(responseData)
                 const { results } = responseData;
+                console.log(results)
                 setData(results);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -55,7 +57,7 @@ export function CalendarView({ id, showPreferences = true }) {
         };
 
         fetchData('http://127.0.0.1:8000/calendars/all/', setCalendarData);
-        fetchData('http://127.0.0.1:8000/calendars/user-calendars/', setCalendarPreferences);
+        fetchData('http://127.0.0.1:8000/calendars/user-calendars/', setCalendarPreferences); 
     }, []);
 
     console.log(calendarData);
@@ -75,6 +77,7 @@ export function CalendarView({ id, showPreferences = true }) {
     console.log(id_data, id_preference);
     const combinedData = { ...id_data, ...id_preference };
 
+    console.log("combined_data", combinedData);
 
     const sortPreferences = (preferences) => {
         const priorityOrder = { high: 1, medium: 2, low: 3 };
@@ -96,7 +99,10 @@ export function CalendarView({ id, showPreferences = true }) {
 function CalendarItem({ item, onChange, value, sortPreferences, showPreferences }) {
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedFinalDate, setSelectedFinalDate] = useState(false);
     const [selectedPreferences, setSelectedPreferences] = useState([]);
+    const [isFinalized, setIsFinalized] = useState([]);
+    const { accessToken } = useAuth();
 
     const getPreferencesForDate = (date) => {
         const tileDate = date.toDateString();
@@ -154,6 +160,97 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
         }
     };
 
+
+    
+
+
+    if(item.isfinalized)
+    {
+
+        useEffect(() => {
+            const checkIfFinalized = async () => {
+                const finalizedCalendars = await fetchFinalizedCalendars(accessToken);
+                console.log('fetch', finalizedCalendars);
+                const isCalendarFinalized = finalizedCalendars.find(calendar => calendar.calendar_id === item.id);
+                setIsFinalized(isCalendarFinalized);
+            };
+    
+            checkIfFinalized();
+        }, [item.id, accessToken]);
+
+        console.log("final", isFinalized);
+
+        const date = isFinalized.start_time?.split(' ')[0];
+        const starttime = isFinalized.start_time?.split(' ')[1];
+        const endtime = isFinalized.end_time?.split(' ')[1];
+
+        const handleFinalDateClick = (value) => {
+
+            const dateObj = new Date(value);
+            const formattedDate = dateObj.toISOString().split('T')[0];
+    
+            if(formattedDate == date)
+            {
+                setSelectedFinalDate(true);
+            }
+    
+        }
+
+        const isDateInEventRange = (chosen_date) => {
+            const dateObj = new Date(chosen_date);
+            const formattedDate = dateObj.toISOString().split('T')[0];
+            console.log(formattedDate)
+            console.log(formattedDate==date);
+            return formattedDate == date;
+        };
+
+
+        return (
+            <div className="flex justify-center items-start space-x-4 p-4">
+                <div className={styles.calendarItem}>
+                    <Calendar
+                        onChange={handleFinalDateClick}
+                        value={value}
+                        minDate={new Date(new Date(item.start_date).getTime() + 86400000)}
+                        maxDate={new Date(new Date(item.end_date).getTime() + 86400000)}
+                        tileClassName={({ date, view }) => {
+                            if (view === 'month' && isDateInEventRange(date)) {
+                                return styles['event-day']
+                            }
+                        }}
+                    />
+                    <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
+                        <div className={styles.itemContainer}>
+                            <p className={styles.itemName}>{item.name}</p>
+                            <p className={styles.itemDescription}>{item.description}</p>
+                            <p> finalized</p>
+                            
+                        </div>
+                    </div>
+                </div>
+                { showPreferences && selectedFinalDate && (
+                    <div className={styles.preferencesBox}>
+                        <h3 className={styles.preferencesDate} style={{alignText: 'center'}}>
+                            scheduled event: <br></br>
+                            {date? date: 'No date selected'}
+                        </h3>
+                        <ul className={styles.preferencesList}>
+                           
+                                <li
+                                   
+                                    className={`px-3 py-1 inline-flex items-center text-sm rounded-full font-medium ${styles.preferenceItem}text-white mr-2 mb-2`}
+                                >
+                                    {`${starttime} - ${endtime} with ${isFinalized.contact}`}
+                                </li>
+                            
+                        </ul>
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+
     return (
         <div className="flex justify-center items-start space-x-4 p-4">
             <div className={styles.calendarItem}>
@@ -173,6 +270,7 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
                     <div className={styles.itemContainer}>
                         <p className={styles.itemName}>{item.name}</p>
                         <p className={styles.itemDescription}>{item.description}</p>
+                        <p> unfinalized</p>
                     </div>
                 </div>
             </div>
@@ -296,6 +394,23 @@ export async function getAllCalendarData(accessToken) {
     }
 }
 
+
+async function fetchFinalizedCalendars(accessToken) {
+    try {
+        const response = await fetch('http://127.0.0.1:8000/events/finalized_events/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`,
+            },
+        });
+        const responseData = await response.json();
+        return responseData.results;
+    } catch (error) {
+        console.error('Error fetching finalized calendars:', error);
+        return [];
+    }
+}
 
 
 export default CalendarView;

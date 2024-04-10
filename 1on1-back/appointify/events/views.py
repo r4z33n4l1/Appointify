@@ -163,4 +163,4 @@ class FinalizedEventView(APIView):
              
              created_events.append(event)
 
-        return Response({"detail": "Events retrieval simulated.", "events": created_events}) 
+        return Response({"detail": "Events retrieval simulated.", "results": created_events}) 
