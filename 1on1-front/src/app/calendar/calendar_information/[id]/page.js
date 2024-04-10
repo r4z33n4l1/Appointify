@@ -75,6 +75,9 @@ export default function CalendarInformation({ params }) {
   const handleUpdateCalendarPreference = () => {
     router.push(`/calendar/update_calendar_preference/${id}`);
   };
+  const handleBack = () => {
+    router.push(`/calendar/main_calendar`);
+  };
 
   const handleDeleteConfirm = async (calendarId) => {
     try {
@@ -97,8 +100,6 @@ export default function CalendarInformation({ params }) {
     }
   };
 
-
-
 return (
   <>
     <NavBar toggleSidebar={toggleSidebar} />
@@ -112,6 +113,9 @@ return (
             </button>
             <button style={{ backgroundColor: '#ba0a51bb' }} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={handleRefresh}>
               Refresh
+            </button>
+            <button style={{ backgroundColor: '#ba0a51bb' }} className="bg-blue-500 text-white py-2 px-4 rounded ml-2" onClick={handleBack}>
+              All Calendars
             </button>
           </div>
           <h1 className={styles.header}>Your Calendar</h1>
