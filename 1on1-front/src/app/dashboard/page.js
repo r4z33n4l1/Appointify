@@ -44,6 +44,19 @@ function DashboardLayout() {
     setSelectedCalendarId(event.target.value);
   };
 
+  const [calendars, setCalendars] = useState([]);
+
+  useEffect(() => {
+      const fetchCalendars = async () => {
+          const fetchedCalendars = await fetchFinalizedCalendars(accessToken);
+          setCalendars(fetchedCalendars);
+      };
+
+      fetchCalendars();
+  }, [accessToken]);
+
+  console.log('calendars', calendars);
+
   return (
     <>
       <NavBar toggleSidebar={toggleSidebar} />
@@ -106,10 +119,42 @@ function DashboardLayout() {
                 </li>
             </ul>
         </div>
+
+        <div className={styles.eventslist}>
+        <p style={{color: 'white'}}>Scheduled Events</p>
+            {calendars.length > 0 ? calendars.map(calendar => (
+                <div key={calendar.calendar_id} className={styles.eventcard}>
+                    <p>Calendar: {calendar.calendar_name}</p>
+                    <p>Date: {calendar.start_time?.split(' ')[0]}</p>
+                    <p>Start Time: {calendar.start_time?.split(' ')[1]}</p>
+                    <p>End Time: {calendar.end_time?.split(' ')[1]}</p>
+                    <p>with {calendar.contact}</p>
+                </div>
+            )) : <p>Loading events...</p>}
+        </div>
         </div>
       </div>
     </>
   );
 }
+
+
+async function fetchFinalizedCalendars(accessToken) {
+  try {
+      const response = await fetch('http://127.0.0.1:8000/events/finalized_events/', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`,
+          },
+      });
+      const responseData = await response.json();
+      return responseData.results;
+  } catch (error) {
+      console.error('Error fetching finalized calendars:', error);
+      return [];
+  }
+}
+
 
 export default DashboardLayout;
