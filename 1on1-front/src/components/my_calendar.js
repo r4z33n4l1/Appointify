@@ -204,8 +204,8 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
         };
 
         return (
-            <div className="flex justify-center items-start space-x-4 p-4">
-                <div className={styles.calendarItem}>
+            <div className="flex flex-col md:flex-row justify-center items-start p-4">
+                <div className={styles.calendarItem} style={{marginRight: '10px'}}>
                     <Calendar
                         onChange={handleFinalDateClick}
                         value={value}
@@ -250,8 +250,8 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
 
 
     return (
-        <div className="flex justify-center items-start space-x-4 p-4">
-            <div className={styles.calendarItem}>
+        <div className="flex flex-col md:flex-row justify-center items-start p-4">
+            <div className={styles.calendarItem} style={{marginRight: '10px'}}>
                 <Calendar
                     onChange={handleDateClick}
                     value={value}

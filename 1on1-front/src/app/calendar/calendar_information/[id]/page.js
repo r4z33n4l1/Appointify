@@ -166,7 +166,7 @@ export default function CalendarInformation({ params }) {
           <div className={styles.calendarContainer}>
 
             <h1 className={styles.header}>Calendar Options</h1>
-			<CalendarView id={id}/>
+			      <CalendarView id={id}/>
             <div className={styles.subContainer}>
               <button style={{ backgroundColor: ready ? '#398d86' : 'gray' }} className={`text-white py-2 px-4 rounded`} disabled={!ready} onClick={handleScheduleMeeting}>
                 Schedule
