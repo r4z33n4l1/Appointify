@@ -15,6 +15,7 @@ function ContactsPage() {
     const [isEditing, setIsEditing] = useState(false);
     const { accessToken } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [selectedContacts, setSelectedContacts] = useState([]); // selected contacts
     const toggleSidebar = () => {
       setIsSidebarOpen(!isSidebarOpen);
     }
@@ -37,6 +38,38 @@ function ContactsPage() {
 
         fetchContacts();
     }, []);
+
+    const toggleSelectContact = (contactId) => {
+        if (selectedContacts.includes(contactId)) {
+            setSelectedContacts(selectedContacts.filter(id => id !== contactId));
+        } else {
+            setSelectedContacts([...selectedContacts, contactId]);
+        }
+    };
+
+    // Function to handle deleting selected contacts
+    const deleteSelectedContacts = async () => {
+        try {
+            await Promise.all(selectedContacts.map(async contactId => {
+                const response = await fetch(`http://127.0.0.1:8000/contacts/view/${contactId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to delete contact");
+                }
+            }));
+
+            // Remove selected contacts from the state to update the UI
+            setContacts(contacts.filter(contact => !selectedContacts.includes(contact.id)));
+            setSelectedContacts([]);
+        } catch (error) {
+            console.error("Failed to delete contacts", error);
+        }
+    };
 
     
     const handleChange = (e, field) => {
@@ -231,7 +264,7 @@ return (
                 fontFamily: '"Segoe UI", Arial, sans-serif' 
             }}>{isEditing ? 'Edit Contact' : 'Add New Contact'}</h1>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-6">
+                <form onSubmit={handleSubmit} novalidate="novalidate" className="flex flex-col gap-3 mb-6">
                     <input
                         className="border p-2 rounded"
                         type="text"
@@ -258,13 +291,15 @@ return (
                     />
                     <div className="flex gap-2">
                         <button style={{ backgroundColor: '#ba0a51bb'}}type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">{isEditing ? 'Update Contact' : 'Add Contact'}</button>
-                        {isEditing && <button type="button" onClick={cancelEdit} className="flex-1 bg-gray-300 p-2 rounded hover:bg-gray-400">Cancel</button>}
+                        {isEditing && <button type="button" onClick={cancelEdit} className="flex-1 bg-red-300 p-2 rounded hover:bg-red-400 text-white	">Cancel</button>}
+                        <button style={{ backgroundColor: '#ba0a51bb'}}type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600" onClick={deleteSelectedContacts}>Delete Selected</button>
                     </div>
+
                 </form>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {contacts.map(contact => (
-                            <div key={contact.id} className="bg-white shadow p-4 rounded">
-                                <div>
+                            <div key={contact.id} className={`bg-white shadow p-4 rounded ${selectedContacts.includes(contact.id) ? 'border-4 border-blue-500' : ''}`} onClick={() => toggleSelectContact(contact.id)}>
+                            <div>
                                     <p>{contact.fname} {contact.lname}</p>
                                     <p className="text-sm text-gray-600">{contact.email}</p>
                                 </div>
