@@ -231,6 +231,6 @@ class AddScheduleGroupView(APIView):
                     'schedule_id': s.id,
                     'date': s.start_time.strftime('%Y-%m-%d'),
                     'time': s.start_time.strftime('%H:%M:%S'),
-                    'contact': s.contact.name
+                    'contact': s.contact.fname
                 } for s in created_schedules]
             }, status=status.HTTP_201_CREATED)

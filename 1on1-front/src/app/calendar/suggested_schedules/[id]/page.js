@@ -91,6 +91,12 @@ export default function SuggestedSchedules({ params }) {
         }
     };
 
+    const handleConfirmClick = async (id, schedule_group_id) => {
+        const first_success = await finalizeSchedule(id, schedule_group_id);
+        if (first_success) await sendFinalizeEmail(id);
+    };
+
+
     const sendFinalizeEmail = async (calendarId) => {
         try {
             console.log('sending email');
@@ -154,7 +160,8 @@ export default function SuggestedSchedules({ params }) {
             }
     
             const data = await response.json();
-            await finalizeSchedule(id, data.schedule_group_id);
+            const first_success = await finalizeSchedule(id, data.schedule_group_id);
+            if (first_success) await sendFinalizeEmail(id);
     
         } catch (error) {
             alert('Failed to confirm custom schedules: ' + error.message);
