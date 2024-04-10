@@ -37,3 +37,19 @@
   margin: 10px;
 }
 
+.timeButtonContainer {
+  position: relative;
+}
+
+.dropdownContainer {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown {
+  width: 100%;
+}
+

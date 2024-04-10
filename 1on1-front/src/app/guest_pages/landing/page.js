@@ -39,8 +39,7 @@ function SchedulePage() {
     const [endDate, setEndDate] = useState('');
     const [openDropdown, setOpenDropdown] = useState(null);
     const [preferences, setPreferences] = useState({ non_busy_dates: [] });
-	const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [selectedPreferences, setSelectedPreferences] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -83,41 +82,49 @@ function SchedulePage() {
         const selectedDateString = date.toISOString().split('T')[0];
         const selectedDateTimes = ownerPreferences[selectedDateString] || [];
         const sortedTimes = selectedDateTimes.slice().sort();
-		setSelectedDate((new Date(new Date(selectedDateString).getTime() + 86400000)).toISOString().split('T')[0]);
+        setSelectedDate((new Date(new Date(selectedDateString).getTime() + 86400000)).toISOString().split('T')[0]);
         setSelectedDateTimes(sortedTimes);
-		setOpenDropdown(null);
+        setOpenDropdown(null);
     };
 
     const handleTimeClick = (time) => {
         setOpenDropdown(openDropdown === time ? null : time);
     };
 
-	const handlePreferenceClick = (preference) => {
-		const dateKey = (new Date(new Date(selectedDate).getTime() - 86400000)).toISOString().split('T')[0];
-		const existingDateIndex = preferences.non_busy_dates.findIndex(item => item.date === dateKey);
-		const timePreference = {
-			time: openDropdown,
-			preference: preference.toLowerCase()
-		};
-	
-		if (existingDateIndex !== -1) {
-			const existingDate = preferences.non_busy_dates[existingDateIndex];
-			const existingTimeIndex = existingDate.non_busy_times.findIndex(item => item.time === openDropdown);
-	
-			if (existingTimeIndex !== -1) {
-				preferences.non_busy_dates[existingDateIndex].non_busy_times[existingTimeIndex].preference = preference;
-			} else {
-				preferences.non_busy_dates[existingDateIndex].non_busy_times.push(timePreference);
-			}
-		} else {
-			preferences.non_busy_dates.push({
-				date: dateKey,
-				non_busy_times: [timePreference]
-			});
-		}
-	
-		setPreferences({...preferences});
-	};
+    const handlePreferenceClick = (preference) => {
+        const dateKey = (new Date(new Date(selectedDate).getTime() - 86400000)).toISOString().split('T')[0];
+        const existingDateIndex = preferences.non_busy_dates.findIndex(item => item.date === dateKey);
+        const timePreference = {
+            time: openDropdown,
+            preference: preference.toLowerCase()
+        };
+
+        if (existingDateIndex !== -1) {
+            const existingDate = preferences.non_busy_dates[existingDateIndex];
+            const existingTimeIndex = existingDate.non_busy_times.findIndex(item => item.time === openDropdown);
+
+            if (existingTimeIndex !== -1) {
+                preferences.non_busy_dates[existingDateIndex].non_busy_times[existingTimeIndex].preference = preference;
+            } else {
+                preferences.non_busy_dates[existingDateIndex].non_busy_times.push(timePreference);
+            }
+        } else {
+            preferences.non_busy_dates.push({
+                date: dateKey,
+                non_busy_times: [timePreference]
+            });
+        }
+
+        setPreferences({ ...preferences });
+
+        setSelectedPreferences(prevState => ({
+            ...prevState,
+            [selectedDate]: {
+                ...(prevState[selectedDate] || {}),
+                [openDropdown]: preference
+            }
+        }));
+    };
 
     const handleNextButtonClick = async () => {
         try {
@@ -134,78 +141,89 @@ function SchedulePage() {
         try {
             const response = await declineInvitation({ uuid });
             console.log('Declined', response);
-            window.location.reload();
         } catch (error) {
             console.error('Error declining:', error);
         }
     };
 
     return (
-<>
-    <NavBar/>
-    <div className={landingstyles.container}>
-        {Object.keys(ownerPreferences).length === 0 ? (
-            <>
-                <p className={landingstyles.text}>Inviter: {owner}</p>
-                <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
-                <p className={landingstyles.text}>Description: {calendar_desc}</p>
-                <p className={landingstyles.text}>Inviter has not yet set any preferences! Please try again later.</p>
-            </>
-        ) : (
-            <>
-                {status === "declined" ? (
-                    <p className={landingstyles.text}>You have already declined this calendar invite!</p>
-                ) : status === "finalized" ? (
-                    <p className={landingstyles.text}>This calendar invite has already been finalized!</p>
-                ) : (
+        <>
+            <NavBar />
+            <div className={landingstyles.container}>
+                {Object.keys(ownerPreferences).length === 0 ? (
                     <>
-                        <div className="h4 mb-2 mt-2">Please select your available dates and times:</div>
                         <p className={landingstyles.text}>Inviter: {owner}</p>
                         <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
                         <p className={landingstyles.text}>Description: {calendar_desc}</p>
-                        <div className={styles.calendarContainer}>
-                            <div className={styles.calendarItem}>
-                                <Calendar
-                                    onClickDay={onChange}
-                                    value={selectedDate}
-                                    minDate={new Date(new Date(startDate).getTime() + 86400000)}
-                                    maxDate={new Date(new Date(endDate).getTime() + 86400000)}
-                                    tileDisabled={({ date }) => {
-                                        const tileDate = date.toDateString();
-                                        const dates = Object.keys(ownerPreferences);
-                                        const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
-                                        return !formattedDates.includes(tileDate);
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                {selectedDateTimes.map((time, index) => (
-                                    <div key={index} className={styles.time}>
-                                        <button className={landingstyles.button} onClick={() => handleTimeClick(time)}>
-                                            {convertTo12HourFormat(time)}
-                                        </button>
-                                        {openDropdown === time && (
-                                            <div>
-                                                <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('High')}>High</button><br />
-                                                <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
-                                                <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Low')}>Low</button><br />
-                                            </div>
-                                        )}
+                        <p className={landingstyles.text}>Inviter has not yet set any preferences! Please try again later.</p>
+                    </>
+                ) : (
+                    <>
+                        {status === "declined" ? (
+                            <p className={landingstyles.text}>You have already declined this calendar invite!</p>
+                        ) : status === "finalized" ? (
+                            <p className={landingstyles.text}>This calendar invite has already been finalized!</p>
+                        ) : (
+                            <>
+                                <div className="h4 mb-2 mt-2">Please select your available dates and times:</div>
+                                <p className={landingstyles.text}>Inviter: {owner}</p>
+                                <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
+                                <p className={landingstyles.text}>Description: {calendar_desc}</p>
+                                <div className={styles.calendarContainer}>
+                                    <div className={styles.calendarItem}>
+                                        <Calendar
+                                            onClickDay={onChange}
+                                            value={selectedDate}
+                                            minDate={new Date(new Date(startDate).getTime() + 86400000)}
+                                            maxDate={new Date(new Date(endDate).getTime() + 86400000)}
+                                            tileDisabled={({ date }) => {
+                                                const tileDate = date.toDateString();
+                                                const dates = Object.keys(ownerPreferences);
+                                                const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
+                                                return !formattedDates.includes(tileDate);
+                                            }}
+                                        />
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-                            <button className={landingstyles.button} onClick={handleDeclineButtonClick}>Decline</button>
-                            <button className={landingstyles.button} onClick={handleNextButtonClick}>Next</button>
-                        </div>
+                                    <div style={{ overflowY: 'auto', maxHeight: '285px', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                                        {selectedDateTimes.map((time, index) => {
+                                            const preference = selectedPreferences[selectedDate]?.[time] || '';
+                                            const preferenceColor = preference ? {
+                                                backgroundColor: preference === 'High' ? '#4CAF50' :
+                                                    preference === 'Medium' ? '#FFC107' :
+                                                        preference === 'Low' ? '#F44336' : '#fff'
+                                            } : {};
+
+                                            return (
+                                                <div key={index} className={styles.time}>
+                                                    <div className={landingstyles.timeButtonContainer}>
+                                                        <button className={landingstyles.button} style={preferenceColor} onClick={() => handleTimeClick(time)}>
+                                                            {convertTo12HourFormat(time)}
+                                                        </button>
+                                                        {openDropdown === time && (
+                                                            <div className={landingstyles.dropdownContainer}>
+                                                                <select className={landingstyles.dropdown} onChange={(e) => handlePreferenceClick(e.target.value)}>
+                                                                    <option value="High">High</option>
+                                                                    <option value="Medium">Medium</option>
+                                                                    <option value="Low">Low</option>
+                                                                </select>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                                    <button className={landingstyles.button} onClick={handleDeclineButtonClick}>Decline</button>
+                                    <button className={landingstyles.button} onClick={handleNextButtonClick}>Next</button>
+                                </div>
+                            </>
+                        )}
                     </>
                 )}
-            </>
-        )}
-    </div>
-</>
-
+            </div>
+        </>
     );
     
 }
