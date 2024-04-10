@@ -55,14 +55,43 @@ export default function SuggestedSchedules({ params }) {
                 body: JSON.stringify({ calendar_id: calendarId, schedule_group_id: scheduleGroupId }),
             });
             if (!response.ok) {
-                throw new Error('Failed to finalize schedule');
+                alert('You already have events scheduled for this calendar');
+                return false;
             }
             const data = await response.json();
             alert(data.detail);
-            router.push(`/calendar/calendar_information/${calendarId}`);
+            return true;
+        } catch (error) {
+            console.log(error.message);
+            return false;
+        }
+    };
+
+    const sendFinalizeEmail = async (calendarId) => {
+        try {
+            console.log('sending email');
+            const response2 = await fetch(`http://127.0.0.1:8000/notify/calendars/notify_finalized/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({ calendar_id: calendarId }),
+            });
+            if (!response2.ok) {
+                throw new Error('Failed to send emails to participants');
+            }
+            const data2 = await response2.json();
+            alert(data2.detail);
+            router.push(`/dashboard`);
         } catch (error) {
             alert(error.message);
         }
+    };
+
+    const handleConfirmClick = async (id, schedule_group_id) => {
+        const first_success = await finalizeSchedule(id, schedule_group_id);
+        if (first_success) await sendFinalizeEmail(id);
     };
 
     useEffect(() => {
@@ -93,7 +122,7 @@ export default function SuggestedSchedules({ params }) {
                                     <div key={group.schedule_group_id} className="bg-white shadow p-4 rounded">
                                         <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ textAlign: 'left' }}>Schedule Group {group.schedule_group_id}</span>
-                                            <button style={{ backgroundColor: '#ba0a51bb' }} onClick={() => finalizeSchedule(id, group.schedule_group_id)} className="text-white p-2 rounded">
+                                            <button style={{ backgroundColor: '#ba0a51bb' }} onClick={() => handleConfirmClick(id, group.schedule_group_id)} className="text-white p-2 rounded">
                                                 Confirm
                                             </button>
                                         </h3>

@@ -6,7 +6,7 @@ import getOwnerPreferences, { declineInvitation } from '../component.js';
 import NavBar from "@/components/navbar_guest.js";
 import styles from './styles.module.css'; 
 
-function SubmitPage() {
+function FinalPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const uuid = `${searchParams.get('uuid')}`;
@@ -62,4 +62,4 @@ function SubmitPage() {
     );
 }
 
-export default SubmitPage;
+export default FinalPage;

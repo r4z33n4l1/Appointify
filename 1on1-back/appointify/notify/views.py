@@ -103,9 +103,9 @@ class NotifyFinalizedScheduleView(APIView):
                 event_details = '\n'.join([f"{key}: {value}" for key, value in event_data.items()])
                 send_mail(
                     'Finalized Event',
-                    event_details,
-                    request.user.email,
-                    [contact_email]
+                    'appointify@razeenali.com',
+                    [contact_email],
+                    fail_silently=False,
                 )
 
             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
