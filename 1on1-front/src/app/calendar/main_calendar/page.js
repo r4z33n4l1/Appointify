@@ -16,12 +16,16 @@ function CalendarView() {
     const [calendarData, setCalendarData] = useState([]);
     const [calendarPreferences, setCalendarPreferences] = useState([]);
     const [value, onChange] = useState(new Date());
-    const [showFinalized, setShowFinalized] = useState(true); 
-    const [showUnfinalized, setShowUnfinalized] = useState(true); 
+    const [showFinalized, setShowFinalized] = useState(true);
+    const [showUnfinalized, setShowUnfinalized] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const toggleSidebar = () => {
-      setIsSidebarOpen(!isSidebarOpen);
+        setIsSidebarOpen(!isSidebarOpen);
     }
+
+    const handleCreateCalendar = () => {
+        router.push('/calendar/create_calendar');
+    };
 
     useEffect(() => {
         const fetchData = async (url, setData) => {
@@ -66,7 +70,7 @@ function CalendarView() {
         } else if (!showFinalized && showUnfinalized) {
             return item.finalized !== 'finalized'; // Show only unfinalized calendars
         }
-        return false; 
+        return false;
     });
 
     return (
@@ -74,35 +78,35 @@ function CalendarView() {
             <NavBar toggleSidebar={toggleSidebar} />
             <div style={{ display: 'd-flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}>
                 <SideBar isSidebarOpen={isSidebarOpen} />
-
-
-                <a href="create_calendar" className="create-calendar-btn" style={{ maxWidth: '370px', justifyContent: 'center',display: 'flex', alignItems: 'center', color: 'white', textDecoration: 'none', margin: '1vh', marginTop: '10vh' }}>
-                    <span style={{ display: 'inline-flex', alignItems: 'flex-start' }}>
-                        <Image src="/assets/plus-512.png" width={20} height={20} alt="Plus Icon" />
-                        <span style={{ marginLeft: '1rem' }}>Create a new calendar</span>
-                    </span>
-                </a>
-
                 <div>
-                    <div style={{ justifyContent: 'center', margin: '1vh' }}>
-                        <label className={styles.finalBtn} style={{ justifyContent: 'center' }}>
-                            <input
-                                type="checkbox"
-                                checked={showFinalized}
-                                onChange={() => setShowFinalized(!showFinalized)}
-                            />
-                            Show Finalized
-                        </label>
-                        <label className={styles.unfinalBtn} style={{ justifyContent: 'center' }}>
-                            <input
-                                type="checkbox"
-                                checked={showUnfinalized}
-                                onChange={() => setShowUnfinalized(!showUnfinalized)}
-                            />
-                            Show Unfinalized
-                        </label>
+                    <div className={styles.container}>
+                        <button className={styles.createCalendarBtn} onClick={handleCreateCalendar}>
+                            <div className={styles.plusIcon}>
+                                <Image src="/assets/plus-512.png" width={20} height={20} alt="Plus Icon" />
+                            </div>
+                            Create a new calendar
+                        </button>
+
+                        <div className={styles.checkboxContainer}>
+                            <label className={`${styles.checkboxLabel} ${styles.finalBtn}`}>
+                                <input
+                                    type="checkbox"
+                                    checked={showFinalized}
+                                    onChange={() => setShowFinalized(!showFinalized)}
+                                />
+                                <span className={styles.checkboxText}>Show Finalized</span>
+                            </label>
+                            <label className={`${styles.checkboxLabel} ${styles.unfinalBtn}`}>
+                                <input
+                                    type="checkbox"
+                                    checked={showUnfinalized}
+                                    onChange={() => setShowUnfinalized(!showUnfinalized)}
+                                />
+                                <span className={styles.checkboxText}>Show Unfinalized</span>
+                            </label>
+                        </div>
                     </div>
-                    <div className={styles.calendarContainer} style={{justifyContent: 'center'}}>
+                    <div className={styles.calendarContainer} style={{ justifyContent: 'center' }}>
 
                         {filteredData && filteredData.map((item) => (
                             <div key={item.id} className={styles.calendarItem}>
