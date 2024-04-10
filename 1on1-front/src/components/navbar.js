@@ -34,12 +34,8 @@ function NavBar({ toggleSidebar }) {
     <img src="/assets/logo_white.png" width={160} height={40} alt="" />
     <div className="ml-auto">
       <a className="navbar-brand" href="#">
-        <button
-          type="submit"
-          className="btn btn-primary"
-          style={{ backgroundColor: "#398d86" }}
-        >
-          <img src="/assets/user.png" width="30px" height="30px" /> {token_username}
+        <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#398d86" }}>
+          <img src="/assets/user.png" width="30px" height="30px" style={{display: 'inline'}}/> {token_username}
         </button>
       </a>
     </div>
