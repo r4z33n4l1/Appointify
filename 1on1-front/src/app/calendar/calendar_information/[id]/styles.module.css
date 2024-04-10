@@ -12,10 +12,12 @@
     padding: 10px;
     border-radius: 5px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .calendarContainer a {
-
     color: #ffffff;
     text-decoration: none;
 }
