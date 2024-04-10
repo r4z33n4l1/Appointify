@@ -175,10 +175,10 @@ function SideBar({ isSidebarOpen }) {
             <img src="/assets/home.png" width="20px" height="20px" />
             <span>Contacts</span>
           </a>
-          <a href="/schedule" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/schedule') ? '#136f68' : '' }}>
+{/*           <a href="/schedule" style={{ display: "flex", alignItems: "center", backgroundColor: isActive('/schedule') ? '#136f68' : '' }}>
             <img src="/assets/calendar-7-256.png" width="20px" height="20px" />
             <span>Schedule</span>
-          </a>
+          </a> */}
           <a style={{ display: "flex", alignItems: "center" }}>
             <img src="/assets/account-logout-256.png" width="20px" height="20px" />
             <button onClick={handleLogout}><span>Logout</span></button>
