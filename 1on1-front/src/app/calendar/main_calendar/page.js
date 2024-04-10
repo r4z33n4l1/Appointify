@@ -153,7 +153,7 @@ function ViewCalendar() {
                                 /> */}
 
                                 {/* <p className={styles.itemName}>{item.name}</p> */}
-                                <CalendarView id={item.id} />
+                                <CalendarView id={item.id} showPreferences = {false} />
 
                             </div>
                         ))}

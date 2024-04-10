@@ -1,25 +1,57 @@
-/* styles.module.css */
+
+.preferencesBox {
+    width: 300px; 
+    height: 379px; 
+    overflow-y: auto; 
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    border-radius: 4px;
+    background-color: #fff;
+}
+.preferencesDate {
+    font-size: 16px; 
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding: 10px;
+    background-color: #f3f4f6; 
+    border-bottom: 1px solid #e2e8f0; 
+}
+
+.preferencesList {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+}
+
+.preferenceItem {
+
+    display: block; 
+}
+
+.bg-high { background-color: #ef4444; }
+.bg-medium { background-color: #facc15; } 
+.bg-low { background-color: #22c55e; } 
+.bg-default { background-color: #94a3b8; } 
+
+
+.high { background-color: #ef4444; }
+.medium { background-color: #facc15; } 
+.low { background-color: #22c55e; } 
 
 .calendarContainer {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 20px;
 }
+
+
 
 .calendarItem {
-    background-color: #386662;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 4px; 
+    padding-bottom: 0; 
+    margin-bottom: 0; 
     width: 300px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.scrollableTile {
-    max-height: 200px;
-    overflow-x: auto;
-    overflow-y: auto;
 }
 
 .nonBusyTime {
@@ -30,17 +62,6 @@
     background-color: transparent; 
 }
 
-.high {
-    background-color: #07be5d !important; 
-}
-
-.medium {
-    background-color: #aaaaff!important; 
-}
-
-.low {
-    background-color: #c23d3db1 !important; 
-}
 
 .itemName {
     font-size: 1.2rem; 
@@ -62,6 +83,7 @@
     padding: 15px; 
     border-radius: 5px; 
     margin-bottom: 10px; 
+    text-align: center;
 }
 
 .sidebar-open {
@@ -86,4 +108,3 @@
     overflow-y: auto; 
 }
 
-  

@@ -6,7 +6,7 @@
   border-radius: 40px;
   padding: 20px;
   margin: auto;
-  width: 50%; 
+  max-width: 90%; 
   background: linear-gradient(135deg, #77aeaa, #2E475C) 50% 50% no-repeat;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
   position: fixed;

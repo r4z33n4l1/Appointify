@@ -64,7 +64,7 @@ export default function SuggestedSchedules({ params }) {
     }, [id, accessToken]);
 
     const handleBack = () => {
-        router.back();
+        router.push(`/calendar/calendar_information/${id}`);
     };
 
     return (

@@ -8,6 +8,8 @@ import getOwnerPreferences, { postGuestPreferences, declineInvitation } from '..
 import styles from '@/components/styles.module.css';
 import NavBar from "@/components/navbar_guest.js";
 import landingstyles from './styles.module.css'; 
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
 
 const convertTo12HourFormat = (time24h) => {
 	let [hours, minutes] = time24h.split(':');
@@ -38,6 +40,7 @@ function SchedulePage() {
     const [openDropdown, setOpenDropdown] = useState(null);
     const [preferences, setPreferences] = useState({ non_busy_dates: [] });
 	const [showDeclineConfirmation, setShowDeclineConfirmation] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -128,90 +131,81 @@ function SchedulePage() {
     };
 
     const handleDeclineButtonClick = async () => {
-        if (!showDeclineConfirmation) {
-            setShowDeclineConfirmation(true);
-        } else {
-            try {
-                const response = await declineInvitation({ uuid });
-                console.log('Declined', response);
-                setShowDeclineConfirmation(false);
-            } catch (error) {
-                console.error('Error declining:', error);
-            }
+        try {
+            const response = await declineInvitation({ uuid });
+            console.log('Declined', response);
+            window.location.reload();
+        } catch (error) {
+            console.error('Error declining:', error);
         }
     };
 
     return (
-        <>
-        <NavBar/>
-        <div className={landingstyles.container}>
-            {Object.keys(ownerPreferences).length === 0 ? (
-                <>
-                    <p className={landingstyles.text}>Inviter: {owner}</p>
-                    <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
-                    <p className={landingstyles.text}>Description: {calendar_desc}</p>
-                    <p className={landingstyles.text}>Inviter has not yet set any preferences! Please try again later.</p>
-                </>
-            ) : (
-                <>
-                    {status === "declined" ? (
-                        <p className={landingstyles.text}>You have already declined this calendar invite!</p>
-                    ) : status === "finalized" ? (
-                        <p className={landingstyles.text}>This calendar invite has already been finalized!</p>
-                    ) : (
-                        <>
-                            <p className={landingstyles.text}>Inviter: {owner}</p>
-                            <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
-                            <p className={landingstyles.text}>Description: {calendar_desc}</p>
-                            <div className={styles.calendarContainer}>
-                                <div className={styles.calendarItem}>
-                                    <Calendar
-                                        onClickDay={onChange}
-                                        value={selectedDate}
-                                        minDate={new Date(new Date(startDate).getTime() + 86400000)}
-                                        maxDate={new Date(new Date(endDate).getTime() + 86400000)}
-                                        tileDisabled={({ date }) => {
-                                            const tileDate = date.toDateString();
-                                            const dates = Object.keys(ownerPreferences);
-                                            const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
-                                            return !formattedDates.includes(tileDate);
-                                        }}
-                                    />
-                                </div>
-                                <div>
-                                    {selectedDateTimes.map((time, index) => (
-                                        <div key={index} className={styles.time}>
-                                            <button className={landingstyles.button} onClick={() => handleTimeClick(time)}>
-                                                {convertTo12HourFormat(time)}
-                                            </button>
-                                            {openDropdown === time && (
-                                                <div>
-                                                    <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('High')}>High</button><br />
-                                                    <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
-                                                    <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Low')}>Low</button><br />
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                                <button  className={landingstyles.button} onClick={handleNextButtonClick}>Next</button>
-                                <button  className={landingstyles.button} onClick={handleDeclineButtonClick}>
-                                    {'Decline'}
-                                </button>
-                                {showDeclineConfirmation && (
-                                    <div>
-                                        <p>Are you sure you want to decline?</p>
-                                        <button  className={landingstyles.button} onClick={() => setShowDeclineConfirmation(false)}>Back</button>
-                                        <button  className={landingstyles.button} onClick={handleDeclineButtonClick}>Decline</button>
-                                    </div>
-                                )}
+<>
+    <NavBar/>
+    <div className={landingstyles.container}>
+        {Object.keys(ownerPreferences).length === 0 ? (
+            <>
+                <p className={landingstyles.text}>Inviter: {owner}</p>
+                <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
+                <p className={landingstyles.text}>Description: {calendar_desc}</p>
+                <p className={landingstyles.text}>Inviter has not yet set any preferences! Please try again later.</p>
+            </>
+        ) : (
+            <>
+                {status === "declined" ? (
+                    <p className={landingstyles.text}>You have already declined this calendar invite!</p>
+                ) : status === "finalized" ? (
+                    <p className={landingstyles.text}>This calendar invite has already been finalized!</p>
+                ) : (
+                    <>
+                        <div className="h4 mb-2 mt-2">Please select your available dates and times:</div>
+                        <p className={landingstyles.text}>Inviter: {owner}</p>
+                        <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
+                        <p className={landingstyles.text}>Description: {calendar_desc}</p>
+                        <div className={styles.calendarContainer}>
+                            <div className={styles.calendarItem}>
+                                <Calendar
+                                    onClickDay={onChange}
+                                    value={selectedDate}
+                                    minDate={new Date(new Date(startDate).getTime() + 86400000)}
+                                    maxDate={new Date(new Date(endDate).getTime() + 86400000)}
+                                    tileDisabled={({ date }) => {
+                                        const tileDate = date.toDateString();
+                                        const dates = Object.keys(ownerPreferences);
+                                        const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
+                                        return !formattedDates.includes(tileDate);
+                                    }}
+                                />
                             </div>
-                        </>
-                    )}
-                </>
-            )}
-        </div>
-        </>
+                            <div>
+                                {selectedDateTimes.map((time, index) => (
+                                    <div key={index} className={styles.time}>
+                                        <button className={landingstyles.button} onClick={() => handleTimeClick(time)}>
+                                            {convertTo12HourFormat(time)}
+                                        </button>
+                                        {openDropdown === time && (
+                                            <div>
+                                                <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('High')}>High</button><br />
+                                                <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
+                                                <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Low')}>Low</button><br />
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
+                            <button className={landingstyles.button} onClick={handleDeclineButtonClick}>Decline</button>
+                            <button className={landingstyles.button} onClick={handleNextButtonClick}>Next</button>
+                        </div>
+                    </>
+                )}
+            </>
+        )}
+    </div>
+</>
+
     );
     
 }
