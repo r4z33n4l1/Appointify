@@ -3,7 +3,6 @@ import React from 'react';
 import { useAuth } from '@/utils/authContext';
 
 function NavBar({ toggleSidebar }) {
-  const {token_username} = useAuth();
   return (
     <>
      <meta charSet="UTF-8" />
@@ -35,7 +34,7 @@ function NavBar({ toggleSidebar }) {
     <div className="ml-auto">
       <a className="navbar-brand" href="#">
         <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#398d86" }}>
-          <img src="/assets/user.png" width="30px" height="30px" style={{display: 'inline'}}/> {token_username}
+          <img src="/assets/user.png" width="30px" height="30px" style={{display: 'inline'}}/>
         </button>
       </a>
     </div>

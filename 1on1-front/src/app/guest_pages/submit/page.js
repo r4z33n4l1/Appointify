@@ -3,6 +3,8 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import getOwnerPreferences, { declineInvitation } from '../component.js';
+import styles from './styles.module.css'; 
+import NavBar from "@/components/navbar.js";
 
 function SubmitPage() {
     const router = useRouter();
@@ -51,35 +53,41 @@ function SubmitPage() {
         }
     };
 
-    if (status === "pending") {
-        return (
-            <p>You have not yet submitted your preferences. Please visit <a>'http://localhost:3000/guest_pages/landing?uuid=${uuid}'</a></p>
-        );
-    }
-	else if (status === "declined") {
-		return (<p>You have already declined this calendar invite!</p>);
-	}
-	else if (status === "finalized") {
-		return (<p>This calendar invite has already been finalized!</p>);
-	}
-
     return (
-        <div>
-            <p>Your date and time preferences have been sent to {owner}.</p>
-			<p>Meeting Name: {calendar_name}</p>
-            <p>Description: {calendar_desc}</p>
-			<button onClick={handleRescheduleButtonClick}>Reschedule</button>
-			<button onClick={handleDeclineButtonClick}>
-                {'Decline'}
-            </button>
-            {showDeclineConfirmation && (
-                <div>
-                    <p>Are you sure you want to decline?</p>
-					<button onClick={() => setShowDeclineConfirmation(false)}>Back</button>
-                    <button onClick={handleDeclineButtonClick}>Decline</button>
-                </div>
+        <>
+        <NavBar/>
+    
+        <div className={styles.container}>
+            {status === "pending" && (
+                <p className={styles.text}>You have not yet submitted your preferences. Please visit <a href={`http://localhost:3000/guest_pages/landing?uuid=${uuid}`}>this link</a> to submit them.</p>
+            )}
+            {status === "declined" && (
+                <p className={styles.text}>You have already declined this calendar invite!</p>
+            )}
+            {status === "finalized" && (
+                <p className={styles.text}>This calendar invite has already been finalized!</p>
+            )}
+            {status !== "pending" && status !== "declined" && status !== "finalized" && (
+                <>
+                    <p className={styles.text}>Your date and time preferences have been sent to {owner}.</p>
+                    <p className={styles.text}>Meeting Name: {calendar_name}</p>
+                    <p className={styles.text}>Description: {calendar_desc}</p>
+                    <button className={styles.button} onClick={handleRescheduleButtonClick}>Reschedule</button>
+                    <button className={styles.button} onClick={handleDeclineButtonClick}>
+                        {'Decline'}
+                    </button>
+                    {showDeclineConfirmation && (
+                        <div className={styles.confirmationBox}>
+                            <p className={styles.text}>Are you sure you want to decline?</p>
+                            <button className={styles.button} onClick={() => setShowDeclineConfirmation(false)}>Back</button>
+                            <button className={styles.button} onClick={handleDeclineButtonClick}>Decline</button>
+                        </div>
+                    )}
+                </>
             )}
         </div>
+    </>
+    
     );
 }
 

@@ -3,6 +3,8 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import getOwnerPreferences, { declineInvitation } from '../component.js';
+import NavBar from "@/components/navbar.js";
+import styles from './styles.module.css'; 
 
 function SubmitPage() {
     const router = useRouter();
@@ -32,21 +34,31 @@ function SubmitPage() {
         }
     }, [uuid]);
 
-    if (status === "pending") {
-        return (
-            <p>You have not yet submitted your preferences. Please visit <a>'http://localhost:3000/guest_pages/landing?uuid=${uuid}'</a></p>
-        );
-    }
-	if (status !== "finalized") {
-		return (<p>This calendar invite has not yet been finalized!</p>);
-	}
-
+ 
     return (
-        <div>
-            <p>Your meeting with {owner} has been confirmed for.......</p>
-			<p>Meeting Name: {calendar_name}</p>
-            <p>Description: {calendar_desc}</p>
+
+        <>
+        <NavBar/>
+        
+        <div className={styles.container}>
+            {status === "pending" && (
+                <p className={styles.text}>You have not yet submitted your preferences. Please visit <a href={`http://localhost:3000/guest_pages/landing?uuid=${uuid}`}>this link</a> to submit them.</p>
+            )}
+    
+            {status !== "finalized" && (
+                <p className={styles.text}>This calendar invite has not been finalized!</p>
+            )}
+    
+            {status === "pending" && status !== 'finalized' && (
+                <>
+                    <p className={styles.text}>Your meeting with {owner} has been confirmed for.......</p>
+                    <p className={styles.text}>Meeting Name: {calendar_name}</p>
+                    <p className={styles.text}>Description: {calendar_desc}</p>
+                </>
+            )}
         </div>
+    </>
+    
     );
 }
 

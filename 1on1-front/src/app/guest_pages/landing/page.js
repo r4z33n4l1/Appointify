@@ -6,6 +6,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import getOwnerPreferences, { postGuestPreferences, declineInvitation } from '../component.js';
 import styles from '@/components/styles.module.css';
+import NavBar from "@/components/navbar.js";
+import landingstyles from './styles.module.css'; 
 
 const convertTo12HourFormat = (time24h) => {
 	let [hours, minutes] = time24h.split(':');
@@ -139,73 +141,79 @@ function SchedulePage() {
         }
     };
 
-    if (Object.keys(ownerPreferences).length === 0) {
-        return (
-            <div>
-                <p>Inviter: {owner}</p>
-			    <p>Meeting Name: {calendar_name}</p>
-                <p>Description: {calendar_desc}</p>
-                <p>Inviter has not yet set any preferences! Please try again later.</p>
-            </div>
-        );
-    }
-	else if (status === "declined") {
-		return (<p>You have already declined this calendar invite!</p>);
-	}
-	else if (status === "finalized") {
-		return (<p>This calendar invite has already been finalized!</p>);
-	}
-    console.log(preferences);
     return (
-		<div>
-            <p>Inviter: {owner}</p>
-			<p>Meeting Name: {calendar_name}</p>
-            <p>Description: {calendar_desc}</p>
-			<div className={styles.calendarContainer}>
-				<div className={styles.calendarItem}>
-					<Calendar
-						onClickDay={onChange}
-						value={selectedDate}
-						minDate={new Date(new Date(startDate).getTime() + 86400000)}
-						maxDate={new Date(new Date(endDate).getTime() + 86400000)}
-						tileDisabled={({ date }) => {
-							const tileDate = date.toDateString();
-							const dates = Object.keys(ownerPreferences);
-							const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
-							return !formattedDates.includes(tileDate);
-						}}
-					/>
-				</div>
-				<div>
-					{selectedDateTimes.map((time, index) => (
-						<div key={index} className={styles.time}>
-							<button onClick={() => handleTimeClick(time)}>
-								{convertTo12HourFormat(time)}
-							</button>
-							{openDropdown === time && (
-								<div>
-									<button onClick={() => handlePreferenceClick('High')}>High</button><br />
-									<button onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
-									<button onClick={() => handlePreferenceClick('Low')}>Low</button><br />
-								</div>
-							)}
-						</div>
-					))}
-				</div>
-				<button onClick={handleNextButtonClick}>Next</button>
-				<button onClick={handleDeclineButtonClick}>
-					{'Decline'}
-				</button>
-				{showDeclineConfirmation && (
-					<div>
-						<p>Are you sure you want to decline?</p>
-						<button onClick={() => setShowDeclineConfirmation(false)}>Back</button>
-						<button onClick={handleDeclineButtonClick}>Decline</button>
-					</div>
-				)}
-			</div>
-		</div>
+        <>
+        <NavBar/>
+        <div className={landingstyles.container}>
+            {Object.keys(ownerPreferences).length === 0 ? (
+                <>
+                    <p className={landingstyles.text}>Inviter: {owner}</p>
+                    <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
+                    <p className={landingstyles.text}>Description: {calendar_desc}</p>
+                    <p className={landingstyles.text}>Inviter has not yet set any preferences! Please try again later.</p>
+                </>
+            ) : (
+                <>
+                    {status === "declined" ? (
+                        <p className={landingstyles.text}>You have already declined this calendar invite!</p>
+                    ) : status === "finalized" ? (
+                        <p className={landingstyles.text}>This calendar invite has already been finalized!</p>
+                    ) : (
+                        <>
+                            <p className={landingstyles.text}>Inviter: {owner}</p>
+                            <p className={landingstyles.text}>Meeting Name: {calendar_name}</p>
+                            <p className={landingstyles.text}>Description: {calendar_desc}</p>
+                            <div className={styles.calendarContainer}>
+                                <div className={styles.calendarItem}>
+                                    <Calendar
+                                        onClickDay={onChange}
+                                        value={selectedDate}
+                                        minDate={new Date(new Date(startDate).getTime() + 86400000)}
+                                        maxDate={new Date(new Date(endDate).getTime() + 86400000)}
+                                        tileDisabled={({ date }) => {
+                                            const tileDate = date.toDateString();
+                                            const dates = Object.keys(ownerPreferences);
+                                            const formattedDates = dates.map(dateString => new Date(new Date(dateString).getTime() + 86400000).toDateString());
+                                            return !formattedDates.includes(tileDate);
+                                        }}
+                                    />
+                                </div>
+                                <div>
+                                    {selectedDateTimes.map((time, index) => (
+                                        <div key={index} className={styles.time}>
+                                            <button className={landingstyles.button} onClick={() => handleTimeClick(time)}>
+                                                {convertTo12HourFormat(time)}
+                                            </button>
+                                            {openDropdown === time && (
+                                                <div>
+                                                    <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('High')}>High</button><br />
+                                                    <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Medium')}>Medium</button><br />
+                                                    <button  className={landingstyles.button}  onClick={() => handlePreferenceClick('Low')}>Low</button><br />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <button  className={landingstyles.button} onClick={handleNextButtonClick}>Next</button>
+                                <button  className={landingstyles.button} onClick={handleDeclineButtonClick}>
+                                    {'Decline'}
+                                </button>
+                                {showDeclineConfirmation && (
+                                    <div>
+                                        <p>Are you sure you want to decline?</p>
+                                        <button  className={landingstyles.button} onClick={() => setShowDeclineConfirmation(false)}>Back</button>
+                                        <button  className={landingstyles.button} onClick={handleDeclineButtonClick}>Decline</button>
+                                    </div>
+                                )}
+                            </div>
+                        </>
+                    )}
+                </>
+            )}
+        </div>
+        </>
     );
+    
 }
 
 export default SchedulePage;
