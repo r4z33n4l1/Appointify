@@ -222,10 +222,10 @@ export default function SuggestedSchedules({ params }) {
                         {error && <p className={styles.error}>Error: {error}</p>}
                         <div>
                             {suggestedSchedules.length > 0 ? (
-                                suggestedSchedules.map(group => (
+                                suggestedSchedules.map((group, index) => (
                                     <div key={group.schedule_group_id} className="bg-white shadow p-4 rounded">
                                         <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <span style={{ textAlign: 'left' }}>Schedule Group {group.schedule_group_id}</span>
+                                            <span style={{ textAlign: 'left' }}>Schedule {index + 1}</span>
                                             <button style={{ backgroundColor: '#ba0a51bb' }} onClick={() => handleConfirmClick(id, group.schedule_group_id)} className="text-white p-2 rounded">
                                                 Confirm
                                             </button>
