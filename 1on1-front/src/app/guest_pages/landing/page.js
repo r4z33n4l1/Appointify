@@ -141,7 +141,12 @@ function SchedulePage() {
 
     if (Object.keys(ownerPreferences).length === 0) {
         return (
-            <p>Invalid URL!</p>
+            <div>
+                <p>Inviter: {owner}</p>
+			    <p>Meeting Name: {calendar_name}</p>
+                <p>Description: {calendar_desc}</p>
+                <p>Inviter has not yet set any preferences! Please try again later.</p>
+            </div>
         );
     }
 	else if (status === "declined") {
