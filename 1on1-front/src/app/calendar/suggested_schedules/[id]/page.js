@@ -242,6 +242,7 @@ export default function SuggestedSchedules({ params }) {
                             )}
                             {Object.entries(guestAvailabilities).length > 0 && (
                                 <div className={styles.customScheduleContainer}>
+                                    <h3>Custom Schedule</h3>
                                 {Object.keys(guestAvailabilities).length > 0 && (
                                     Object.entries(guestAvailabilities).map(([guestName, availability]) => (
                                         <div key={guestName} className={styles.customScheduleSection}>
@@ -278,8 +279,9 @@ export default function SuggestedSchedules({ params }) {
                                     disabled={isConfirmDisabled}
                                     style={isConfirmDisabled ? { backgroundColor: '#ccc' } : { backgroundColor: '#ba0a51bb', color: 'white' }}
                                 >
-                                    Confirm Custom Schedule
+                                    Confirm Schedule
                                 </button>
+                                
                             </div>
                             )}
                         </div>
