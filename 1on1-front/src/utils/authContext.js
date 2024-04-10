@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
         accessToken: null,
         isAuthenticated: false,
         isLoading: true,
-        token_username: "",
+        tokenName: "",
     });
     const router = useRouter();
 
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
                 accessToken: accessToken,
                 isAuthenticated: true,
                 isLoading: false,
-                token_username: decoded ? decoded.username : "",
+                tokenName: decoded ? decoded.username : "",
             });
         } else {
             const refreshed = await refresh();

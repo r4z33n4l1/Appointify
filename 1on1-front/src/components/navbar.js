@@ -3,7 +3,8 @@ import React from 'react';
 import { useAuth } from '@/utils/authContext';
 
 function NavBar({ toggleSidebar }) {
-  const { tokenName } = useAuth();
+  const { tokenName, accessToken } = useAuth();
+
   return (
     <>
      <meta charSet="UTF-8" />
