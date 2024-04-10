@@ -1,0 +1,115 @@
+
+.preferencesBox {
+    width: 300px; 
+    height: 379px; 
+    overflow-y: auto; 
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    border-radius: 4px;
+    background-color: #fff;
+}
+.preferencesDate {
+    font-size: 16px; 
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding: 10px;
+    background-color: #f3f4f6; 
+    border-bottom: 1px solid #e2e8f0; 
+}
+
+.preferencesList {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+}
+
+.preferenceItem {
+
+    display: block; 
+}
+
+.bg-high { background-color: #ef4444; }
+.bg-medium { background-color: #facc15; } 
+.bg-low { background-color: #22c55e; } 
+.bg-default { background-color: #94a3b8; } 
+
+
+.high { background-color: #ef4444; }
+.medium { background-color: #facc15; } 
+.low { background-color: #22c55e; } 
+
+.calendarContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+
+
+.calendarItem {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 4px; 
+    padding-bottom: 0; 
+    margin-bottom: 0; 
+    width: 300px;
+}
+
+.nonBusyTime {
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    background-color: transparent; 
+}
+
+
+.itemName {
+    font-size: 1.2rem; 
+    color: #333; 
+    font-weight: bold;
+    margin-bottom: 4px; 
+}
+
+.itemDescription {
+    font-size: 1rem; 
+    color: #555; 
+    margin-bottom: 8px; 
+    line-height: 1.5; 
+}
+
+.itemContainer {
+    background-color: #f9f9f9; 
+    border: 1px solid #ddd; 
+    padding: 15px; 
+    border-radius: 5px; 
+    margin-bottom: 10px; 
+    text-align: center;
+}
+
+.sidebar-open {
+    background: linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat;
+    height: 100vh; 
+    width: 250px;
+    position: fixed; 
+    left: 0; 
+    top: 0; 
+    overflow-y: auto; 
+    transition: left 0.3s; 
+    margin-top: 5vh;
+}
+
+.sidebar-closed {
+    background: linear-gradient(135deg, #528582, #2E475C) 50% 50% no-repeat;
+    height: 100vh; 
+    width: 250px; 
+    position: fixed; 
+    left: -250px; 
+    top: 0; 
+    overflow-y: auto; 
+}
+
+.event-day
+{
+    background: rgb(36, 2, 121) !important;
+    color: white;
+}

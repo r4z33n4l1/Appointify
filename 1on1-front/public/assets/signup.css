@@ -1,0 +1,81 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.col-md-6
+{
+
+    height: 100vh;
+}
+#col-2
+{
+    background-color:  #528582
+}
+
+.nav-link
+{
+    color: white;
+}
+
+.nav-link:hover
+{
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: white;
+    border-bottom: 1px solid white;
+}
+
+#logo
+{
+
+    margin-top: 5rem;
+    margin-bottom: 1rem ;
+
+}
+
+.slogan
+{
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #333;
+}
+
+.slogan p {
+    background: linear-gradient(135deg, #77aeaa, #2E475C) 50% 50% no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .center-image {
+    text-align: center;
+  }
+
+  .center-image img {
+    max-width: 50%;
+    height: auto;
+  }
+.img-fluid
+{
+    margin-top: 3rem;
+}
+
+.welcome-text
+{
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.1725;
+  color: rgba(0, 0, 0, 0.6000000238);
+  font-family: Roboto, 'Source Sans Pro';
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+li 
+{
+    margin-left: 1vw;
+}

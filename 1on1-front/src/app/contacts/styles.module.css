@@ -1,0 +1,74 @@
+/* styles.module.css */
+.container {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, 'Source Sans Pro';
+  }
+  
+  .formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Spacing between form fields */
+  }
+  
+  .formInput, .formTextarea {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc; /* Light grey border */
+    font-size: 16px; /* Larger font size for better readability */
+  }
+  
+  .formButton {
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .formButton:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  .contactsList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Spacing between contact cards */
+    margin-top: 20px; /* Space above the first contact card */
+  }
+  
+  .contactCard {
+    background-color: #f9f9f9; /* Light background for contact cards */
+    border: 1px solid #ddd; /* Light grey border */
+    padding: 10px;
+    border-radius: 4px;
+    transition: transform 0.1s;
+    cursor: pointer;
+  }
+  
+  .contactCard:hover {
+    transform: scale(1.02); /* Slightly enlarge card on hover */
+  }
+  
+  .cardTitle, .cardText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 99%;
+  }
+  
+  .backButton {
+    margin-bottom: 20px; /* Space below the back button */
+    background-color: #ddd; /* Light grey background */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .backButton:hover {
+    background-color: #ccc; /* Slightly darker grey on hover */
+  }
+  

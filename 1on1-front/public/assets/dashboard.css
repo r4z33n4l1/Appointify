@@ -1,0 +1,249 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, 'Source Sans Pro';
+}
+
+.toggled #sidebar-wrapper {
+  width: 0;
+}
+
+.toggled #page-content-wrapper {
+  margin-left: 0;
+}
+
+/* HIDE/SHOW LINK ON SIDEBAR*/
+.hidden {
+  display: none !important; /* OVERRIDE DISPLAY PROPERTIES*/
+}
+
+#sidebar-wrapper .list-group a {
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 4rem;;
+}
+
+#sidebar-wrapper .list-group a img {
+    margin-right: 1rem;
+}
+
+.container-fluid
+{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.calendar {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    height: 95vh;
+    width: 50vw;
+  }
+
+  .month {
+    background-color: #B4326C;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.2em;
+    border-bottom: 1px solid #B4326C;
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  .day {
+    padding: 40px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 0.2rem;
+  }
+
+  .day-prev
+  {
+    padding: 40px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    background-color: #c3c4c52f;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin: 0.2rem;
+  }
+
+  .day:last-child {
+    border-right: none;
+  }
+
+  .dayname {
+    padding: 30px;
+    font-weight: bold;
+    color: #555;
+    border-radius: 0.2rem;
+    background-color: #bc51814e;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+  .day:hover {
+    background-color:#bc51816a;
+    color: #fff;
+  }
+
+  .dayname:hover {
+    background-color:#bc5181c0;
+    color: #fff;
+  } 
+
+  .card {
+    padding: 2rem;
+    width: 20rem;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  
+  .card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+  .card-header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .card-header button {
+    background-color: #fff;
+    color: #007bff;
+    padding: 8px 12px;
+    border: 1px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .list-group-item:last-child {
+    border-bottom: none;
+  }
+  
+  .list-group-item h5 {
+    margin: 0;
+  }
+  
+  .badge {
+    background-color: #2E475C;
+    color: #fff;
+    padding: 5px 10px;
+  }
+
+
+  .create-meeting-btn {
+    background-color: #77aeaa; 
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .create-calendar-btn {
+    background-color: #ba0a51bb; 
+    color: #fff;
+    padding: 9px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  
+  .create-meeting-btn img {
+    margin-right: 8px; 
+  }  
+
+  .meeting-card {
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    color: #333;
+}
+
+.meeting-details {
+    margin-top: 15px;
+}
+
+.meeting-item {
+    margin-bottom: 10px;
+}
+
+.meeting-title {
+    font-weight: bold;
+    color: #2E475C;
+}
+
+.meeting-time {
+    color: #777;
+}
+
+.text
+{
+    text-align: center;
+
+}
+
+.navbar-nav li {
+    margin-right: 2rem; 
+}
+
+.navbar-nav .dropdown {
+    margin-right: 10px; 
+}
+
+.nav-btn
+{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 9px 12px;
+    border: none;
+    border-radius: 5px;
+
+}
+
+

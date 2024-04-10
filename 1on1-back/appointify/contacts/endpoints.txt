@@ -1,0 +1,130 @@
+Contacts - API Endpoints
+
+### View List of Contacts
+- Endpoint: `/contacts/`
+- Method: GET
+- Description: Display list of contacts for the authenticated user.
+
+Example:
+
+Request: `GET /contacts/`
+
+Response:
+```json
+[
+    {
+        "id": 1,
+        "fname": "Victor",
+        "lname": "Ma",
+        "email": "victor.ma@example.com"
+    },
+    {
+        "id": 2,
+        "fname": "Neha",
+        "lname": "Sohail",
+        "email": "neha.sohail@example.com"
+    },
+    {
+        "id": 3,
+        "fname": "Dev",
+        "lname": "Singhvi",
+        "email": "dev.singhvi@example.com"
+    },
+    {
+        "id": 4,
+        "fname": "Razeen",
+        "lname": "Ali",
+        "email": "razeen.ali@example.com"
+    }
+]
+```
+
+### Create Contact
+- Endpoint: `/contacts/create/`
+- Method: POST
+- Description: Create a new contact for the authenticated user.
+
+Example:
+
+Request: `POST /contacts/create/`
+
+```json
+{
+    "fname": "Alice",
+    "lname": "Smith",
+    "email": "alice.smith@example.com"
+}
+```
+
+Response:
+```json
+{
+    "id": 5,
+    "fname": "Alice",
+    "lname": "Smith",
+    "email": "alice.smith@example.com"
+}
+```
+
+### Update Contact
+- Endpoint: `/contacts/update/<int:pk>/`
+- Method: PUT, PATCH
+- Description: Update specific contact details for the authenticated user.
+- URL Params: `pk` is the contact ID.
+
+Example:
+
+Request: `PATCH /contacts/update/5/`
+
+```json
+{
+    "lname": "Johnson"
+}
+```
+
+Response:
+```json
+{
+    "id": 5,
+    "fname": "Alice",
+    "lname": "Johnson",
+    "email": "alice.smith@example.com"
+}
+```
+
+### View Single Contact
+- Endpoint: `/contacts/<int:pk>/`
+- Method: GET
+- Description: View details of a single contact for the authenticated user.
+- URL Params: `pk` is the contact ID.
+
+Example:
+
+Request: `GET /contacts/5/`
+
+Response:
+```json
+{
+    "id": 5,
+    "fname": "Alice",
+    "lname": "Johnson",
+    "email": "alice.smith@example.com"
+}
+```
+
+### Delete Contact
+- Endpoint: `/contacts/<int:pk>/delete/`
+- Method: DELETE
+- Description: Delete a specific contact.
+- URL Params: `pk` is the contact ID.
+
+Example:
+
+Request: `DELETE /contacts/5/delete/`
+
+Response:
+```json
+{
+    "message": "Contact deleted successfully."
+}
+```
