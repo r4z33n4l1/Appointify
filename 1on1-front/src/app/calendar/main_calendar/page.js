@@ -152,10 +152,8 @@ function ViewCalendar() {
                                     }}
                                 /> */}
 
-                                <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
-                                    {/* <p className={styles.itemName}>{item.name}</p> */}
-                                    <CalendarView id={item.id} />
-                                </div>
+                                {/* <p className={styles.itemName}>{item.name}</p> */}
+                                <CalendarView id={item.id} />
 
                             </div>
                         ))}

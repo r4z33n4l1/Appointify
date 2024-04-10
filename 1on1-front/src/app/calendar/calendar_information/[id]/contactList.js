@@ -82,7 +82,7 @@ const ContactsFilter = ({ calendarId }) => {
 
     return (
         <div>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-2 rounded" style={{margin: '0.5rem'}}>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="border p-2 rounded" style={{marginBottom: '1rem'}}>
                 <option value="all">All</option>
                 <option value="pending">Pending</option>
                 <option value="accepted">Accepted</option>
