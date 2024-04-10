@@ -7,19 +7,45 @@ import NavBar from "@/components/navbar.js";
 import SideBar from "@/components/sidebar.js";
 import Head from 'next/head';
 
-
 export default function SuggestedSchedules({ params }) {
     const { accessToken } = useAuth();
     const router = useRouter();
     const { id } = params;
     const [suggestedSchedules, setSuggestedSchedules] = useState([]);
+    const [guestAvailabilities, setGuestAvailabilities] = useState({});
+
+    const [availableTimes, setAvailableTimes] = useState([]);
     const [error, setError] = useState('');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen);
-    }
+    const [selectedSchedule, setSelectedSchedule] = useState({});
+    const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
-    const fetchSuggestedSchedules = async (calendarId) => {
+
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+    useEffect(() => {
+        if (id) {
+            fetchSuggestedSchedules(id);
+        }
+        const times = new Set();
+        let conflict = false;
+        const allSelected = Object.values(selectedSchedule).every(selection => {
+            if (selection.date && selection.time) {
+                const dateTimeKey = `${selection.date} ${selection.time}`;
+                if (times.has(dateTimeKey)) {
+                    conflict = true;
+                    return false;
+                }
+                times.add(dateTimeKey);
+                return true;
+            }
+            return false;
+        });
+
+        setIsConfirmDisabled(!allSelected || conflict);
+    }, [selectedSchedule, id, accessToken]);
+
+    async function fetchSuggestedSchedules(calendarId) {
         try {
             const response = await fetch(`http://127.0.0.1:8000/events/create_event?calendar_id=${calendarId}`, {
                 method: "GET",
@@ -27,20 +53,18 @@ export default function SuggestedSchedules({ params }) {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
-            if (!response.ok) {
-                const errorData = await response.json();
-                if (errorData.error.startsWith('Pending invitations exist for:')) {
-                    const username = errorData.error.split(': ')[1];
-                    throw new Error(`Pending invitations exist. ${username} has not given their preferences.`);
-                }
-                throw new Error('Failed to fetch suggested schedules');
-            }
+            if (!response.ok) throw new Error('Failed to fetch suggested schedules');
             const data = await response.json();
-            setSuggestedSchedules(data.schedule_groups);
+
+            if (data.schedule_groups.length) {
+                setSuggestedSchedules(data.schedule_groups);
+                identifyMissingGuests(data.schedule_groups);
+            } else {
+                setSuggestedSchedules([]);
+            }
             setError('');
         } catch (error) {
             setError(error.message);
-            setSuggestedSchedules([]);
         }
     };
 
@@ -65,15 +89,86 @@ export default function SuggestedSchedules({ params }) {
         }
     };
 
-    useEffect(() => {
-        if (id) {
-            fetchSuggestedSchedules(id);
+    const handleSelectionChange = (guestName, field, value) => {
+        setSelectedSchedule((prev) => ({
+            ...prev,
+            [guestName]: { ...prev[guestName], [field]: value },
+        }));
+    
+        if (field === 'date') {
+            const timesForDate = guestAvailabilities[guestName].find((avail) => avail.date === value)?.non_busy_times;
+            if (timesForDate) {
+                const uniqueTimes = [...new Set(timesForDate.map((t) => t.time))]; 
+                setAvailableTimes(uniqueTimes);
+            }
         }
-    }, [id, accessToken]);
-
-    const handleBack = () => {
-        router.push(`/calendar/calendar_information/${id}`);
     };
+
+    const handleConfirmSchedule = async () => {
+        const scheduleItems = Object.entries(selectedSchedule).map(([guestName, { date, time }]) => ({
+            guest_name: guestName, 
+            date,
+            time,
+        }));
+    
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/events/create_schedule_group/`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+                body: JSON.stringify({
+                    calendar_id: id,
+                    schedules: scheduleItems,
+                }),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to add the schedules to the new group.');
+            }
+    
+            const data = await response.json();
+            await finalizeSchedule(id, data.schedule_group_id);
+    
+        } catch (error) {
+            alert('Failed to confirm custom schedules: ' + error.message);
+        }
+    };
+    
+
+    async function identifyMissingGuests(scheduleGroups) {
+        const calendarInfo = await fetch(`http://127.0.0.1:8000/events/availability_data?calendar_id=${id}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }).then(response => response.json());
+
+        let scheduledGuests = new Set();
+        scheduleGroups.forEach(group => {
+            group.schedules.forEach(schedule => {
+                scheduledGuests.add(schedule.contact);
+            });
+        });
+
+        let acceptedGuests = {};
+        calendarInfo[1].accepted.forEach(guest => {
+            acceptedGuests[guest.fname + " " + guest.lname] = guest.non_busy_dates;
+        });
+
+        let missingGuests = {};
+        Object.keys(acceptedGuests).forEach(guestName => {
+            if (!scheduledGuests.has(guestName)) {
+                missingGuests[guestName] = acceptedGuests[guestName];
+            }
+        });
+
+        setGuestAvailabilities(missingGuests);
+    }
+
+    const handleBack = () => router.push(`/calendar/calendar_information/${id}`);
 
     return (
         <>
@@ -81,15 +176,22 @@ export default function SuggestedSchedules({ params }) {
                 <title>Schedules</title>
             </Head>
             <NavBar toggleSidebar={toggleSidebar} />
-            <div style={{ display: 'dflex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}>
+            <div style={{ display: 'd-flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: '5vh' }}>
                 <SideBar isSidebarOpen={isSidebarOpen} />
-                <div className="container mx-auto p-4" style={{ marginTop: '10vh' }}>
-                    <button onClick={handleBack} className={styles.backButton}>Back</button>
-                    <div className={styles.suggestedSchedules}>
-                        {error && <p>Error: {error}</p>}
-                        {suggestedSchedules.length > 0 && (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-                                {suggestedSchedules.map(group => (
+                <div style={{ marginTop: '5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', padding: '0 20px', boxSizing: 'border-box' }}>
+                        <button
+                            style={{ backgroundColor: '#ba0a51bb', color: 'white', padding: '10px 20px', borderRadius: '5px' }}
+                            onClick={handleBack}
+                        >
+                            Back to all Calendars
+                        </button>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center', width: '100%', padding: '0 20px', boxSizing: 'border-box' }}>
+                        {error && <p className={styles.error}>Error: {error}</p>}
+                        <div>
+                            {suggestedSchedules.length > 0 ? (
+                                suggestedSchedules.map(group => (
                                     <div key={group.schedule_group_id} className="bg-white shadow p-4 rounded">
                                         <h3 style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ textAlign: 'left' }}>Schedule Group {group.schedule_group_id}</span>
@@ -103,12 +205,56 @@ export default function SuggestedSchedules({ params }) {
                                             </div>
                                         ))}
                                     </div>
-                                ))}
-                            </div>)}
+                                ))
+                            ) : (
+                                <p>No suggested schedules are available.</p>
+                            )}
+                            {Object.entries(guestAvailabilities).length > 0 && (
+                                <div className={styles.customScheduleContainer}>
+                                {Object.keys(guestAvailabilities).length > 0 && (
+                                    Object.entries(guestAvailabilities).map(([guestName, availability]) => (
+                                        <div key={guestName} className={styles.customScheduleSection}>
+                                            <h4>Select a date and time for {guestName}:</h4>
+                                            <select
+                                                className={styles.customScheduleDropdown}
+                                                onChange={(e) => handleSelectionChange(guestName, 'date', e.target.value)}
+                                                value={selectedSchedule[guestName]?.date || ''}
+                                            >
+                                                <option value="">Select Date</option>
+                                                {[...new Set(availability.map(a => a.date))].map(date => (
+                                                    <option key={date} value={date}>{date}</option>
+                                                ))}
+                                            </select>
+                                            {selectedSchedule[guestName]?.date && (
+                                                <select
+                                                    className={styles.customScheduleDropdown}
+                                                    onChange={(e) => handleSelectionChange(guestName, 'time', e.target.value)}
+                                                    value={selectedSchedule[guestName]?.time || ''}
+                                                    disabled={!selectedSchedule[guestName]?.date}
+                                                >
+                                                    <option value="">Select Time</option>
+                                                    {availableTimes.map((time, index) => (
+                                                        <option key={index} value={time}>{time}</option>
+                                                    ))}
+                                                </select>
+                                            )}
+                                        </div>
+                                    ))
+                                )}
+                                <button
+                                    className={styles.customScheduleConfirm}
+                                    onClick={handleConfirmSchedule}
+                                    disabled={isConfirmDisabled}
+                                    style={isConfirmDisabled ? { backgroundColor: '#ccc' } : { backgroundColor: '#ba0a51bb', color: 'white' }}
+                                >
+                                    Confirm Custom Schedule
+                                </button>
+                            </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
         </>
-
     );
 }
