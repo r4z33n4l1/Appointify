@@ -170,7 +170,7 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
         useEffect(() => {
             const checkIfFinalized = async () => {
                 const finalizedCalendars = await fetchFinalizedCalendars(accessToken);
-                console.log('fetch', finalizedCalendars);
+                
                 const isCalendarFinalized = finalizedCalendars.find(calendar => calendar.calendar_id === item.id);
                 setIsFinalized(isCalendarFinalized);
             };
@@ -178,7 +178,7 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
             checkIfFinalized();
         }, [item.id, accessToken]);
 
-        console.log("final", isFinalized);
+    
 
         const date = isFinalized.start_time?.split(' ')[0];
         const starttime = isFinalized.start_time?.split(' ')[1];
@@ -199,11 +199,9 @@ function CalendarItem({ item, onChange, value, sortPreferences, showPreferences 
         const isDateInEventRange = (chosen_date) => {
             const dateObj = new Date(chosen_date);
             const formattedDate = dateObj.toISOString().split('T')[0];
-            console.log(formattedDate)
-            console.log(formattedDate==date);
+            
             return formattedDate == date;
         };
-
 
         return (
             <div className="flex justify-center items-start space-x-4 p-4">
