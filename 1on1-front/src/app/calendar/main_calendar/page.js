@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
@@ -9,8 +8,10 @@ import { useAuth } from '@/utils/authContext';
 import NavBar from "@/components/navbar.js";
 import SideBar from "@/components/sidebar.js";
 import Image from 'next/image';
+import { CalendarView} from "@/components/my_calendar.js";
 
-function CalendarView() {
+
+function ViewCalendar() {
     const { accessToken } = useAuth();
     const router = useRouter();
     const [calendarData, setCalendarData] = useState([]);
@@ -110,7 +111,7 @@ function CalendarView() {
 
                         {filteredData && filteredData.map((item) => (
                             <div key={item.id} className={styles.calendarItem}>
-                                <Calendar
+{/*                                 <Calendar
                                     onChange={onChange}
                                     value={value}
                                     minDate={new Date(new Date(item.start_date).getTime() + 86400000)}
@@ -149,10 +150,11 @@ function CalendarView() {
                                             );
                                         }
                                     }}
-                                />
+                                /> */}
 
                                 <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/calendar/calendar_information/${item.id}`)}>
-                                    <p className={styles.itemName}>{item.name}</p>
+                                    {/* <p className={styles.itemName}>{item.name}</p> */}
+                                    <CalendarView id={item.id} />
                                 </div>
 
                             </div>
@@ -163,5 +165,5 @@ function CalendarView() {
         </>
     );
 }
-export default CalendarView;
+export default ViewCalendar;
 
