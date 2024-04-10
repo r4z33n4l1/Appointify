@@ -42,16 +42,12 @@ function FinalPage() {
         
         <div className={styles.container}>
             {status === "pending" && (
-                <p className={styles.text}>You have not yet submitted your preferences. Please visit <a href={`http://localhost:3000/guest_pages/landing?uuid=${uuid}`}>this link</a> to submit them.</p>
+                <p className={styles.text}>You have not yet submitted your preferences. Please visit <a href={`http://localhost:3000/guest_pages/landing?uuid=${uuid}`}> this link</a> to submit them.</p>
             )}
     
-            {status !== "finalized" && (
-                <p className={styles.text}>This calendar invite has not been finalized!</p>
-            )}
-    
-            {status === "pending" && status !== 'finalized' && (
+            {status === 'accepted' && (
                 <>
-                    <p className={styles.text}>Your meeting with {owner} has been confirmed for.......</p>
+                    <p className={styles.text}>Your meeting with {owner} has been confirmed.{}</p>
                     <p className={styles.text}>Meeting Name: {calendar_name}</p>
                     <p className={styles.text}>Description: {calendar_desc}</p>
                 </>

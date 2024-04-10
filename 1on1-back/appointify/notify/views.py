@@ -91,22 +91,27 @@ class NotifyFinalizedScheduleView(APIView):
     def post(self, request, *args, **kwargs):
         calendar_id = request.data.get('calendar_id')
         calendar = get_object_or_404(Calendars, id=calendar_id)
-        user_calendar = UserCalendars.objects.filter(user=request.user, calendar=calendar)
+        user_calendar = UserCalendars.objects.get(user=request.user, calendar=calendar)
         if not user_calendar:
             return Response({'message': 'You do not have access to this calendar'}, status=403)
         if calendar.isfinalized:
             events = Event.objects.filter(calendar=calendar)
             events_serialized = EventsSerializer(events, many=True).data
-
             for event_data in events_serialized:
-                contact_email = event_data['contact_email']
-                event_details = '\n'.join([f"{key}: {value}" for key, value in event_data.items()])
-                send_mail(
-                    'Finalized Event',
-                    'appointify@razeenali.com',
-                    [contact_email],
-                    fail_silently=False,
-                )
+                invitations = Invitation.objects.filter(calendar=calendar)
+                for invitation in invitations:
+                    if invitation.invited_contact.email == event_data['contact_email']:
+                        contact_email = event_data['contact_email']
+                        event_details = '\n'.join([f"{key}: {value}" for key, value in event_data.items()])
+                        unique_link = f'http://localhost:3000/guest_pages/final?uuid={invitation.unique_token}'
+                        message = f'Your meeting with {user_calendar.user}, "{calendar.name}" has been finalized. Click the link below for more details:\n\n{unique_link}'
+                        send_mail(
+                            'Meeting Finalized',
+                            message,
+                            'appointify@razeenali.com',
+                            [contact_email],
+                            fail_silently=False,
+                        )
 
             return Response({'message': 'Notifications sent to all contacts', 'events': events_serialized})
         else:
