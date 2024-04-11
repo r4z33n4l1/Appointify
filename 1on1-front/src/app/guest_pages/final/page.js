@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import getOwnerPreferences, { declineInvitation } from '../component.js';
 import NavBar from "@/components/navbar_guest.js";
 import styles from './styles.module.css'; 
+import { Suspense } from 'react';
 
 function FinalPage() {
     const router = useRouter();
@@ -58,4 +59,15 @@ function FinalPage() {
     );
 }
 
-export default FinalPage;
+
+
+function FinalGuestPage(){
+    return(
+        <Suspense fallback={<div>Loading...</div>}>
+            <FinalPage />
+        </Suspense>
+    );
+}
+
+export default FinalGuestPage;
+

@@ -39,8 +39,8 @@ function CalendarView() {
             }
         };
 
-        fetchData('http://127.0.0.1:8000/calendars/all/', setCalendarData);
-        fetchData('http://127.0.0.1:8000/calendars/user-calendars/', setCalendarPreferences);
+        fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/all/`, setCalendarData);
+        fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/user-calendars/`, setCalendarPreferences);
     }, []);
 
     const combinedData = calendarData && calendarData.map((dataItem, index) => ({

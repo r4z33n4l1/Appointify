@@ -1,5 +1,5 @@
 'use client';
-
+import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
@@ -239,4 +239,11 @@ function SchedulePage() {
     
 }
 
-export default SchedulePage;
+function LandingGuestPage(){
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <SchedulePage />
+        </Suspense>
+    );
+}
+export default LandingGuestPage;

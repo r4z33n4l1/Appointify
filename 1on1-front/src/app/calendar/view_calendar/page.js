@@ -10,7 +10,7 @@ function CalendarView() {
         const fetchData = async () => {
             try {
                 const authToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzEyMzQ2NTQ0LCJpYXQiOjE3MTE5MTQ1NDQsImp0aSI6ImQ4MWMxMDg4MWQ5MzRmNzA5MTdiYzFlMWUzODFjYmVjIiwidXNlcl9pZCI6MX0.Ex9VuA8JnwPBhygOw0BX2oePa18o78eDNp2Ayb5B26c';
-                const response = await fetch('http://127.0.0.1:8000/calendars/all/', {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/all/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

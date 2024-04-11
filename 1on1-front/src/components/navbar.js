@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useAuth } from '@/utils/authContext';
-
+import Image from 'next/image';
 function NavBar({ toggleSidebar }) {
   const { tokenName, accessToken } = useAuth();
 
@@ -9,10 +9,6 @@ function NavBar({ toggleSidebar }) {
     <>
      <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <link rel="stylesheet" href="/assets/dashboard.css" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%3A700" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto%3A400%2C500%2C700" />
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro%3A400%2C500%2C700" />
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" />
     <div id="page-content-wrapper">
   <nav
@@ -32,11 +28,11 @@ function NavBar({ toggleSidebar }) {
       </button>
       
     </a>
-    <img src="/assets/logo_white.png" width={160} height={40} alt="" />
+    <Image src="/assets/logo_white.png" width={160} height={40} alt="" />
     <div className="ml-auto">
       <a className="navbar-brand" href="#">
         <button type="submit" className="btn btn-primary" style={{ backgroundColor: "#398d86" }}>
-          <img src="/assets/user.png" width="30px" height="30px" style={{display: 'inline'}}/> {tokenName}
+          <Image src="/assets/user.png" width={30} height={30} style={{display: 'inline'}} alt="username" /> {tokenName}
         </button>
       </a>
     </div>

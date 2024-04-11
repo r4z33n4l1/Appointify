@@ -14,7 +14,7 @@ export default function SuggestedSchedulesPage() {
 
     const fetchSuggestedSchedules = async (calendarId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/events/create_event?calendar_id=${calendarId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}events/create_event?calendar_id=${calendarId}`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
@@ -39,7 +39,7 @@ export default function SuggestedSchedulesPage() {
 
     const finalizeSchedule = async (calendarId, scheduleGroupId) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/events/create_event/`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}events/create_event/`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

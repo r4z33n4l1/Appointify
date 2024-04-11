@@ -20,7 +20,7 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
 
     useEffect(() => {
         fetchContacts();
-    }, [calendarId, shouldUpdate, accessToken, clicked]);
+    }, [calendarId]);
 
     // create useeffect for when search term changes 
     useEffect(() => {
@@ -38,7 +38,7 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
 
     const fetchContacts = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/notify/invited_contacts?calendar_id=${calendarId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}notify/invited_contacts?calendar_id=${calendarId}`, {
                 headers: { 'Authorization': `Bearer ${accessToken}` },
             });
             if (!response.ok) throw new Error('Network response was not ok');
@@ -52,7 +52,7 @@ const ContactsSearchAndInvite = ({ calendarId }) => {
     const handleInvite = async (contactId) => {
         try {
             console.log('calendarId:', calendarId, 'contactId:', contactId, 'accessToken:', accessToken)
-            const response = await fetch('http://127.0.0.1:8000/notify/calendars/invite/', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}notify/calendars/invite/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

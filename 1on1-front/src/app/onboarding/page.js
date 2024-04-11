@@ -1,8 +1,6 @@
 
 'use client'
-import Head from 'next/head';
 import Image from 'next/image';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function OnboardingPage() {
     return (
@@ -14,11 +12,6 @@ export default function OnboardingPage() {
     content="width=device-width, initial-scale=1.0, initial-scale=1.0"
   />
   <title>Onboarding Page</title>
-  <link rel="stylesheet" href="assets/onboarding.css" />
-  <link
-    rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Plus+Jakarta+Sans%3A400%2C500%2C700%2C800"
-  />
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
@@ -29,7 +22,7 @@ export default function OnboardingPage() {
     <nav className="navbar navbar-expand-lg navbar-light bg-light" id="nav-bar">
       <div className="container">
         <a className="navbar-brand" href="#">
-          <img src="assets/logo.png" width={160} height={40} alt="logo" />
+          <Image src="assets/logo.png" width={160} height={40} alt="logo" />
         </a>
         <button
           className="navbar-toggler"
@@ -145,7 +138,7 @@ export default function OnboardingPage() {
       <div className="row">
         <div className="col-sm-4 text-center">
           <h1>Fast.</h1>
-          <img
+          <Image
             src="assets/clock.png"
             width="100rem"
             height="100rem"
@@ -166,7 +159,7 @@ export default function OnboardingPage() {
         </div>
         <div className="col-sm-4 text-center">
           <h1>Easy.</h1>
-          <img
+          <Image
             src="assets/easy.png"
             width="100rem"
             height="100rem"
@@ -179,7 +172,7 @@ export default function OnboardingPage() {
               fontFamily: '"Plus Jakarta Sans", "Source Sans Pro"'
             }}
           >
-            Simplicity meets functionality with Appointify's easy-to-use
+            Simplicity meets functionality with Appointify&apos;s easy-to-use
             interface. Enjoy a hassle-free experience as you effortlessly
             navigate through the intuitive design, making appointment scheduling
             a breeze for users of all backgrounds
@@ -187,7 +180,7 @@ export default function OnboardingPage() {
         </div>
         <div className="col-sm-4 text-center">
           <h1>Efficient.</h1>
-          <img
+          <Image
             src="assets/e.png"
             width="100rem"
             height="100rem"
@@ -200,7 +193,7 @@ export default function OnboardingPage() {
               fontFamily: '"Plus Jakarta Sans", "Source Sans Pro"'
             }}
           >
-            Boost your productivity with Appointify's efficient scheduling
+            Boost your productivity with Appointify&apos;s efficient scheduling
             solutions. Our platform streamlines the entire process, from booking
             to reminders, ensuring optimal time utilization and minimizing
             no-shows. Experience unparalleled efficiency in managing your
@@ -213,28 +206,28 @@ export default function OnboardingPage() {
       <h1 className="app-heading">Discover Appointify!</h1>
       <div className="row" id="how-to-row">
         <div className="col-md-6" id="how-to-col">
-          <img src="assets/6234265.jpg" alt="Illustration" />
+          <Image src="assets/6234265.jpg" alt="Illustration" />
         </div>
         <div className="col-md-6">
           <ul className="how-to-ul">
             <li>
-              <img src="assets/calendar.png" alt="Step 1" />
+              <Image src="assets/calendar.png" alt="Step 1" />
               <h6>Create a new Calendar!</h6>
             </li>
             <li>
-              <img src="assets/add-user.png" alt="Step 2" />
+              <Image src="assets/add-user.png" alt="Step 2" />
               <h6>Invite your contacts!</h6>
             </li>
             <li>
-              <img src="assets/duration.png" alt="Step 3" />
+              <Image src="assets/duration.png" alt="Step 3" />
               <h6>Remind your contacts</h6>
             </li>
             <li>
-              <img src="assets/schedule.png" alt="Step 4" />
+              <Image src="assets/schedule.png" alt="Step 4" />
               <h6>Finalize Appointment!</h6>
             </li>
             <li>
-              <img src="assets/videoconference.png" alt="Step 5" />
+              <Image src="assets/videoconference.png" alt="Step 5" />
               <h6>Happy Appointment!</h6>
             </li>
           </ul>
@@ -242,7 +235,7 @@ export default function OnboardingPage() {
       </div>
     </div>
     <div className="meeting-gif">
-      <img src="assets/meeting.gif" alt="meeting" />
+      <Image src="assets/meeting.gif" alt="meeting" />
     </div>
   </main>
   <footer className="py-3 my-4" id="contact">
@@ -267,7 +260,7 @@ export default function OnboardingPage() {
       <p className="text-body-secondary">Follow us on social media:</p>
       <div className= "nav justify-content-center border-bottom pb-3 mb-3">
       <a href="#" className="social-icon">
-        <img
+        <Image
           src="assets/facebook.png"
           alt="Facebook"
           width="40px"
@@ -275,7 +268,7 @@ export default function OnboardingPage() {
         />
       </a>
       <a href="#" className="social-icon">
-        <img
+        <Image
           src="assets/twitter.png"
           alt="Twitter"
           width="40px"
@@ -283,7 +276,7 @@ export default function OnboardingPage() {
         />
       </a>
       <a href="#" className="social-icon">
-        <img
+        <Image
           src="assets/instagram.png"
           alt="Instagram"
           width="40px"
@@ -291,7 +284,7 @@ export default function OnboardingPage() {
         />
       </a>
       <a href="#" className="social-icon">
-        <img
+        <Image
           src="assets/youtube.png"
           alt="Youtube"
           width="40px"

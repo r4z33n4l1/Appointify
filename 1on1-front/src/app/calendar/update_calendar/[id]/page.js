@@ -35,7 +35,7 @@ function CalendarForm({params}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const authToken = accessToken;
-        const response = await fetch(`http://127.0.0.1:8000/calendars/update/${id}/`, { 
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}calendars/update/${id}/`, { 
             method: 'PUT', 
             headers: {
                 'Content-Type': 'application/json',

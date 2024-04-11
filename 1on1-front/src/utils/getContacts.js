@@ -1,6 +1,6 @@
 export async function fetchCalendarStatusUsernamesAndIds(accessToken, calendarId, status) {
     console.log('fetchCalendarStatusUsernamesAndIds', accessToken, calendarId, status);
-    const url = `http://127.0.0.1:8000/notify/calendars/status/?status=${status}&calendar_id=${calendarId}`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL}notify/calendars/status/?status=${status}&calendar_id=${calendarId}`;
   
     try {
       const response = await fetch(url, {
