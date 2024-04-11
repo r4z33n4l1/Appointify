@@ -23,11 +23,11 @@ const CalendarPreferencesDisplay = ({ calendarId }) => {
     // Function to assign colors based on preference
     const preferenceColor = (pref) => {
         switch (pref) {
-            case 'high':
+            case 'low':
                 return 'bg-red-400';
             case 'medium':
                 return 'bg-yellow-400';
-            case 'low':
+            case 'high':
                 return 'bg-green-400';
             default:
                 return 'bg-gray-200';

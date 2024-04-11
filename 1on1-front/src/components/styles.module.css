@@ -28,15 +28,15 @@
     display: block; 
 }
 
-.bg-high { background-color: #ef4444; }
+.bg-low { background-color: #ef4444; }
 .bg-medium { background-color: #facc15; } 
-.bg-low { background-color: #22c55e; } 
+.bg-high { background-color: #22c55e; } 
 .bg-default { background-color: #94a3b8; } 
 
 
-.high { background-color: #ef4444; }
+.low { background-color: #ef4444; }
 .medium { background-color: #facc15; } 
-.low { background-color: #22c55e; } 
+.high { background-color: #22c55e; } 
 
 .calendarContainer {
     display: flex;
