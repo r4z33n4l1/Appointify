@@ -1,3 +1,4 @@
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -15,6 +16,16 @@ from calendars.serializers import NonBusyDateSerializer
 from collections import defaultdict
 from django.db import transaction
 from .models import ScheduleGroup
+
+# schedule manual
+from django.utils.timezone import make_aware
+from datetime import datetime, timedelta
+
+from .models import Schedule
+from contacts.models import Contact  
+
+# Your view class definitions follow...
+
 
 
 class EventSchedulerView(APIView):
@@ -164,3 +175,62 @@ class FinalizedEventView(APIView):
              created_events.append(event)
 
         return Response({"detail": "Events retrieval simulated.", "results": created_events}) 
+    
+# manual schedule gorup
+
+class AddScheduleGroupView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        calendar_id = request.data.get('calendar_id')
+        schedules = request.data.get('schedules')  
+        
+        calendar = get_object_or_404(Calendars, id=calendar_id)
+        if calendar.isfinalized:
+            return Response({'error': 'Calendar is already finalized.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+
+        schedule_group = ScheduleGroup.objects.create(calendar=calendar, owner=request.user)
+
+        created_schedules = []
+        with transaction.atomic():
+            
+            
+            for schedule_data in schedules:
+                guest_name = schedule_data.get('guest_name')
+                date_str = schedule_data.get('date')
+                time_str = schedule_data.get('time')
+                print(date_str, time_str)
+                first = guest_name.split(' ')[0]
+                guest = get_object_or_404(Contact, fname=first)
+                
+                date_string = date_str + ' ' + time_str
+                start_datetime = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S")
+                end_datetime = start_datetime + timedelta(hours=1)  
+                if any(s.start_time == start_datetime for s in schedule_group.schedules.all()):
+                    return Response({'error': f'Time conflict exists for {guest_name} on {date_str} at {time_str}.'}, status=status.HTTP_400_BAD_REQUEST)
+                
+                
+                new_schedule = Schedule.objects.create(
+                    calendar=calendar,
+                    start_time=start_datetime,
+                    end_time=end_datetime,
+                    owner=request.user,
+                    contact=guest
+                )
+                schedule_group.schedules.add(new_schedule)
+                created_schedules.append(new_schedule)
+                
+            return Response({
+                
+                
+                'detail': 'All schedules added successfully to the new group.',
+                'schedule_group_id': schedule_group.id,
+                'schedules': [{
+                    'schedule_id': s.id,
+                    'date': s.start_time.strftime('%Y-%m-%d'),
+                    'time': s.start_time.strftime('%H:%M:%S'),
+                    'contact': s.contact.fname
+                } for s in created_schedules]
+            }, status=status.HTTP_201_CREATED)

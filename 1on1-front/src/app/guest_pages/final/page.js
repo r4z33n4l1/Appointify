@@ -7,7 +7,7 @@ import NavBar from "@/components/navbar_guest.js";
 import styles from './styles.module.css'; 
 import { Suspense } from 'react';
 
-function SubmitPage() {
+function FinalPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const uuid = `${searchParams.get('uuid')}`;
@@ -43,16 +43,12 @@ function SubmitPage() {
         
         <div className={styles.container}>
             {status === "pending" && (
-                <p className={styles.text}>You have not yet submitted your preferences. Please visit <a href={`http://localhost:3000/guest_pages/landing?uuid=${uuid}`}>this link</a> to submit them.</p>
+                <p className={styles.text}>You have not yet submitted your preferences. Please visit <a href={`http://localhost:3000/guest_pages/landing?uuid=${uuid}`}> this link</a> to submit them.</p>
             )}
     
-            {status !== "finalized" && (
-                <p className={styles.text}>This calendar invite has not been finalized!</p>
-            )}
-    
-            {status === "pending" && status !== 'finalized' && (
+            {status === 'accepted' && (
                 <>
-                    <p className={styles.text}>Your meeting with {owner} has been confirmed for.......</p>
+                    <p className={styles.text}>Your meeting with {owner} has been confirmed.{}</p>
                     <p className={styles.text}>Meeting Name: {calendar_name}</p>
                     <p className={styles.text}>Description: {calendar_desc}</p>
                 </>
@@ -64,12 +60,14 @@ function SubmitPage() {
 }
 
 
+
 function FinalGuestPage(){
     return(
         <Suspense fallback={<div>Loading...</div>}>
-            <SubmitPage/>
+            <FinalPage />
         </Suspense>
     );
 }
 
 export default FinalGuestPage;
+
